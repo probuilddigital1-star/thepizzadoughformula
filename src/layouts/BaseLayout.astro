@@ -26,6 +26,7 @@ const {
 } = Astro.props;
 
 import CookieConsent from '../components/global/CookieConsent.astro';
+import '../styles/global.css';
 
 const siteName = 'The Pizza Dough Formula';
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
@@ -142,8 +143,6 @@ const webAppSchema = schemaType === 'WebApplication' ? {
       rel="stylesheet"
     />
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="/src/styles/global.css" />
 
     <!-- Schema.org Organization (always present) -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
