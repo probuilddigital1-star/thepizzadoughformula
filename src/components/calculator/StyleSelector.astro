@@ -1,0 +1,136 @@
+---
+/**
+ * StyleSelector Component
+ * Radio card grid for selecting pizza style
+ * Uses two-row layout (4+3) for optimal readability
+ */
+import { PIZZA_STYLES, getAllStyles } from '../../scripts/calculator/presets.js';
+import PizzaStyleIcon from '../icons/PizzaStyleIcon.astro';
+
+const styles = getAllStyles();
+const topRow = styles.slice(0, 4);   // Neapolitan, New York, Detroit, Thin & Crispy
+const bottomRow = styles.slice(4);   // Poolish/Biga, Emergency, Custom
+---
+
+<div class="style-selector">
+  <h2 class="font-heading text-2xl font-bold text-text mb-2">
+    Choose Your Pizza Style
+  </h2>
+  <p class="text-text-muted mb-6">
+    Select a style to load recommended settings, or choose Custom for full control.
+  </p>
+
+  <div class="flex flex-col gap-3" role="radiogroup" aria-label="Pizza style selection">
+    <!-- First row: 4 main styles -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {topRow.map((style, index) => (
+        <label
+          class="style-card group relative flex flex-col p-4 bg-surface border-2 border-border rounded-xl cursor-pointer transition-all hover:border-primary hover:shadow-md focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+          data-style={style.id}
+        >
+          <input
+            type="radio"
+            name="pizzaStyle"
+            value={style.id}
+            class="sr-only peer"
+            checked={index === 0}
+          />
+
+          {/* Selected indicator */}
+          <div class="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-white bg-border peer-checked:border-white peer-checked:bg-primary shadow-sm transition-colors flex items-center justify-center">
+            <svg class="checkmark-icon w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </div>
+
+          {/* Style icon and name */}
+          <div class="flex items-center gap-2 mb-2">
+            <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+              <PizzaStyleIcon name={style.icon} class="w-4 h-4 text-primary" />
+            </div>
+            <span class="font-heading font-semibold text-sm text-text leading-tight break-words">{style.name}</span>
+          </div>
+
+          {/* Description */}
+          <p class="text-xs text-text-muted leading-relaxed flex-grow">{style.description}</p>
+
+          {/* Equipment hint - hidden on mobile */}
+          <p class="hidden md:block text-xs text-text-muted/70 italic mt-auto pt-2">{style.equipment}</p>
+
+          {/* Selected border overlay */}
+          <div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+        </label>
+      ))}
+    </div>
+
+    <!-- Second row: 3 additional styles -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      {bottomRow.map((style) => (
+        <label
+          class="style-card group relative flex flex-col p-4 bg-surface border-2 border-border rounded-xl cursor-pointer transition-all hover:border-primary hover:shadow-md focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+          data-style={style.id}
+        >
+          <input
+            type="radio"
+            name="pizzaStyle"
+            value={style.id}
+            class="sr-only peer"
+          />
+
+          {/* Selected indicator */}
+          <div class="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-white bg-border peer-checked:border-white peer-checked:bg-primary shadow-sm transition-colors flex items-center justify-center">
+            <svg class="checkmark-icon w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </div>
+
+          {/* Style icon and name */}
+          <div class="flex items-center gap-2 mb-2">
+            <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+              <PizzaStyleIcon name={style.icon} class="w-4 h-4 text-primary" />
+            </div>
+            <span class="font-heading font-semibold text-sm text-text leading-tight break-words">{style.name}</span>
+          </div>
+
+          {/* Description */}
+          <p class="text-xs text-text-muted leading-relaxed flex-grow">{style.description}</p>
+
+          {/* Equipment hint - hidden on mobile */}
+          <p class="hidden md:block text-xs text-text-muted/70 italic mt-auto pt-2">{style.equipment}</p>
+
+          {/* Selected border overlay */}
+          <div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+        </label>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Card selected state - orange border and subtle background tint */
+  .style-card:has(input:checked) {
+    border-color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface));
+  }
+
+  /* Checkmark visibility when card is selected */
+  .style-card:has(input:checked) .checkmark-icon {
+    opacity: 1;
+  }
+
+  /* Ensure cards contain their content and don't overflow */
+  .style-card {
+    align-self: stretch;
+    min-height: 100px;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Responsive minimum heights - taller on desktop to fit equipment hint */
+  @media (min-width: 768px) {
+    .style-card {
+      min-height: 160px;
+    }
+  }
+</style>

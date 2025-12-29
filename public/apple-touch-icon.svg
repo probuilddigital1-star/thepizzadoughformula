@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#F4F1DE"/>
+
+  <!-- Pizza crust -->
+  <circle cx="90" cy="90" r="70" fill="#E07A5F"/>
+  <!-- Pizza cheese base -->
+  <circle cx="90" cy="90" r="58" fill="#F4F1DE"/>
+  <!-- Toppings (herbs/basil) -->
+  <circle cx="63" cy="63" r="11" fill="#81B29A"/>
+  <circle cx="108" cy="72" r="9" fill="#81B29A"/>
+  <circle cx="81" cy="99" r="13" fill="#81B29A"/>
+  <circle cx="117" cy="108" r="7" fill="#81B29A"/>
+  <!-- Toppings (olives) -->
+  <circle cx="54" cy="99" r="9" fill="#3D405B"/>
+  <circle cx="99" cy="54" r="7" fill="#3D405B"/>
+  <circle cx="126" cy="81" r="5" fill="#3D405B"/>
+</svg>

@@ -1,0 +1,108 @@
+---
+/**
+ * BasicInputs Component
+ * Number of dough balls and weight per ball inputs
+ */
+---
+
+<div class="basic-inputs bg-surface rounded-xl p-6 border border-border">
+  <h3 class="font-heading text-xl font-semibold text-text mb-4">
+    Dough Quantity
+  </h3>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    {/* Number of dough balls */}
+    <div class="input-group">
+      <label for="numBalls" class="block text-sm font-medium text-text mb-2">
+        Number of Dough Balls
+      </label>
+      <div class="flex items-center gap-2">
+        <input
+          type="number"
+          id="numBalls"
+          name="numBalls"
+          min="1"
+          max="100"
+          value="4"
+          class="w-24 px-4 py-3 bg-cream border border-border rounded-lg text-text text-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          aria-describedby="numBalls-hint"
+        />
+        <span class="text-text-muted text-sm">pizzas</span>
+      </div>
+      <p id="numBalls-hint" class="mt-1 text-xs text-text-muted">
+        How many individual dough balls to make
+      </p>
+    </div>
+
+    {/* Weight per ball */}
+    <div class="input-group">
+      <label for="ballWeight" class="block text-sm font-medium text-text mb-2">
+        Weight per Ball
+      </label>
+      <div class="flex items-center gap-2">
+        <input
+          type="number"
+          id="ballWeight"
+          name="ballWeight"
+          min="100"
+          max="800"
+          step="10"
+          value="250"
+          class="w-24 px-4 py-3 bg-cream border border-border rounded-lg text-text text-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          aria-describedby="ballWeight-hint"
+        />
+        <span class="text-text-muted text-sm ball-weight-unit">g</span>
+      </div>
+      <p id="ballWeight-hint" class="mt-1 text-xs text-text-muted">
+        Size of each dough ball (style-dependent)
+      </p>
+    </div>
+  </div>
+
+  {/* Total dough weight display */}
+  <div class="mt-6 p-4 bg-cream rounded-lg border border-border">
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium text-text-muted">Total Dough Weight:</span>
+      <span id="totalDoughWeight" class="text-xl font-bold text-primary">1000g</span>
+    </div>
+  </div>
+
+  {/* Quick presets */}
+  <div class="mt-4">
+    <span class="text-xs text-text-muted block mb-2">Quick presets:</span>
+    <div class="flex flex-wrap gap-2">
+      <button
+        type="button"
+        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
+        data-balls="2"
+        data-weight="250"
+      >
+        2 pizzas
+      </button>
+      <button
+        type="button"
+        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
+        data-balls="4"
+        data-weight="250"
+      >
+        4 pizzas
+      </button>
+      <button
+        type="button"
+        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
+        data-balls="6"
+        data-weight="280"
+      >
+        6 pizzas
+      </button>
+      <button
+        type="button"
+        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
+        data-balls="1"
+        data-weight="400"
+      >
+        1 Detroit pan
+      </button>
+    </div>
+  </div>
+</div>

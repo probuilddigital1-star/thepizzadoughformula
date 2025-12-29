@@ -1,0 +1,109 @@
+---
+/**
+ * FAQ Accordion Component
+ * Accessible accordion with Schema.org FAQPage markup
+ */
+import faqData from '../../data/faq.json';
+
+const { faqs } = faqData;
+---
+
+<section class="faq-section py-12">
+  <div class="max-w-3xl mx-auto px-4">
+    <h2 class="font-heading text-3xl font-bold text-text text-center mb-8">
+      Frequently Asked Questions
+    </h2>
+
+    <div class="space-y-4">
+      {faqs.map((faq, index) => (
+        <div class="faq-item border border-border rounded-lg overflow-hidden bg-surface">
+          <button
+            type="button"
+            id={`faq-trigger-${index}`}
+            class="faq-trigger w-full flex items-center justify-between p-4 text-left hover:bg-cream/50 transition-colors"
+            aria-expanded="false"
+            aria-controls={`faq-content-${index}`}
+          >
+            <span class="font-medium text-text pr-4">{faq.question}</span>
+            <svg
+              class="faq-icon w-5 h-5 text-text-muted flex-shrink-0 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            id={`faq-content-${index}`}
+            class="faq-content hidden"
+            role="region"
+            aria-labelledby={`faq-trigger-${index}`}
+          >
+            <div class="px-4 pb-4 text-text-muted leading-relaxed">
+              {faq.answer}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* Schema.org FAQPage markup */}
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+})} />
+
+<script>
+  // Accordion functionality
+  const faqItems = document.querySelectorAll('.faq-item');
+
+  faqItems.forEach(item => {
+    const trigger = item.querySelector('.faq-trigger');
+    const content = item.querySelector('.faq-content');
+    const icon = item.querySelector('.faq-icon');
+
+    trigger?.addEventListener('click', () => {
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+
+      // Close all other items
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item) {
+          const otherTrigger = otherItem.querySelector('.faq-trigger');
+          const otherContent = otherItem.querySelector('.faq-content');
+          const otherIcon = otherItem.querySelector('.faq-icon');
+
+          otherTrigger?.setAttribute('aria-expanded', 'false');
+          otherContent?.classList.add('hidden');
+          otherIcon?.classList.remove('rotate-180');
+        }
+      });
+
+      // Toggle current item
+      trigger.setAttribute('aria-expanded', (!isExpanded).toString());
+      content?.classList.toggle('hidden');
+      icon?.classList.toggle('rotate-180');
+    });
+  });
+</script>
+
+<style>
+  .faq-trigger[aria-expanded="true"] + .faq-content {
+    display: block;
+  }
+
+  .faq-trigger[aria-expanded="true"] .faq-icon {
+    transform: rotate(180deg);
+  }
+</style>

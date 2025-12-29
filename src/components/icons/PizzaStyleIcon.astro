@@ -1,0 +1,62 @@
+---
+/**
+ * PizzaStyleIcon Component
+ * SVG icons for pizza style cards - consistent cross-platform rendering
+ */
+interface Props {
+  name: string;
+  class?: string;
+}
+
+const { name, class: className = '' } = Astro.props;
+
+// SVG path data for each pizza style icon
+const icons: Record<string, { viewBox: string; path: string }> = {
+  neapolitan: {
+    viewBox: '0 0 24 24',
+    // Flame icon representing wood-fired oven
+    path: '<path fill="currentColor" d="M12 23c-3.9 0-7-3.1-7-7 0-2.8 1.6-5.2 4-6.4V9c0-3.9 3.1-7 7-7 0 2.8-1.2 5.4-3.2 7.2C11.4 10.4 10 12.1 10 14c0 1.1.9 2 2 2s2-.9 2-2c0-1.2.5-2.3 1.3-3.2 1.1 1.4 1.7 3.2 1.7 5.2 0 3.9-3.1 7-7 7zm0-11c-.6 0-1.2.1-1.7.3.5.9.8 1.9.8 3 0 1.1-.4 2.1-1 2.9.6.5 1.2.8 1.9.8 1.7 0 3-1.3 3-3 0-2.2-1.3-4-3-4z"/>'
+  },
+  newYork: {
+    viewBox: '0 0 24 24',
+    // Pizza slice icon
+    path: '<path fill="currentColor" d="M12 2C8.43 2 5.23 3.54 3 6.04L12 22l9-15.96C18.77 3.54 15.57 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-3 6c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm5 2c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>'
+  },
+  detroit: {
+    viewBox: '0 0 24 24',
+    // Rectangle pan icon
+    path: '<path fill="currentColor" d="M4 6h16c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2zm0 2v8h16V8H4zm2 2h2v2H6v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"/>'
+  },
+  thinCrispy: {
+    viewBox: '0 0 24 24',
+    // Thin crispy disc icon
+    path: '<path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>'
+  },
+  poolishBiga: {
+    viewBox: '0 0 24 24',
+    // Clock/time icon for long fermentation
+    path: '<path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/>'
+  },
+  emergency: {
+    viewBox: '0 0 24 24',
+    // Lightning bolt for quick/emergency
+    path: '<path fill="currentColor" d="M7 2v11h3v9l7-12h-4l4-8z"/>'
+  },
+  custom: {
+    viewBox: '0 0 24 24',
+    // Settings/sliders icon
+    path: '<path fill="currentColor" d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>'
+  }
+};
+
+const icon = icons[name] || icons.custom;
+---
+
+<svg
+  class:list={["flex-shrink-0", className]}
+  viewBox={icon.viewBox}
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  set:html={icon.path}
+/>

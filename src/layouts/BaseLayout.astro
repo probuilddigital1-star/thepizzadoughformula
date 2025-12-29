@@ -1,0 +1,206 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  type?: 'website' | 'article';
+  noIndex?: boolean;
+  // Article-specific props for SEO
+  datePublished?: string;
+  dateModified?: string;
+  // Schema type override
+  schemaType?: 'WebApplication' | 'Article' | 'HowTo' | 'none';
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.href,
+  ogImage = '/og-image.svg',
+  type = 'website',
+  noIndex = false,
+  datePublished = '2025-01-01',
+  dateModified = new Date().toISOString().split('T')[0],
+  schemaType = 'WebApplication'
+} = Astro.props;
+
+import CookieConsent from '../components/global/CookieConsent.astro';
+
+const siteName = 'The Pizza Dough Formula';
+const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://thepizzadoughformula.com';
+const GA_ID = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
+
+// Organization schema data
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": siteName,
+  "url": siteUrl,
+  "logo": `${siteUrl}/favicon.svg`,
+  "description": "Free pizza dough calculator using baker's percentages for perfect homemade pizza.",
+  "foundingDate": "2025",
+  "sameAs": []
+};
+
+// Article schema for content pages
+const articleSchema = schemaType === 'Article' ? {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "url": canonical,
+  "datePublished": datePublished,
+  "dateModified": dateModified,
+  "author": {
+    "@type": "Organization",
+    "name": siteName,
+    "url": siteUrl
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": siteName,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteUrl}/favicon.svg`
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonical
+  }
+} : null;
+
+// WebApplication schema (homepage)
+const webAppSchema = schemaType === 'WebApplication' ? {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "The Pizza Dough Formula Calculator",
+  "url": siteUrl,
+  "description": "Free pizza dough calculator using baker's percentages. Calculate perfect dough for Neapolitan, New York, Detroit, and more pizza styles.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Style-specific dough calculations",
+    "Baker's percentage conversions",
+    "Pre-ferment (poolish/biga) support",
+    "Regional humidity adjustments",
+    "Printable recipe cards",
+    "Unit conversion (grams/ounces)",
+    "Shareable recipe URLs"
+  ]
+} : null;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+    <meta property="og:site_name" content={siteName} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonical} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.svg" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/src/styles/global.css" />
+
+    <!-- Schema.org Organization (always present) -->
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+
+    <!-- Schema.org WebApplication (homepage only) -->
+    {webAppSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
+    )}
+
+    <!-- Schema.org Article (content pages) -->
+    {articleSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    )}
+
+    <!-- Google Analytics 4 - Consent-based loading -->
+    {GA_ID && (
+      <script define:vars={{ GA_ID }}>
+        // GA will only load after cookie consent is accepted
+        window.GA_MEASUREMENT_ID = GA_ID;
+
+        function loadGoogleAnalytics() {
+          if (window.gaLoaded) return;
+          window.gaLoaded = true;
+
+          // Load gtag script
+          const script = document.createElement('script');
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+          script.async = true;
+          document.head.appendChild(script);
+
+          // Initialize gtag
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', GA_ID);
+        }
+
+        // Check if consent was already given (on page load)
+        if (localStorage.getItem('cookieConsent') === 'accepted') {
+          loadGoogleAnalytics();
+        }
+
+        // Listen for consent event
+        window.addEventListener('cookieConsentAccepted', loadGoogleAnalytics);
+      </script>
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <!-- Skip link for keyboard navigation -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:outline-none"
+    >
+      Skip to main content
+    </a>
+    <slot />
+    <CookieConsent />
+  </body>
+</html>

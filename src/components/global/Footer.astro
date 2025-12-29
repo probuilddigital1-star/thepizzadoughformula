@@ -1,0 +1,74 @@
+---
+const currentYear = new Date().getFullYear();
+
+const footerLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/pizza-styles', label: 'Pizza Styles' },
+  { href: '/bakers-percentages', label: "Baker's Percentages" },
+  { href: '/affiliate-disclosure', label: 'Affiliate Disclosure' },
+  { href: '/privacy', label: 'Privacy Policy' }
+];
+---
+
+<footer class="bg-charcoal text-cream mt-auto no-print">
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Brand -->
+      <div>
+        <a href="/" class="flex items-center gap-2 mb-4">
+          <span class="text-2xl" aria-hidden="true">🍕</span>
+          <span class="font-heading text-xl font-bold text-cream">
+            The Pizza Dough Formula
+          </span>
+        </a>
+        <p class="text-cream/70 text-sm leading-relaxed">
+          Free pizza dough calculator using baker's percentages. Perfect dough for
+          Neapolitan, New York, Detroit, and more styles.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="font-heading text-lg font-semibold mb-4 text-cream">Quick Links</h3>
+        <nav aria-label="Footer navigation">
+          <ul class="space-y-2">
+            {footerLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-cream/70 text-sm hover:text-burnt-orange transition-colors"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Newsletter Teaser -->
+      <div>
+        <h3 class="font-heading text-lg font-semibold mb-4 text-cream">Stay in the Loop</h3>
+        <p class="text-cream/70 text-sm mb-4">
+          Get pizza tips, new features, and recipe ideas delivered to your inbox.
+        </p>
+        <a
+          href="/#email-capture"
+          class="inline-block bg-burnt-orange text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-burnt-orange-dark transition-colors"
+        >
+          Subscribe
+        </a>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="border-t border-cream/20 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-cream/50 text-sm">
+        &copy; {currentYear} The Pizza Dough Formula. All rights reserved.
+      </p>
+      <p class="text-cream/50 text-sm">
+        Made with 🍕 for pizza lovers everywhere
+      </p>
+    </div>
+  </div>
+</footer>

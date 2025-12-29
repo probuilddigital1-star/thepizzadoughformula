@@ -1,0 +1,119 @@
+{
+  "categories": {
+    "ovens": {
+      "name": "Pizza Ovens",
+      "description": "High-heat ovens for authentic results"
+    },
+    "steels": {
+      "name": "Pizza Steels & Stones",
+      "description": "Essential for crispy crusts"
+    },
+    "scales": {
+      "name": "Digital Scales",
+      "description": "Precision is key to perfect dough"
+    },
+    "flour": {
+      "name": "Flour",
+      "description": "The foundation of great pizza"
+    },
+    "tools": {
+      "name": "Pizza Tools",
+      "description": "Peels, cutters, and more"
+    }
+  },
+  "products": [
+    {
+      "id": "pizza-steel",
+      "name": "Pizza Steel",
+      "category": "steels",
+      "description": "Conducts heat 20x better than stone for crispier crusts and better leoparding",
+      "priceRange": "$70-120",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+steel+baking",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork", "thinCrispy"],
+      "featured": true
+    },
+    {
+      "id": "kitchen-scale",
+      "name": "Digital Kitchen Scale",
+      "category": "scales",
+      "description": "Essential for baker's percentages - accurate to 1g for perfect dough every time",
+      "priceRange": "$15-30",
+      "affiliateUrl": "https://www.amazon.com/s?k=digital+kitchen+scale+grams",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": true
+    },
+    {
+      "id": "caputo-flour",
+      "name": "Caputo 00 Flour",
+      "category": "flour",
+      "description": "The gold standard for Neapolitan - 12.5% protein, finely milled for soft, airy crust",
+      "priceRange": "$8-15",
+      "affiliateUrl": "https://www.amazon.com/s?k=caputo+00+flour+pizza",
+      "image": null,
+      "forStyles": ["neapolitan", "poolishBiga"],
+      "featured": true
+    },
+    {
+      "id": "bread-flour",
+      "name": "King Arthur Bread Flour",
+      "category": "flour",
+      "description": "High-protein (12.7%) flour that gives NY-style its signature chewy texture",
+      "priceRange": "$6-10",
+      "affiliateUrl": "https://www.amazon.com/s?k=king+arthur+bread+flour",
+      "image": null,
+      "forStyles": ["newYork", "detroit"],
+      "featured": false
+    },
+    {
+      "id": "pizza-peel",
+      "name": "Pizza Peel",
+      "category": "tools",
+      "description": "Launch pizzas into your oven and retrieve them safely - wood or metal",
+      "priceRange": "$20-50",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+peel+wood",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork"],
+      "featured": false
+    },
+    {
+      "id": "detroit-pan",
+      "name": "Detroit-Style Pan",
+      "category": "tools",
+      "description": "Blue steel pan creates the signature crispy, caramelized cheese edges (frico)",
+      "priceRange": "$30-60",
+      "affiliateUrl": "https://www.amazon.com/s?k=detroit+style+pizza+pan",
+      "image": null,
+      "forStyles": ["detroit"],
+      "featured": true
+    },
+    {
+      "id": "thermometer",
+      "name": "Instant-Read Thermometer",
+      "category": "tools",
+      "description": "Check water temperature for optimal yeast activation (cold vs warm ferment)",
+      "priceRange": "$15-100",
+      "affiliateUrl": "https://www.amazon.com/s?k=instant+read+thermometer+kitchen",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    },
+    {
+      "id": "dough-container",
+      "name": "Dough Proofing Container",
+      "category": "tools",
+      "description": "Clear containers with lids - see your dough rise and know when it's ready",
+      "priceRange": "$10-25",
+      "affiliateUrl": "https://www.amazon.com/s?k=dough+proofing+container",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    }
+  ],
+  "_meta": {
+    "note": "TODO: Replace Amazon search URLs with affiliate links once Associates account is approved",
+    "lastUpdated": "2025-12-28",
+    "affiliateDisclaimer": "We may earn a commission from purchases made through links on this site."
+  }
+}

@@ -1,0 +1,77 @@
+---
+/**
+ * Affiliate Disclosure Page
+ * FTC-compliant affiliate disclosure
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+---
+
+<BaseLayout
+  title="Affiliate Disclosure"
+  description="Affiliate disclosure for The Pizza Dough Formula. Learn how we earn from affiliate links while keeping our recommendations honest."
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <h1 class="font-heading text-4xl font-bold text-text mb-6">
+        Affiliate Disclosure
+      </h1>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          The Pizza Dough Formula is a participant in affiliate programs, including the Amazon
+          Services LLC Associates Program, designed to provide a means for sites to earn
+          advertising fees by advertising and linking to products.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What This Means</h2>
+        <p>
+          When we recommend products like pizza ovens, baking steels, scales, or ingredients,
+          some of these links are affiliate links. If you click on an affiliate link and make
+          a purchase, we may receive a small commission at no additional cost to you.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Our Promise</h2>
+        <p>
+          We only recommend products we genuinely believe are useful for home pizza makers.
+          Our recommendations are based on quality, value, and relevance to your pizza-making
+          journey — not commission rates.
+        </p>
+        <p>
+          You are never obligated to purchase through our links. We provide them as a convenience
+          and as a way to support the free tools we build.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Types of Affiliate Programs</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>Amazon Associates</strong> - Kitchen equipment, ingredients, books</li>
+          <li><strong>Manufacturer Programs</strong> - Pizza ovens (Ooni, Gozney, etc.)</li>
+          <li><strong>Kitchen Specialty Retailers</strong> - Professional baking supplies</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">How Affiliate Links Are Identified</h2>
+        <p>
+          Affiliate links on this site may be marked with "(affiliate link)" or similar
+          disclosures near the link. Product recommendation sections may include a disclosure
+          at the top of the section.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Questions?</h2>
+        <p>
+          If you have any questions about our affiliate relationships or product recommendations,
+          please don't hesitate to contact us.
+        </p>
+
+        <p class="text-sm text-text-muted/70 mt-8 pt-8 border-t border-border">
+          This disclosure is made in accordance with the Federal Trade Commission's 16 CFR Part 255:
+          "Guides Concerning the Use of Endorsements and Testimonials in Advertising."
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

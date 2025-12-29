@@ -1,0 +1,123 @@
+---
+/**
+ * About Page
+ * Story behind The Pizza Dough Formula
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'About' }
+];
+---
+
+<BaseLayout
+  title="About"
+  description="Learn about The Pizza Dough Formula - why we built this free pizza dough calculator and who it's for."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2025-12-28"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          About The Pizza Dough Formula
+        </h1>
+        <p class="text-sm text-text-muted">
+          Last updated: December 28, 2025
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          The Pizza Dough Formula is a free calculator that uses baker's percentages to give you precise,
+          style-specific dough recipes for Neapolitan, New York, Detroit, and more.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          Great pizza starts with great dough. But getting the ratios right can be confusing,
+          especially when every recipe uses different measurements and methods.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Why We Built This</h2>
+        <p>
+          We built The Pizza Dough Formula to solve a simple problem: making it easy for
+          anyone to calculate the perfect pizza dough recipe. Whether you're making your
+          first pizza or your thousandth, precise measurements make the difference between
+          good dough and great dough.
+        </p>
+        <p>
+          Unlike other calculators that give you generic "pizza dough" formulas, we provide
+          style-specific presets. Neapolitan dough is different from New York dough, which is
+          different from Detroit dough. Each has optimal hydration levels, ingredient ratios,
+          and techniques that make it unique.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Baker's Percentages</h2>
+        <p>
+          We use baker's percentages because they're the language of professional bakers.
+          Once you understand that all ingredients are expressed as a percentage of flour
+          weight, scaling recipes becomes trivial and comparing formulas becomes intuitive.
+        </p>
+        <p>
+          Our calculator shows you both the weights AND the percentages, so you learn as you go.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Who It's For</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>Home pizza enthusiasts</strong> who want consistent, repeatable results</li>
+          <li><strong>Ooni and Roccbox owners</strong> looking for Neapolitan-style dough</li>
+          <li><strong>Beginner bakers</strong> learning about hydration and fermentation</li>
+          <li><strong>Advanced bakers</strong> experimenting with pre-ferments and custom formulas</li>
+          <li><strong>Anyone</strong> who's tired of guessing and wants precision</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Features</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li>6 pizza style presets with optimized defaults</li>
+          <li>Pre-ferment support (poolish and biga)</li>
+          <li>Humidity adjustment for sticky-dough days</li>
+          <li>Unit toggle (grams and ounces)</li>
+          <li>Volume-to-weight converter for American recipes</li>
+          <li>Shareable recipe URLs</li>
+          <li>Print-friendly recipe cards</li>
+          <li>100% free, no account required</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Questions?</h2>
+        <p>
+          Have feedback or suggestions? We'd love to hear from you. Check out our
+          <a href="/" class="text-primary hover:text-primary-hover underline">FAQ section</a>
+          for common questions, or reach out via the contact form below.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Start Calculating
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

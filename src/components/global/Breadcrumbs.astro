@@ -1,0 +1,58 @@
+---
+/**
+ * Breadcrumbs Component
+ * Provides structured navigation with Schema.org BreadcrumbList markup
+ */
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://thepizzadoughformula.com';
+
+// Generate BreadcrumbList schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": items.map((item, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": item.label,
+    ...(item.href && { "item": item.href.startsWith('http') ? item.href : `${siteUrl}${item.href}` })
+  }))
+};
+---
+
+<nav aria-label="Breadcrumb" class="text-sm text-text-muted mb-6">
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <ol class="flex flex-wrap items-center gap-1">
+    {items.map((item, index) => (
+      <li class="flex items-center">
+        {index > 0 && (
+          <svg class="w-4 h-4 mx-1 text-text-muted/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
+        {item.href ? (
+          <a
+            href={item.href}
+            class="hover:text-primary transition-colors"
+          >
+            {item.label}
+          </a>
+        ) : (
+          <span class="text-text font-medium" aria-current="page">
+            {item.label}
+          </span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

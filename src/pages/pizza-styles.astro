@@ -1,0 +1,133 @@
+---
+/**
+ * Pizza Styles Page
+ * Deep dive on each pizza style
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+import PizzaStyleIcon from '../components/icons/PizzaStyleIcon.astro';
+import { PIZZA_STYLES, getAllStyles } from '../scripts/calculator/presets.js';
+
+const styles = getAllStyles().filter(s => s.id !== 'custom');
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Pizza Styles Guide' }
+];
+---
+
+<BaseLayout
+  title="Pizza Styles Guide"
+  description="Learn about different pizza styles - Neapolitan, New York, Detroit, Thin & Crispy, and more. Discover the history, techniques, and perfect dough formulas for each style."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2025-12-28"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-4xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3 text-center">
+          Pizza Styles Guide
+        </h1>
+        <p class="text-sm text-text-muted text-center mb-4">
+          Last updated: December 28, 2025 · 8 min read
+        </p>
+        <p class="text-xl text-text-muted text-center max-w-2xl mx-auto">
+          Every pizza style has its own character, history, and technique. Learn what makes each one unique.
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-12 max-w-2xl mx-auto">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          Each pizza style has optimal hydration, bake temperature, and dough weight. Neapolitan uses 60-65% hydration
+          at 800°F+, while Detroit uses 70%+ hydration baked in an oiled pan at 500°F. Use our calculator to get the exact
+          measurements for your chosen style.
+        </p>
+      </div>
+
+      <div class="space-y-12">
+        {styles.map((style) => (
+          <article class="bg-surface rounded-xl border border-border overflow-hidden">
+            <div class="p-6 md:p-8">
+              <div class="flex items-start gap-4 mb-4">
+                <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-primary/10 rounded-xl">
+                  <PizzaStyleIcon name={style.icon} class="w-7 h-7 text-primary" />
+                </div>
+                <div>
+                  <h2 class="font-heading text-2xl font-bold text-text">{style.name}</h2>
+                  <p class="text-text-muted text-sm">{style.equipment}</p>
+                </div>
+              </div>
+
+              <p class="text-lg text-text-muted mb-6">
+                {style.description}
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div class="bg-cream/50 rounded-lg p-4">
+                  <h3 class="font-heading font-semibold text-text mb-3">Key Specs</h3>
+                  <dl class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <dt class="text-text-muted">Hydration</dt>
+                      <dd class="font-mono text-text">{Math.round(style.defaults.hydration * 100)}%</dd>
+                    </div>
+                    <div class="flex justify-between">
+                      <dt class="text-text-muted">Ball Weight</dt>
+                      <dd class="font-mono text-text">{style.defaults.ballWeight}g</dd>
+                    </div>
+                    <div class="flex justify-between">
+                      <dt class="text-text-muted">Bake Temp</dt>
+                      <dd class="text-text text-right">{style.bakeTemp}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                      <dt class="text-text-muted">Bake Time</dt>
+                      <dd class="text-text">{style.bakeTime}</dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <div class="bg-olive/10 rounded-lg p-4">
+                  <h3 class="font-heading font-semibold text-text mb-2">Recommended Flour</h3>
+                  <p class="text-text-muted text-sm mb-4">{style.flourRecommendation}</p>
+
+                  <h3 class="font-heading font-semibold text-text mb-2">Pro Tips</h3>
+                  <ul class="text-sm text-text-muted space-y-1">
+                    {style.tips.slice(0, 3).map(tip => (
+                      <li class="flex items-start gap-2">
+                        <span class="text-olive flex-shrink-0">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-6 border-t border-border">
+                <a
+                  href={`/?s=${style.id}`}
+                  class="inline-flex items-center gap-2 text-primary hover:text-primary-hover font-medium"
+                >
+                  Calculate {style.name} Dough
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,109 @@
+---
+/**
+ * Style Comparison Table Component
+ * Responsive table comparing pizza styles
+ */
+const styles = [
+  {
+    name: 'Neapolitan',
+    hydration: '60-65%',
+    flour: '00 Flour',
+    temp: '800-900°F',
+    time: '60-90s',
+    bestFor: 'Wood-fired/Ooni ovens'
+  },
+  {
+    name: 'New York',
+    hydration: '60-65%',
+    flour: 'Bread Flour',
+    temp: '500-550°F',
+    time: '8-12 min',
+    bestFor: 'Home oven with steel'
+  },
+  {
+    name: 'Detroit',
+    hydration: '70-75%',
+    flour: 'Bread Flour',
+    temp: '450-500°F',
+    time: '12-15 min',
+    bestFor: 'Detroit-style pan'
+  },
+  {
+    name: 'Thin & Crispy',
+    hydration: '45-55%',
+    flour: 'All-Purpose',
+    temp: '450-500°F',
+    time: '8-10 min',
+    bestFor: 'Pizza screen/pan'
+  },
+  {
+    name: 'Poolish/Biga',
+    hydration: '65-70%',
+    flour: '00 or Bread',
+    temp: 'Varies',
+    time: 'Varies',
+    bestFor: 'Advanced flavor'
+  }
+];
+---
+
+<section class="comparison-section py-12 bg-cream/30">
+  <div class="max-w-5xl mx-auto px-4">
+    <h2 class="font-heading text-3xl font-bold text-text text-center mb-4">
+      Pizza Style Comparison
+    </h2>
+    <p class="text-text-muted text-center mb-8 max-w-2xl mx-auto">
+      Compare the key characteristics of different pizza styles to find your perfect match.
+    </p>
+
+    {/* Desktop table */}
+    <div class="hidden md:block overflow-x-auto">
+      <table class="w-full bg-surface rounded-xl border border-border overflow-hidden">
+        <caption class="sr-only">Comparison of pizza styles showing hydration, flour type, temperature, bake time, and recommended use</caption>
+        <thead>
+          <tr class="bg-charcoal text-cream">
+            <th scope="col" class="px-4 py-3 text-left font-heading font-semibold">Style</th>
+            <th scope="col" class="px-4 py-3 text-left font-heading font-semibold">Hydration</th>
+            <th scope="col" class="px-4 py-3 text-left font-heading font-semibold">Flour</th>
+            <th scope="col" class="px-4 py-3 text-left font-heading font-semibold">Temp</th>
+            <th scope="col" class="px-4 py-3 text-left font-heading font-semibold">Bake Time</th>
+            <th scope="col" class="px-4 py-3 text-left font-heading font-semibold">Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          {styles.map((style, index) => (
+            <tr class:list={['border-t border-border', { 'bg-cream/30': index % 2 === 1 }]}>
+              <td class="px-4 py-3 font-medium text-text">{style.name}</td>
+              <td class="px-4 py-3 text-text-muted font-mono">{style.hydration}</td>
+              <td class="px-4 py-3 text-text-muted">{style.flour}</td>
+              <td class="px-4 py-3 text-text-muted font-mono">{style.temp}</td>
+              <td class="px-4 py-3 text-text-muted">{style.time}</td>
+              <td class="px-4 py-3 text-text-muted">{style.bestFor}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Mobile cards */}
+    <div class="md:hidden space-y-4">
+      {styles.map((style) => (
+        <div class="bg-surface rounded-xl border border-border p-4">
+          <h3 class="font-heading font-semibold text-lg text-text mb-3">{style.name}</h3>
+          <dl class="grid grid-cols-2 gap-2 text-sm">
+            <dt class="text-text-muted">Hydration</dt>
+            <dd class="font-mono text-text">{style.hydration}</dd>
+            <dt class="text-text-muted">Flour</dt>
+            <dd class="text-text">{style.flour}</dd>
+            <dt class="text-text-muted">Temperature</dt>
+            <dd class="font-mono text-text">{style.temp}</dd>
+            <dt class="text-text-muted">Bake Time</dt>
+            <dd class="text-text">{style.time}</dd>
+            <dt class="text-text-muted col-span-2 mt-2">Best For</dt>
+            <dd class="text-text col-span-2">{style.bestFor}</dd>
+          </dl>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

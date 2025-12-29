@@ -1,0 +1,863 @@
+---
+/**
+ * Homepage - The Pizza Dough Formula Calculator
+ * Main calculator page with all functionality
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import StyleSelector from '../components/calculator/StyleSelector.astro';
+import BasicInputs from '../components/calculator/BasicInputs.astro';
+import AdvancedOptions from '../components/calculator/AdvancedOptions.astro';
+import RecipeOutput from '../components/calculator/RecipeOutput.astro';
+import VolumeConverter from '../components/features/VolumeConverter.astro';
+import EmergencyTimer from '../components/features/EmergencyTimer.astro';
+import FAQAccordion from '../components/content/FAQAccordion.astro';
+import StyleComparisonTable from '../components/content/StyleComparisonTable.astro';
+import ProductRecommendations from '../components/monetization/ProductRecommendations.astro';
+---
+
+<BaseLayout
+  title="The Pizza Dough Formula"
+  description="Free pizza dough calculator using baker's percentages. Calculate perfect dough for Neapolitan, New York, Detroit, and more pizza styles. Includes pre-ferment support and humidity adjustments."
+>
+  <Header />
+
+  <main id="main-content" class="flex-grow">
+    {/* Hero Section */}
+    <section class="bg-gradient-to-b from-cream to-surface py-12 md:py-16">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <h1 class="font-heading text-4xl md:text-5xl font-bold text-text mb-4">
+          The Pizza Dough
+          <span class="text-primary block md:inline"> Formula</span>
+        </h1>
+        <p class="text-lg text-text-muted max-w-2xl mx-auto mb-8">
+          Perfect pizza dough starts with precise measurements. Calculate exact ingredient ratios
+          for Neapolitan, New York, Detroit, and more styles using baker's percentages.
+        </p>
+        <a
+          href="#calculator"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Start Calculating
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    {/* Calculator Section */}
+    <section id="calculator" class="py-12 md:py-16">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="grid lg:grid-cols-2 gap-8">
+          {/* Left Column: Inputs */}
+          <div class="space-y-6">
+            <StyleSelector />
+            <BasicInputs />
+            <AdvancedOptions />
+          </div>
+
+          {/* Right Column: Output */}
+          <div class="lg:sticky lg:top-24 lg:self-start">
+            <RecipeOutput />
+          </div>
+        </div>
+
+        {/* Post-Calculator Email Capture - Peak engagement moment */}
+        <div id="recipe-email-capture" class="mt-10 max-w-xl mx-auto">
+          <div class="bg-olive/10 border border-olive/30 rounded-xl p-6 text-center">
+            <h3 class="font-heading text-lg font-semibold text-text mb-2">
+              Level Up Your <span id="emailStyleName" class="text-primary">Neapolitan</span> Game
+            </h3>
+            <p class="text-sm text-text-muted mb-4">
+              Get weekly tips, troubleshooting guides, and pro techniques for perfect pizza.
+            </p>
+            <form id="recipe-email-form" class="space-y-3">
+              <div class="flex flex-col sm:flex-row gap-2">
+                <div class="flex-1">
+                  <label for="recipe-email" class="sr-only">Email address</label>
+                  <input
+                    type="email"
+                    id="recipe-email"
+                    name="recipe-email"
+                    placeholder="your@email.com"
+                    required
+                    autocomplete="email"
+                    class="w-full px-4 py-2.5 bg-surface border border-border rounded-lg text-text placeholder-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors whitespace-nowrap text-sm"
+                >
+                  Get Pizza Tips
+                </button>
+              </div>
+              <label class="flex items-start gap-2 text-left">
+                <input
+                  type="checkbox"
+                  name="recipe-consent"
+                  required
+                  class="mt-0.5 w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                />
+                <span class="text-xs text-text-muted">
+                  I agree to receive pizza tips and updates.
+                  <a href="/privacy" class="underline hover:text-primary">Privacy Policy</a>
+                </span>
+              </label>
+            </form>
+            <p id="recipe-email-success" class="hidden mt-3 text-olive font-medium text-sm">
+              You're in! Check your inbox soon.
+            </p>
+            <p id="recipe-email-error" class="hidden mt-3 text-red-500 font-medium text-sm">
+              Something went wrong. Please try again.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Share CTA Section */}
+    <section class="py-10 bg-primary/10 border-y border-primary/20">
+      <div class="max-w-3xl mx-auto px-4 text-center">
+        <h2 class="font-heading text-xl md:text-2xl font-bold text-text mb-3">
+          Planning a Pizza Night with Friends?
+        </h2>
+        <p class="text-text-muted mb-5">
+          Share your recipe link so everyone can see the exact measurements. Perfect for pizza parties!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+          <button
+            id="shareCTA"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+            aria-label="Copy recipe link to clipboard"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            Copy Recipe Link
+          </button>
+          <span class="text-text-muted text-sm">or share on</span>
+          <div class="flex gap-2">
+            <a
+              id="shareTwitter"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-2.5 bg-surface border border-border rounded-lg hover:border-primary transition-colors"
+              aria-label="Share on X (Twitter)"
+            >
+              <svg class="w-5 h-5 text-text" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+            <a
+              id="shareFacebook"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-2.5 bg-surface border border-border rounded-lg hover:border-primary transition-colors"
+              aria-label="Share on Facebook"
+            >
+              <svg class="w-5 h-5 text-text" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a
+              id="shareReddit"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-2.5 bg-surface border border-border rounded-lg hover:border-primary transition-colors"
+              aria-label="Share on Reddit"
+            >
+              <svg class="w-5 h-5 text-text" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Equipment Recommendations Section */}
+    <section class="py-12 md:py-16 bg-surface">
+      <div class="max-w-4xl mx-auto px-4">
+        <div class="text-center mb-8">
+          <h2 class="font-heading text-2xl md:text-3xl font-bold text-text mb-2">
+            Essential Pizza Equipment
+          </h2>
+          <p class="text-text-muted">
+            The right tools make all the difference
+          </p>
+        </div>
+        <ProductRecommendations featured={true} limit={4} showTitle={false} />
+      </div>
+    </section>
+
+    {/* Features Section */}
+    <section class="py-12 bg-cream/50">
+      <div class="max-w-4xl mx-auto px-4 space-y-6">
+        <h2 class="font-heading text-2xl font-bold text-text text-center mb-8">
+          Helpful Tools
+        </h2>
+        <VolumeConverter />
+        <EmergencyTimer />
+      </div>
+    </section>
+
+    {/* Style Comparison */}
+    <StyleComparisonTable />
+
+    {/* Email Capture Section - Before FAQ for better visibility */}
+    <section id="email-capture" class="py-12 md:py-16 bg-charcoal text-cream">
+      <div class="max-w-2xl mx-auto px-4 text-center">
+        <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+          Get Pizza Tips & Recipes
+        </h2>
+        <p class="text-cream/70 mb-6">
+          Join our newsletter for exclusive dough techniques, troubleshooting guides, and new features.
+        </p>
+        <form id="email-form" class="max-w-md mx-auto space-y-3">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <input
+                type="email"
+                id="newsletter-email"
+                name="email"
+                placeholder="your@email.com"
+                required
+                autocomplete="email"
+                class="w-full px-4 py-3 bg-charcoal-light border border-cream/20 rounded-lg text-cream placeholder-cream/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+            </div>
+            <button
+              type="submit"
+              class="px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors whitespace-nowrap"
+            >
+              Subscribe
+            </button>
+          </div>
+          <label class="flex items-start gap-2 justify-center text-left">
+            <input
+              type="checkbox"
+              name="newsletter-consent"
+              required
+              class="mt-0.5 w-4 h-4 rounded border-cream/30 bg-charcoal-light text-primary focus:ring-primary"
+            />
+            <span class="text-xs text-cream/70">
+              I agree to receive pizza tips and updates.
+              <a href="/privacy" class="underline hover:text-primary">Privacy Policy</a>
+            </span>
+          </label>
+        </form>
+        <p id="email-success" class="hidden mt-4 text-olive-light font-medium">
+          Thanks for subscribing! Check your inbox.
+        </p>
+        <p id="email-error" class="hidden mt-4 text-red-400 font-medium">
+          Something went wrong. Please try again.
+        </p>
+        <p class="text-xs text-cream/50 mt-4">
+          No spam, ever. Unsubscribe anytime.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ Section */}
+    <FAQAccordion />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import { DoughCalculator } from '../scripts/calculator/engine.js';
+  import { PIZZA_STYLES, getStyleById, getStyleDefaults } from '../scripts/calculator/presets.js';
+  import { formatWeight, getStoredUnit, setStoredUnit, toggleUnit } from '../scripts/calculator/units.js';
+  import { encodeRecipe, decodeRecipe, hasRecipeInURL, getRecipeFromURL, copyToClipboard, generateRecipeText } from '../scripts/features/shareRecipe.js';
+
+  // Initialize calculator
+  let calculator = new DoughCalculator();
+  let currentUnit = getStoredUnit();
+  let currentStyle = 'neapolitan';
+
+  // DOM elements
+  const styleRadios = document.querySelectorAll('input[name="pizzaStyle"]');
+  const numBallsInput = document.getElementById('numBalls');
+  const ballWeightInput = document.getElementById('ballWeight');
+  const hydrationSlider = document.getElementById('hydration');
+  const hydrationValue = document.getElementById('hydration-value');
+  const saltInput = document.getElementById('salt');
+  const yeastInput = document.getElementById('yeast');
+  const oilInput = document.getElementById('oil');
+  const sugarInput = document.getElementById('sugar');
+  const usePreFermentToggle = document.getElementById('usePreFerment');
+  const preFermentTypeRadios = document.querySelectorAll('input[name="preFermentType"]');
+  const preFermentPercentSlider = document.getElementById('preFermentPercent');
+  const humidityToggle = document.getElementById('humidityAdjust');
+  const totalDoughWeightDisplay = document.getElementById('totalDoughWeight');
+  const unitToggleBtn = document.getElementById('unitToggle');
+  const presetBtns = document.querySelectorAll('.preset-btn');
+  const emergencyTimerSection = document.getElementById('emergency-timer-section');
+
+  // Recipe output elements
+  const singleStageRecipe = document.getElementById('singleStageRecipe');
+  const twoStageRecipe = document.getElementById('twoStageRecipe');
+  const recipeStyleName = document.getElementById('recipeStyleName');
+  const recipeSummary = document.getElementById('recipeSummary');
+  const flourRecommendationText = document.getElementById('flourRecommendationText');
+  const flourProteinText = document.getElementById('flourProteinText');
+  const waterTempText = document.getElementById('waterTempText');
+  const fermentInstruction = document.getElementById('fermentInstruction');
+  const bakeInstruction = document.getElementById('bakeInstruction');
+  const shareUrl = document.getElementById('shareUrl');
+
+  // Yeast type elements
+  const yeastTypeRadios = document.querySelectorAll('input[name="yeastType"]');
+  let currentYeastType = 'instant';
+
+  // Load recipe from URL if present
+  if (hasRecipeInURL()) {
+    const urlRecipe = getRecipeFromURL();
+    if (urlRecipe) {
+      // Apply URL recipe settings
+      Object.assign(calculator, urlRecipe);
+
+      // Update form inputs
+      if (urlRecipe.style) {
+        currentStyle = urlRecipe.style;
+        const styleRadio = document.querySelector(`input[name="pizzaStyle"][value="${urlRecipe.style}"]`);
+        if (styleRadio) styleRadio.checked = true;
+      }
+      if (urlRecipe.numBalls && numBallsInput) numBallsInput.value = urlRecipe.numBalls;
+      if (urlRecipe.ballWeight && ballWeightInput) ballWeightInput.value = urlRecipe.ballWeight;
+      if (urlRecipe.hydration && hydrationSlider) {
+        hydrationSlider.value = Math.round(urlRecipe.hydration * 100);
+        if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
+      }
+      if (urlRecipe.salt && saltInput) saltInput.value = (urlRecipe.salt * 100).toFixed(1);
+      if (urlRecipe.yeast && yeastInput) yeastInput.value = (urlRecipe.yeast * 100).toFixed(1);
+      if (urlRecipe.oil !== undefined && oilInput) oilInput.value = (urlRecipe.oil * 100).toFixed(1);
+      if (urlRecipe.sugar !== undefined && sugarInput) sugarInput.value = (urlRecipe.sugar * 100).toFixed(1);
+      if (urlRecipe.usePreFerment && usePreFermentToggle) {
+        usePreFermentToggle.checked = true;
+        document.getElementById('preFermentOptions')?.classList.remove('hidden');
+      }
+      if (urlRecipe.humidityAdjust && humidityToggle) humidityToggle.checked = true;
+
+      // Expand advanced options if custom settings
+      if (urlRecipe.hydration || urlRecipe.salt || urlRecipe.yeast) {
+        document.getElementById('advanced-toggle')?.click();
+      }
+    }
+  }
+
+  // Update calculator and UI
+  function updateCalculator() {
+    calculator = new DoughCalculator({
+      numBalls: parseInt(numBallsInput?.value) || 4,
+      ballWeight: parseInt(ballWeightInput?.value) || 250,
+      hydration: parseInt(hydrationSlider?.value) / 100 || 0.65,
+      salt: parseFloat(saltInput?.value) / 100 || 0.02,
+      yeast: parseFloat(yeastInput?.value) / 100 || 0.003,
+      oil: parseFloat(oilInput?.value) / 100 || 0,
+      sugar: parseFloat(sugarInput?.value) / 100 || 0,
+      usePreFerment: usePreFermentToggle?.checked || false,
+      preFermentType: document.querySelector('input[name="preFermentType"]:checked')?.value || 'poolish',
+      preFermentFlourPercent: parseInt(preFermentPercentSlider?.value) / 100 || 0.25,
+      humidityAdjust: humidityToggle?.checked || false
+    });
+
+    const recipe = calculator.calculate();
+    updateRecipeDisplay(recipe);
+  }
+
+  // Update recipe display
+  function updateRecipeDisplay(recipe) {
+    const style = getStyleById(currentStyle);
+    const styleName = style?.name || 'Custom';
+
+    // Update header
+    if (recipeStyleName) recipeStyleName.textContent = `${styleName} Pizza Dough`;
+    // Update email capture style name
+    if (emailStyleName) emailStyleName.textContent = styleName;
+    if (recipeSummary) {
+      recipeSummary.textContent = `Makes ${calculator.numBalls} dough ball${calculator.numBalls > 1 ? 's' : ''} at ${formatWeight(calculator.ballWeight, currentUnit)} each (${formatWeight(recipe.totalWeight, currentUnit)} total)`;
+    }
+
+    // Update flour recommendation and protein content
+    if (flourRecommendationText && style) {
+      flourRecommendationText.textContent = style.flourRecommendation;
+    }
+    if (flourProteinText && style?.flourProtein) {
+      flourProteinText.textContent = `(${style.flourProtein} protein)`;
+    }
+
+    // Update water temperature
+    if (waterTempText && style?.waterTemp) {
+      waterTempText.textContent = style.waterTemp;
+    }
+
+    // Update fermentation instructions
+    if (fermentInstruction && style?.fermentInstructions) {
+      fermentInstruction.textContent = style.fermentInstructions;
+    }
+
+    // Update bake instruction
+    if (bakeInstruction && style) {
+      bakeInstruction.textContent = `Stretch and bake at ${style.bakeTemp} for ${style.bakeTime}.`;
+    }
+
+    // Update total dough weight display
+    if (totalDoughWeightDisplay) {
+      totalDoughWeightDisplay.textContent = formatWeight(recipe.totalWeight, currentUnit);
+    }
+
+    // Show/hide emergency timer
+    if (emergencyTimerSection) {
+      if (currentStyle === 'emergency') {
+        emergencyTimerSection.classList.remove('hidden');
+      } else {
+        emergencyTimerSection.classList.add('hidden');
+      }
+    }
+
+    if (recipe.stage === 'single') {
+      // Single stage recipe
+      singleStageRecipe?.classList.remove('hidden');
+      twoStageRecipe?.classList.add('hidden');
+
+      // Update ingredients
+      document.querySelector('[data-ingredient="flour"]').textContent = formatWeight(recipe.ingredients.flour, currentUnit);
+      document.querySelector('[data-ingredient="water"]').textContent = formatWeight(recipe.ingredients.water, currentUnit);
+      document.querySelector('[data-ingredient="salt"]').textContent = formatWeight(recipe.ingredients.salt, currentUnit);
+
+      // Apply yeast type conversion (active dry needs 1.25x more)
+      const yeastMultiplier = currentYeastType === 'activeDry' ? 1.25 : 1;
+      const displayYeast = recipe.ingredients.yeast * yeastMultiplier;
+      document.querySelector('[data-ingredient="yeast"]').textContent = formatWeight(displayYeast, currentUnit);
+
+      // Update yeast label based on type
+      const yeastLabelRow = document.querySelector('[data-ingredient="yeast"]')?.closest('li');
+      const yeastLabel = yeastLabelRow?.querySelector('span:first-child');
+      if (yeastLabel) {
+        yeastLabel.textContent = currentYeastType === 'activeDry' ? 'Active Dry Yeast' : 'Instant Yeast';
+      }
+
+      // Update percentages
+      document.getElementById('waterPercent').textContent = `(${recipe.percentages.hydration.toFixed(1)}%)`;
+      document.getElementById('saltPercent').textContent = `(${recipe.percentages.salt.toFixed(1)}%)`;
+      document.getElementById('yeastPercent').textContent = `(${recipe.percentages.yeast.toFixed(1)}%)`;
+
+      // Oil row
+      const oilRow = document.getElementById('oilRow');
+      if (recipe.ingredients.oil > 0) {
+        oilRow?.classList.remove('hidden');
+        document.querySelector('[data-ingredient="oil"]').textContent = formatWeight(recipe.ingredients.oil, currentUnit);
+        document.getElementById('oilPercent').textContent = `(${recipe.percentages.oil.toFixed(1)}%)`;
+      } else {
+        oilRow?.classList.add('hidden');
+      }
+
+      // Sugar row
+      const sugarRow = document.getElementById('sugarRow');
+      if (recipe.ingredients.sugar > 0) {
+        sugarRow?.classList.remove('hidden');
+        document.querySelector('[data-ingredient="sugar"]').textContent = formatWeight(recipe.ingredients.sugar, currentUnit);
+        document.getElementById('sugarPercent').textContent = `(${recipe.percentages.sugar.toFixed(1)}%)`;
+      } else {
+        sugarRow?.classList.add('hidden');
+      }
+
+    } else {
+      // Two-stage recipe
+      singleStageRecipe?.classList.add('hidden');
+      twoStageRecipe?.classList.remove('hidden');
+
+      // Update pre-ferment title
+      const preFermentTitle = document.getElementById('preFermentTitle');
+      if (preFermentTitle) {
+        preFermentTitle.textContent = `${recipe.preFerment.type === 'poolish' ? 'Poolish' : 'Biga'} (Night Before)`;
+      }
+
+      // Pre-ferment ingredients (apply yeast type conversion)
+      const pfYeastMultiplier = currentYeastType === 'activeDry' ? 1.25 : 1;
+      document.querySelector('[data-pf-ingredient="flour"]').textContent = formatWeight(recipe.preFerment.ingredients.flour, currentUnit);
+      document.querySelector('[data-pf-ingredient="water"]').textContent = formatWeight(recipe.preFerment.ingredients.water, currentUnit);
+      document.querySelector('[data-pf-ingredient="yeast"]').textContent = formatWeight(recipe.preFerment.ingredients.yeast * pfYeastMultiplier, currentUnit);
+
+      // Update pre-ferment yeast label
+      const pfYeastLabelRow = document.querySelector('[data-pf-ingredient="yeast"]')?.closest('li');
+      const pfYeastLabel = pfYeastLabelRow?.querySelector('span:first-child');
+      if (pfYeastLabel) {
+        pfYeastLabel.textContent = currentYeastType === 'activeDry' ? 'Active Dry Yeast' : 'Instant Yeast';
+      }
+
+      // Final dough summary
+      const finalDoughSummary = document.getElementById('finalDoughSummary');
+      if (finalDoughSummary) {
+        finalDoughSummary.textContent = `Makes ${calculator.numBalls} dough ball${calculator.numBalls > 1 ? 's' : ''} at ${formatWeight(calculator.ballWeight, currentUnit)} each (${formatWeight(recipe.totalWeight, currentUnit)} total)`;
+      }
+
+      // Final dough ingredients (apply yeast type conversion)
+      document.querySelector('[data-final-ingredient="flour"]').textContent = formatWeight(recipe.finalDough.ingredients.flour, currentUnit);
+      document.querySelector('[data-final-ingredient="water"]').textContent = formatWeight(recipe.finalDough.ingredients.water, currentUnit);
+      document.querySelector('[data-final-ingredient="salt"]').textContent = formatWeight(recipe.finalDough.ingredients.salt, currentUnit);
+
+      // Hide yeast row in final dough if 0 (traditional method: all yeast in pre-ferment)
+      const finalYeastRow = document.getElementById('finalYeastRow');
+      if (recipe.finalDough.ingredients.yeast > 0) {
+        finalYeastRow?.classList.remove('hidden');
+        document.querySelector('[data-final-ingredient="yeast"]').textContent = formatWeight(recipe.finalDough.ingredients.yeast * pfYeastMultiplier, currentUnit);
+        const finalYeastLabel = finalYeastRow?.querySelector('span:first-child');
+        if (finalYeastLabel) {
+          finalYeastLabel.textContent = currentYeastType === 'activeDry' ? 'Active Dry Yeast (remaining)' : 'Instant Yeast (remaining)';
+        }
+      } else {
+        finalYeastRow?.classList.add('hidden');
+      }
+
+      // Oil row
+      const finalOilRow = document.getElementById('finalOilRow');
+      if (recipe.finalDough.ingredients.oil > 0) {
+        finalOilRow?.classList.remove('hidden');
+        document.querySelector('[data-final-ingredient="oil"]').textContent = formatWeight(recipe.finalDough.ingredients.oil, currentUnit);
+      } else {
+        finalOilRow?.classList.add('hidden');
+      }
+
+      // Sugar row
+      const finalSugarRow = document.getElementById('finalSugarRow');
+      if (recipe.finalDough.ingredients.sugar > 0) {
+        finalSugarRow?.classList.remove('hidden');
+        document.querySelector('[data-final-ingredient="sugar"]').textContent = formatWeight(recipe.finalDough.ingredients.sugar, currentUnit);
+      } else {
+        finalSugarRow?.classList.add('hidden');
+      }
+    }
+
+    // Announce recipe update to screen readers
+    const announcement = document.getElementById('recipe-announcement');
+    if (announcement) {
+      announcement.textContent = `Recipe updated: ${calculator.numBalls} dough balls at ${formatWeight(calculator.ballWeight, currentUnit)} each, total ${formatWeight(recipe.totalWeight, currentUnit)}`;
+    }
+
+    // Update share URL
+    if (shareUrl) {
+      const recipeSettings = {
+        style: currentStyle,
+        numBalls: calculator.numBalls,
+        ballWeight: calculator.ballWeight,
+        hydration: calculator.hydration,
+        salt: calculator.salt,
+        yeast: calculator.yeast,
+        oil: calculator.oil,
+        sugar: calculator.sugar,
+        usePreFerment: calculator.usePreFerment,
+        preFermentType: calculator.preFermentType,
+        preFermentFlourPercent: calculator.preFermentFlourPercent,
+        humidityAdjust: calculator.humidityAdjust
+      };
+      shareUrl.value = encodeRecipe(recipeSettings);
+
+      // Update social share links
+      if (typeof updateShareLinks === 'function') {
+        updateShareLinks();
+      }
+    }
+  }
+
+  // Apply style defaults
+  function applyStyleDefaults(styleId) {
+    const defaults = getStyleDefaults(styleId);
+    const style = getStyleById(styleId);
+    currentStyle = styleId;
+
+    // Update form
+    if (ballWeightInput) ballWeightInput.value = defaults.ballWeight;
+    if (hydrationSlider) {
+      hydrationSlider.value = Math.round(defaults.hydration * 100);
+      if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
+    }
+    if (saltInput) saltInput.value = (defaults.salt * 100).toFixed(1);
+    if (yeastInput) yeastInput.value = (defaults.yeast * 100).toFixed(1);
+    if (oilInput) oilInput.value = (defaults.oil * 100).toFixed(1);
+    if (sugarInput) sugarInput.value = (defaults.sugar * 100).toFixed(1);
+
+    // Pre-ferment
+    if (usePreFermentToggle) {
+      usePreFermentToggle.checked = defaults.usePreFerment || false;
+      document.getElementById('preFermentOptions')?.classList.toggle('hidden', !defaults.usePreFerment);
+    }
+    if (defaults.preFermentType) {
+      const pfRadio = document.querySelector(`input[name="preFermentType"][value="${defaults.preFermentType}"]`);
+      if (pfRadio) pfRadio.checked = true;
+    }
+    if (defaults.preFermentFlourPercent && preFermentPercentSlider) {
+      preFermentPercentSlider.value = Math.round(defaults.preFermentFlourPercent * 100);
+      document.getElementById('preFermentPercent-value').textContent = `${preFermentPercentSlider.value}%`;
+    }
+
+    updateCalculator();
+  }
+
+  // Event listeners
+  styleRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      applyStyleDefaults(e.target.value);
+    });
+  });
+
+  numBallsInput?.addEventListener('input', updateCalculator);
+  ballWeightInput?.addEventListener('input', updateCalculator);
+  hydrationSlider?.addEventListener('input', updateCalculator);
+  saltInput?.addEventListener('input', updateCalculator);
+  yeastInput?.addEventListener('input', updateCalculator);
+  oilInput?.addEventListener('input', updateCalculator);
+  sugarInput?.addEventListener('input', updateCalculator);
+  usePreFermentToggle?.addEventListener('change', updateCalculator);
+  preFermentTypeRadios.forEach(radio => {
+    radio.addEventListener('change', updateCalculator);
+  });
+  preFermentPercentSlider?.addEventListener('input', updateCalculator);
+  humidityToggle?.addEventListener('change', updateCalculator);
+
+  // Yeast type change
+  yeastTypeRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      currentYeastType = e.target.value;
+      updateCalculator();
+    });
+  });
+
+  // Unit toggle
+  const unitGrams = document.getElementById('unitGrams');
+  const unitOunces = document.getElementById('unitOunces');
+
+  unitToggleBtn?.addEventListener('click', () => {
+    currentUnit = toggleUnit(currentUnit);
+    setStoredUnit(currentUnit);
+
+    // Update button styling
+    if (unitGrams && unitOunces) {
+      if (currentUnit === 'grams') {
+        unitGrams.className = 'text-primary font-semibold';
+        unitOunces.className = 'text-text-muted/50';
+      } else {
+        unitGrams.className = 'text-text-muted/50';
+        unitOunces.className = 'text-primary font-semibold';
+      }
+    }
+
+    updateCalculator();
+  });
+
+  // Preset buttons
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const balls = btn.dataset.balls;
+      const weight = btn.dataset.weight;
+      if (balls && numBallsInput) numBallsInput.value = balls;
+      if (weight && ballWeightInput) ballWeightInput.value = weight;
+      updateCalculator();
+    });
+  });
+
+  // Copy recipe
+  document.querySelectorAll('#copyRecipe, #copyRecipe2').forEach(btn => {
+    btn?.addEventListener('click', async () => {
+      const recipe = calculator.calculate();
+      const style = getStyleById(currentStyle);
+      const text = generateRecipeText(recipe, style?.name || 'Pizza');
+      const success = await copyToClipboard(text);
+
+      if (success) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!';
+        // Announce to screen readers
+        const announcement = document.getElementById('recipe-announcement');
+        if (announcement) {
+          announcement.textContent = 'Recipe copied to clipboard';
+        }
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      }
+    });
+  });
+
+  // Email form - POST to n8n webhook
+  const emailForm = document.getElementById('email-form');
+  const emailSuccess = document.getElementById('email-success');
+  const emailError = document.getElementById('email-error');
+  const N8N_WEBHOOK_URL = import.meta.env.PUBLIC_N8N_WEBHOOK_URL;
+
+  // Recipe-specific email form (post-calculator)
+  const recipeEmailForm = document.getElementById('recipe-email-form');
+  const recipeEmailSuccess = document.getElementById('recipe-email-success');
+  const recipeEmailError = document.getElementById('recipe-email-error');
+  const emailStyleName = document.getElementById('emailStyleName');
+
+  emailForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(emailForm);
+    const email = formData.get('email');
+
+    // Hide previous messages
+    emailSuccess?.classList.add('hidden');
+    emailError?.classList.add('hidden');
+
+    // If no webhook URL configured, show success anyway (demo mode)
+    if (!N8N_WEBHOOK_URL) {
+      console.log('Email capture (demo mode):', email);
+      emailSuccess?.classList.remove('hidden');
+      emailForm.reset();
+      return;
+    }
+
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          source: 'pizza-calculator',
+          consent: true,
+          consentTimestamp: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        emailSuccess?.classList.remove('hidden');
+        emailForm.reset();
+        // Track email signup event
+        if (typeof gtag === 'function') {
+          gtag('event', 'email_signup', { source: 'pizza-calculator' });
+        }
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Email signup error:', error);
+      emailError?.classList.remove('hidden');
+    }
+  });
+
+  // Recipe email form handler (post-calculator)
+  recipeEmailForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(recipeEmailForm);
+    const email = formData.get('recipe-email');
+    const style = getStyleById(currentStyle);
+
+    // Hide previous messages
+    recipeEmailSuccess?.classList.add('hidden');
+    recipeEmailError?.classList.add('hidden');
+
+    // If no webhook URL configured, show success anyway (demo mode)
+    if (!N8N_WEBHOOK_URL) {
+      console.log('Recipe email capture (demo mode):', email, 'Style:', style?.name);
+      recipeEmailSuccess?.classList.remove('hidden');
+      recipeEmailForm.reset();
+      return;
+    }
+
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          source: 'pizza-calculator-recipe',
+          pizzaStyle: style?.name || currentStyle,
+          consent: true,
+          consentTimestamp: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        recipeEmailSuccess?.classList.remove('hidden');
+        recipeEmailForm.reset();
+        // Track email signup event with style context
+        if (typeof gtag === 'function') {
+          gtag('event', 'email_signup', {
+            source: 'recipe-capture',
+            pizza_style: style?.name || currentStyle
+          });
+        }
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Recipe email signup error:', error);
+      recipeEmailError?.classList.remove('hidden');
+    }
+  });
+
+  // Initialize unit toggle state from stored preference
+  if (currentUnit === 'ounces' && unitGrams && unitOunces) {
+    unitGrams.className = 'text-text-muted/50';
+    unitOunces.className = 'text-primary font-semibold';
+  }
+
+  // Share CTA buttons
+  const shareCTABtn = document.getElementById('shareCTA');
+  const shareTwitter = document.getElementById('shareTwitter');
+  const shareFacebook = document.getElementById('shareFacebook');
+  const shareReddit = document.getElementById('shareReddit');
+
+  // Update share links when recipe changes
+  function updateShareLinks() {
+    const url = shareUrl?.value || window.location.href;
+    const text = `Check out my pizza dough recipe! 🍕`;
+
+    if (shareTwitter) {
+      shareTwitter.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+    }
+    if (shareFacebook) {
+      shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    }
+    if (shareReddit) {
+      shareReddit.href = `https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}`;
+    }
+  }
+
+  shareCTABtn?.addEventListener('click', async () => {
+    const url = shareUrl?.value || window.location.href;
+    const success = await copyToClipboard(url);
+
+    if (success) {
+      const originalText = shareCTABtn.innerHTML;
+      shareCTABtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!';
+      // Announce to screen readers
+      const announcement = document.getElementById('recipe-announcement');
+      if (announcement) {
+        announcement.textContent = 'Recipe link copied to clipboard';
+      }
+      setTimeout(() => {
+        shareCTABtn.innerHTML = originalText;
+      }, 2000);
+
+      // Track share event
+      if (typeof gtag === 'function') {
+        gtag('event', 'share', { method: 'copy_link', content_type: 'recipe' });
+      }
+    }
+  });
+
+  // Track social share clicks
+  [shareTwitter, shareFacebook, shareReddit].forEach(btn => {
+    btn?.addEventListener('click', () => {
+      if (typeof gtag === 'function') {
+        const platform = btn.id.replace('share', '').toLowerCase();
+        gtag('event', 'share', { method: platform, content_type: 'recipe' });
+      }
+    });
+  });
+
+  // Initial calculation
+  applyStyleDefaults('neapolitan');
+  updateShareLinks();
+</script>

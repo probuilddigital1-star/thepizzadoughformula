@@ -1,0 +1,109 @@
+---
+/**
+ * ProductRecommendations Component
+ * Displays affiliate product recommendations
+ * Products are filtered by pizza style when provided
+ *
+ * NOTE: Replace placeholder affiliate URLs with actual Amazon Associates links
+ * once your account is approved and traffic is established.
+ */
+import affiliateData from '../../data/affiliateProducts.json';
+
+interface Props {
+  style?: string;
+  limit?: number;
+  showTitle?: boolean;
+  featured?: boolean;
+}
+
+const {
+  style = 'all',
+  limit = 4,
+  showTitle = true,
+  featured = false
+} = Astro.props;
+
+// Filter products by style
+let products = affiliateData.products.filter(product => {
+  if (featured && !product.featured) return false;
+  if (style === 'all') return true;
+  return product.forStyles.includes(style) || product.forStyles.includes('all');
+});
+
+// Limit results
+products = products.slice(0, limit);
+
+const hasRealLinks = products.some(p => p.affiliateUrl && p.affiliateUrl !== '#');
+
+// Generate Product schema for SEO
+const productSchemas = products.map(product => ({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": product.name,
+  "description": product.description,
+  "category": affiliateData.categories[product.category]?.name || product.category,
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "lowPrice": product.priceRange.replace(/[^0-9-]/g, '').split('-')[0],
+    "highPrice": product.priceRange.replace(/[^0-9-]/g, '').split('-')[1] || product.priceRange.replace(/[^0-9-]/g, '').split('-')[0],
+    "offerCount": "10+",
+    "availability": "https://schema.org/InStock"
+  }
+}));
+---
+
+{products.length > 0 && (
+  <div class="product-recommendations">
+    {/* Product Schema for SEO */}
+    {productSchemas.map(schema => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+
+    {showTitle && (
+      <div class="mb-4">
+        <h3 class="font-heading text-lg font-semibold text-text">
+          Recommended Equipment
+        </h3>
+        <p class="text-sm text-text-muted">
+          Tools that help you make better pizza
+        </p>
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {products.map((product) => (
+        <a
+          href={product.affiliateUrl}
+          target="_blank"
+          rel="noopener sponsored"
+          class="product-card group flex items-start gap-4 p-4 bg-surface border border-border rounded-lg transition-all hover:border-primary hover:shadow-md"
+          data-product-id={product.id}
+          onclick="if(typeof gtag==='function')gtag('event','affiliate_click',{product_id:this.dataset.productId})"
+        >
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold text-text group-hover:text-primary transition-colors">
+              {product.name}
+            </h4>
+            <p class="text-sm text-text-muted mt-1">
+              {product.description}
+            </p>
+          </div>
+          <div class="flex-shrink-0 text-right">
+            <p class="text-sm font-semibold text-primary">
+              {product.priceRange}
+            </p>
+            <p class="text-xs text-text-muted mt-1">
+              View on Amazon →
+            </p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    {/* Affiliate disclosure */}
+    <p class="text-xs text-text-muted/60 mt-3 italic">
+      {affiliateData._meta.affiliateDisclaimer}
+    </p>
+  </div>
+)}

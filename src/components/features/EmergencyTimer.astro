@@ -1,0 +1,205 @@
+---
+/**
+ * EmergencyTimer Component
+ * 2-hour countdown timer for emergency pizza dough
+ */
+---
+
+<div id="emergency-timer-section" class="emergency-timer bg-surface rounded-xl border border-border overflow-hidden hidden">
+  {/* Header */}
+  <div class="bg-burnt-orange text-white px-6 py-4">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">⚡</span>
+      <div>
+        <h3 class="font-heading text-xl font-bold">Emergency Dough Timer</h3>
+        <p class="text-white/80 text-sm">2 hours until your dough is ready</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Timer display */}
+  <div class="p-6">
+    {/* Large time display */}
+    <div class="text-center mb-6">
+      <div
+        id="timer-display"
+        class="font-mono text-6xl font-bold text-text tracking-wider"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        02:00:00
+      </div>
+      <p id="timer-status" class="text-sm text-text-muted mt-2">Ready to start</p>
+    </div>
+
+    {/* Progress bar */}
+    <div class="mb-6">
+      <div class="h-3 bg-cream rounded-full overflow-hidden">
+        <div
+          id="timer-progress"
+          class="h-full bg-burnt-orange transition-all duration-1000 ease-linear"
+          style="width: 0%"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        ></div>
+      </div>
+    </div>
+
+    {/* Control buttons */}
+    <div class="flex justify-center gap-4">
+      <button
+        type="button"
+        id="timer-toggle"
+        class="flex items-center gap-2 px-6 py-3 bg-burnt-orange text-white rounded-lg font-medium hover:bg-burnt-orange-dark transition-colors"
+        aria-label="Start timer"
+      >
+        <svg id="timer-play-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+        </svg>
+        <svg id="timer-pause-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <span id="timer-toggle-text">Start</span>
+      </button>
+
+      <button
+        type="button"
+        id="timer-reset"
+        class="flex items-center gap-2 px-6 py-3 border border-border text-text rounded-lg font-medium hover:border-burnt-orange hover:text-burnt-orange transition-colors"
+        aria-label="Reset timer"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Reset
+      </button>
+    </div>
+
+    {/* Mute toggle */}
+    <div class="mt-4 flex justify-center">
+      <label class="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
+        <input
+          type="checkbox"
+          id="timer-mute"
+          class="w-4 h-4 text-burnt-orange border-border rounded focus:ring-burnt-orange"
+        />
+        <span>Mute notification sound</span>
+      </label>
+    </div>
+
+    {/* Tips while waiting */}
+    <div class="mt-6 p-4 bg-cream rounded-lg">
+      <h4 class="font-medium text-text mb-2">While you wait...</h4>
+      <ul class="text-sm text-text-muted space-y-1">
+        <li>• Prepare your toppings</li>
+        <li>• Preheat your oven to max temp (30 min before baking)</li>
+        <li>• Oil your pizza pan or screen</li>
+        <li>• Set up your stretching station</li>
+      </ul>
+    </div>
+
+    {/* Completion message (hidden by default) */}
+    <div id="timer-complete" class="hidden mt-6 p-4 bg-olive/10 rounded-lg border border-olive/20 text-center">
+      <span class="text-3xl">🍕</span>
+      <h4 class="font-heading text-xl font-bold text-olive mt-2">Time's Up!</h4>
+      <p class="text-sm text-text-muted mt-1">
+        Your dough is ready to stretch and bake. Let's make pizza!
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { EmergencyTimer } from '../../scripts/features/emergencyTimer.js';
+
+  // Initialize timer
+  const timer = new EmergencyTimer();
+
+  // DOM elements
+  const display = document.getElementById('timer-display');
+  const status = document.getElementById('timer-status');
+  const progress = document.getElementById('timer-progress');
+  const toggleBtn = document.getElementById('timer-toggle');
+  const toggleText = document.getElementById('timer-toggle-text');
+  const playIcon = document.getElementById('timer-play-icon');
+  const pauseIcon = document.getElementById('timer-pause-icon');
+  const resetBtn = document.getElementById('timer-reset');
+  const muteCheckbox = document.getElementById('timer-mute');
+  const completeMessage = document.getElementById('timer-complete');
+
+  // Update display
+  timer.onTick = (formattedTime, progressPercent) => {
+    if (display) display.textContent = formattedTime;
+    if (progress) {
+      progress.style.width = `${progressPercent}%`;
+      progress.setAttribute('aria-valuenow', progressPercent.toString());
+    }
+  };
+
+  // State changes
+  timer.onStateChange = (state) => {
+    switch (state) {
+      case 'running':
+        if (toggleText) toggleText.textContent = 'Pause';
+        if (status) status.textContent = 'Timer running...';
+        playIcon?.classList.add('hidden');
+        pauseIcon?.classList.remove('hidden');
+        completeMessage?.classList.add('hidden');
+        break;
+      case 'paused':
+        if (toggleText) toggleText.textContent = 'Resume';
+        if (status) status.textContent = 'Timer paused';
+        playIcon?.classList.remove('hidden');
+        pauseIcon?.classList.add('hidden');
+        break;
+      case 'reset':
+        if (toggleText) toggleText.textContent = 'Start';
+        if (status) status.textContent = 'Ready to start';
+        playIcon?.classList.remove('hidden');
+        pauseIcon?.classList.add('hidden');
+        completeMessage?.classList.add('hidden');
+        break;
+      case 'completed':
+        if (toggleText) toggleText.textContent = 'Start';
+        if (status) status.textContent = 'Completed!';
+        playIcon?.classList.remove('hidden');
+        pauseIcon?.classList.add('hidden');
+        completeMessage?.classList.remove('hidden');
+        break;
+    }
+  };
+
+  // Completion callback
+  timer.onComplete = () => {
+    // Override notification if muted
+    if (muteCheckbox?.checked) {
+      // Don't play sound
+    } else {
+      timer.playNotification();
+    }
+  };
+
+  // Button handlers
+  toggleBtn?.addEventListener('click', () => {
+    if (timer.remaining === 0) {
+      timer.reset();
+    }
+    timer.toggle();
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    timer.reset();
+  });
+
+  // Initialize display
+  if (display) {
+    display.textContent = timer.getFormattedTime();
+  }
+
+  // If timer was running, update state
+  if (timer.isRunning) {
+    timer.onStateChange?.('running');
+  }
+</script>

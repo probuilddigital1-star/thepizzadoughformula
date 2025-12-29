@@ -1,0 +1,231 @@
+---
+/**
+ * Baker's Percentages Page
+ * Educational content about baker's math
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: "Baker's Percentages" }
+];
+
+// HowTo Schema for this page
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Calculate Pizza Dough Using Baker's Percentages",
+  "description": "Learn how to use baker's percentages to calculate precise pizza dough recipes that scale perfectly.",
+  "totalTime": "PT5M",
+  "estimatedCost": {
+    "@type": "MonetaryAmount",
+    "currency": "USD",
+    "value": "0"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Understand the base",
+      "text": "In baker's percentages, flour is always 100%. Every other ingredient is expressed as a percentage of the flour weight.",
+      "position": 1
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Calculate flour weight",
+      "text": "Divide total dough weight by (1 + hydration + salt + yeast percentages). For example: 1000g ÷ 1.673 = 598g flour.",
+      "position": 2
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Calculate water",
+      "text": "Multiply flour weight by hydration percentage. For 65% hydration: 598g × 0.65 = 389g water.",
+      "position": 3
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Calculate salt and yeast",
+      "text": "Multiply flour weight by each percentage. Salt (2%): 598g × 0.02 = 12g. Yeast (0.3%): 598g × 0.003 = 1.8g.",
+      "position": 4
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Verify total",
+      "text": "Add all ingredients to verify they equal your target dough weight: 598 + 389 + 12 + 1.8 = 1000g.",
+      "position": 5
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="Baker's Percentages Explained"
+  description="Learn how baker's percentages work and why they're essential for consistent pizza dough. Master the formula that professional bakers use."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2025-12-28"
+>
+  <Header />
+
+  {/* HowTo Schema */}
+  <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Baker's Percentages Explained
+        </h1>
+        <p class="text-sm text-text-muted">
+          Last updated: December 28, 2025 · 5 min read
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          In baker's percentages, flour is always 100%. All other ingredients are expressed as a percentage
+          of flour weight. This makes scaling recipes and comparing formulas effortless.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          Baker's percentages are the secret language of professional bakers. Once you understand
+          this system, you can scale any recipe, compare formulas, and create your own with confidence.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">The Basic Concept</h2>
+        <p>
+          In baker's percentages, <strong>flour is always 100%</strong>. Every other ingredient is
+          expressed as a percentage of the flour weight. This means:
+        </p>
+
+        <div class="bg-cream rounded-lg p-6 my-6">
+          <p class="font-mono text-center text-lg text-text">
+            Ingredient Weight = Flour Weight × (Percentage ÷ 100)
+          </p>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Example: 65% Hydration Dough</h2>
+        <p>
+          Let's say you want to make 1000g of dough at 65% hydration with 2% salt and 0.3% yeast.
+          First, we need to find the flour weight:
+        </p>
+
+        <div class="bg-surface border border-border rounded-lg p-6 my-6 font-mono text-sm">
+          <p class="text-text mb-2">Total dough = Flour + Water + Salt + Yeast</p>
+          <p class="text-text mb-2">1000g = Flour + (Flour × 0.65) + (Flour × 0.02) + (Flour × 0.003)</p>
+          <p class="text-text mb-2">1000g = Flour × (1 + 0.65 + 0.02 + 0.003)</p>
+          <p class="text-text mb-2">1000g = Flour × 1.673</p>
+          <p class="text-primary font-bold">Flour = 598g</p>
+        </div>
+
+        <p>Now we can calculate everything else:</p>
+
+        <div class="bg-olive/10 rounded-lg p-6 my-6">
+          <ul class="space-y-2 font-mono">
+            <li><span class="text-text-muted">Flour (100%):</span> <span class="text-text font-bold">598g</span></li>
+            <li><span class="text-text-muted">Water (65%):</span> <span class="text-text font-bold">389g</span> (598 × 0.65)</li>
+            <li><span class="text-text-muted">Salt (2%):</span> <span class="text-text font-bold">12g</span> (598 × 0.02)</li>
+            <li><span class="text-text-muted">Yeast (0.3%):</span> <span class="text-text font-bold">1.8g</span> (598 × 0.003)</li>
+          </ul>
+          <p class="mt-4 text-sm text-text-muted">Total: 598 + 389 + 12 + 1.8 = 1000.8g ✓</p>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Why Use Percentages?</h2>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">1. Easy Scaling</h3>
+        <p>
+          Need to double your recipe? Triple it? Make exactly 1.7kg of dough? Just multiply the flour
+          weight and the percentages handle the rest. No more converting cups or doing complex math.
+        </p>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">2. Recipe Comparison</h3>
+        <p>
+          When you see "65% hydration Neapolitan" vs "72% hydration Detroit," you immediately
+          understand the key difference. Percentages let you compare apples to apples.
+        </p>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">3. Consistency</h3>
+        <p>
+          Professional bakeries use percentages to ensure every batch is identical. When your
+          ingredient ratios are locked in, you get the same result every time.
+        </p>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">4. Understanding</h3>
+        <p>
+          Once you think in percentages, you understand <em>why</em> recipes work. Too much yeast?
+          That's what 2% looks like. Sticky dough? You went too high on hydration.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Common Ranges</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-2 font-heading font-semibold text-text">Ingredient</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Typical Range</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Notes</th>
+              </tr>
+            </thead>
+            <tbody class="text-text-muted">
+              <tr class="border-b border-border/50">
+                <td class="py-2">Hydration</td>
+                <td class="py-2 font-mono">55-75%</td>
+                <td class="py-2">Lower = stiffer, higher = softer</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Salt</td>
+                <td class="py-2 font-mono">2-3%</td>
+                <td class="py-2">Flavor and gluten strength</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Yeast (instant)</td>
+                <td class="py-2 font-mono">0.1-2%</td>
+                <td class="py-2">Lower for long ferment, higher for quick</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Oil</td>
+                <td class="py-2 font-mono">0-5%</td>
+                <td class="py-2">Tenderness and browning</td>
+              </tr>
+              <tr>
+                <td class="py-2">Sugar</td>
+                <td class="py-2 font-mono">0-3%</td>
+                <td class="py-2">Browning and slight sweetness</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Try It Yourself</h2>
+        <p>
+          Our calculator does all the math for you. Just select your style, enter how much dough
+          you need, and get precise weights based on baker's percentages.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Try the Calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

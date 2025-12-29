@@ -1,0 +1,103 @@
+---
+const navLinks = [
+  { href: '/', label: 'Calculator' },
+  { href: '/pizza-styles', label: 'Pizza Styles' },
+  { href: '/bakers-percentages', label: "Baker's %" },
+  { href: '/about', label: 'About' }
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-surface border-b border-border sticky top-0 z-50 no-print">
+  <nav class="max-w-6xl mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <span class="text-3xl" aria-hidden="true">🍕</span>
+        <div class="flex flex-col">
+          <span class="font-heading text-xl font-bold text-text leading-tight">
+            The Pizza Dough
+          </span>
+          <span class="font-heading text-lg font-semibold text-primary leading-tight">
+            Formula
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <ul class="hidden md:flex items-center gap-6">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={[
+                'text-sm font-medium transition-colors hover:text-primary',
+                currentPath === link.href ? 'text-primary' : 'text-text-muted'
+              ]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Mobile Menu Button -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden p-2 rounded-md hover:bg-cream-dark transition-colors"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg
+          class="w-6 h-6 text-text"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <ul
+      id="mobile-menu"
+      class="md:hidden hidden mt-4 pb-2 space-y-2 border-t border-border pt-4"
+    >
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'block py-2 px-3 rounded-md text-sm font-medium transition-colors',
+              currentPath === link.href
+                ? 'bg-primary text-white'
+                : 'text-text-muted hover:bg-cream-dark hover:text-text'
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuBtn?.addEventListener('click', () => {
+    const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+    menuBtn.setAttribute('aria-expanded', (!isExpanded).toString());
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

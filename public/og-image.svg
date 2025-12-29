@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#F4F1DE"/>
+
+  <!-- Decorative pizza circles in background -->
+  <circle cx="100" cy="100" r="80" fill="#E07A5F" opacity="0.1"/>
+  <circle cx="1100" cy="530" r="120" fill="#E07A5F" opacity="0.1"/>
+  <circle cx="1050" cy="80" r="60" fill="#81B29A" opacity="0.1"/>
+
+  <!-- Main pizza icon -->
+  <g transform="translate(150, 165)">
+    <!-- Pizza crust -->
+    <circle cx="150" cy="150" r="135" fill="#E07A5F"/>
+    <!-- Pizza cheese base -->
+    <circle cx="150" cy="150" r="114" fill="#F4F1DE" stroke="#E07A5F" stroke-width="2"/>
+    <!-- Toppings (herbs/basil) -->
+    <circle cx="105" cy="105" r="18" fill="#81B29A"/>
+    <circle cx="180" cy="120" r="15" fill="#81B29A"/>
+    <circle cx="135" cy="165" r="21" fill="#81B29A"/>
+    <circle cx="195" cy="180" r="12" fill="#81B29A"/>
+    <!-- Toppings (olives) -->
+    <circle cx="90" cy="165" r="15" fill="#3D405B"/>
+    <circle cx="165" cy="90" r="12" fill="#3D405B"/>
+    <circle cx="210" cy="135" r="9" fill="#3D405B"/>
+  </g>
+
+  <!-- Text content -->
+  <text x="500" y="200" font-family="Georgia, serif" font-size="72" font-weight="bold" fill="#3D405B">
+    The Pizza Dough
+  </text>
+  <text x="500" y="290" font-family="Georgia, serif" font-size="72" font-weight="bold" fill="#3D405B">
+    Formula
+  </text>
+
+  <!-- Tagline -->
+  <text x="500" y="380" font-family="Arial, sans-serif" font-size="32" fill="#3D405B" opacity="0.8">
+    Free Pizza Dough Calculator
+  </text>
+
+  <!-- Features -->
+  <text x="500" y="450" font-family="Arial, sans-serif" font-size="24" fill="#E07A5F">
+    Neapolitan  |  New York  |  Detroit  |  + More Styles
+  </text>
+
+  <!-- URL -->
+  <text x="500" y="540" font-family="Arial, sans-serif" font-size="28" fill="#3D405B" opacity="0.6">
+    thepizzadoughformula.com
+  </text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="600" width="1200" height="30" fill="#E07A5F"/>
+</svg>

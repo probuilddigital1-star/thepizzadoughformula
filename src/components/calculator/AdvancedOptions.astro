@@ -1,0 +1,326 @@
+---
+/**
+ * AdvancedOptions Component
+ * Collapsible panel with hydration, percentages, pre-ferment, and humidity toggle
+ */
+---
+
+<div class="advanced-options bg-surface rounded-xl border border-border overflow-hidden">
+  {/* Collapsible header */}
+  <button
+    type="button"
+    id="advanced-toggle"
+    class="w-full flex items-center justify-between p-4 text-left hover:bg-cream/50 transition-colors"
+    aria-expanded="false"
+    aria-controls="advanced-content"
+  >
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+      </svg>
+      <span class="font-heading text-lg font-semibold text-text">Advanced Options</span>
+    </div>
+    <svg
+      id="advanced-chevron"
+      class="w-5 h-5 text-text-muted transition-transform"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  {/* Collapsible content */}
+  <div id="advanced-content" class="hidden border-t border-border">
+    <div class="p-6 space-y-6">
+
+      {/* Hydration slider */}
+      <div class="input-group">
+        <div class="flex items-center justify-between mb-2">
+          <label for="hydration" class="text-sm font-medium text-text">
+            Hydration
+          </label>
+          <span id="hydration-value" class="text-lg font-bold text-primary">65%</span>
+        </div>
+        <input
+          type="range"
+          id="hydration"
+          name="hydration"
+          min="45"
+          max="85"
+          value="65"
+          class="w-full"
+          aria-describedby="hydration-hint"
+          aria-valuemin="45"
+          aria-valuemax="85"
+          aria-valuenow="65"
+          aria-valuetext="65 percent"
+        />
+        <div class="flex justify-between text-xs text-text-muted mt-1">
+          <span>45% (stiff)</span>
+          <span>85% (wet)</span>
+        </div>
+        <p id="hydration-hint" class="mt-2 text-xs text-text-muted">
+          Water as a percentage of flour. Higher = softer, more open crumb.
+        </p>
+      </div>
+
+      {/* Flour type with protein content */}
+      <div class="input-group">
+        <label for="flourType" class="block text-sm font-medium text-text mb-2">
+          Flour Type
+        </label>
+        <select
+          id="flourType"
+          name="flourType"
+          class="w-full px-4 py-3 bg-cream border border-border rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+        >
+          <option value="00">00 Flour - 11-12.5% protein (Neapolitan)</option>
+          <option value="bread">Bread Flour - 12-14% protein (NY, Detroit)</option>
+          <option value="ap" selected>All-Purpose - 10-12% protein</option>
+          <option value="highGluten">High-Gluten - 14%+ protein (NY style)</option>
+          <option value="wholeWheat">Whole Wheat Blend - 13-14% protein</option>
+        </select>
+      </div>
+
+      {/* Yeast type selector */}
+      <fieldset class="input-group">
+        <legend class="block text-sm font-medium text-text mb-2">
+          Yeast Type
+        </legend>
+        <div class="flex gap-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="yeastType" value="instant" checked class="text-primary focus:ring-primary" />
+            <span class="text-sm text-text">Instant Yeast</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="yeastType" value="activeDry" class="text-primary focus:ring-primary" />
+            <span class="text-sm text-text">Active Dry (+25%)</span>
+          </label>
+        </div>
+        <p class="text-xs text-text-muted mt-2">
+          Active dry yeast requires 25% more than instant. Recipe will auto-adjust.
+        </p>
+      </fieldset>
+
+      {/* Ingredient percentages */}
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {/* Salt */}
+        <div class="input-group">
+          <label for="salt" class="block text-sm font-medium text-text mb-2">
+            Salt %
+          </label>
+          <input
+            type="number"
+            id="salt"
+            name="salt"
+            min="1"
+            max="4"
+            step="0.1"
+            value="2"
+            class="w-full px-3 py-2 bg-cream border border-border rounded-lg text-text text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          />
+        </div>
+
+        {/* Yeast */}
+        <div class="input-group">
+          <label for="yeast" class="block text-sm font-medium text-text mb-2">
+            Yeast %
+          </label>
+          <input
+            type="number"
+            id="yeast"
+            name="yeast"
+            min="0.1"
+            max="3"
+            step="0.1"
+            value="0.3"
+            class="w-full px-3 py-2 bg-cream border border-border rounded-lg text-text text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          />
+        </div>
+
+        {/* Oil */}
+        <div class="input-group">
+          <label for="oil" class="block text-sm font-medium text-text mb-2">
+            Oil %
+          </label>
+          <input
+            type="number"
+            id="oil"
+            name="oil"
+            min="0"
+            max="10"
+            step="0.5"
+            value="0"
+            class="w-full px-3 py-2 bg-cream border border-border rounded-lg text-text text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          />
+        </div>
+
+        {/* Sugar */}
+        <div class="input-group">
+          <label for="sugar" class="block text-sm font-medium text-text mb-2">
+            Sugar %
+          </label>
+          <input
+            type="number"
+            id="sugar"
+            name="sugar"
+            min="0"
+            max="5"
+            step="0.5"
+            value="0"
+            class="w-full px-3 py-2 bg-cream border border-border rounded-lg text-text text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* Divider */}
+      <hr class="border-border" />
+
+      {/* Pre-ferment toggle */}
+      <div class="pre-ferment-section">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <span class="text-sm font-medium text-text">Use Pre-ferment</span>
+            <p class="text-xs text-text-muted">Two-stage recipe for complex flavor</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              id="usePreFerment"
+              name="usePreFerment"
+              class="sr-only peer"
+              role="switch"
+              aria-checked="false"
+            />
+            <div class="w-11 h-6 bg-border rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary peer-focus:ring-offset-2 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" aria-hidden="true"></div>
+          </label>
+        </div>
+
+        {/* Pre-ferment options (shown when toggled) */}
+        <div id="preFermentOptions" class="hidden pl-4 border-l-2 border-primary/30 space-y-4">
+          {/* Pre-ferment type */}
+          <fieldset>
+            <legend class="sr-only">Pre-ferment type</legend>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="preFermentType" value="poolish" checked class="text-primary focus:ring-primary" />
+                <span class="text-sm text-text">Poolish (100% hydration)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="preFermentType" value="biga" class="text-primary focus:ring-primary" />
+                <span class="text-sm text-text">Biga (50-60% hydration)</span>
+              </label>
+            </div>
+          </fieldset>
+
+          {/* Pre-ferment flour percentage */}
+          <div class="input-group">
+            <div class="flex items-center justify-between mb-2">
+              <label for="preFermentPercent" class="text-sm text-text">
+                Flour in pre-ferment
+              </label>
+              <span id="preFermentPercent-value" class="font-medium text-primary">25%</span>
+            </div>
+            <input
+              type="range"
+              id="preFermentPercent"
+              name="preFermentPercent"
+              min="15"
+              max="50"
+              value="25"
+              class="w-full"
+              aria-valuemin="15"
+              aria-valuemax="50"
+              aria-valuenow="25"
+              aria-valuetext="25 percent"
+            />
+            <div class="flex justify-between text-xs text-text-muted mt-1">
+              <span>15%</span>
+              <span>50%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <hr class="border-border" />
+
+      {/* Humidity adjustment */}
+      <div class="flex items-start gap-3">
+        <input
+          type="checkbox"
+          id="humidityAdjust"
+          name="humidityAdjust"
+          class="mt-1 w-4 h-4 text-primary border-border rounded focus:ring-primary"
+        />
+        <div>
+          <label for="humidityAdjust" class="text-sm font-medium text-text cursor-pointer">
+            High Humidity Adjustment
+          </label>
+          <p class="text-xs text-text-muted mt-1">
+            Reduces hydration by 2.5% to compensate for humid conditions.
+            Use in summer or in humid climates to prevent sticky dough.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle advanced options
+  const toggleBtn = document.getElementById('advanced-toggle');
+  const content = document.getElementById('advanced-content');
+  const chevron = document.getElementById('advanced-chevron');
+
+  toggleBtn?.addEventListener('click', () => {
+    const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+    toggleBtn.setAttribute('aria-expanded', (!isExpanded).toString());
+    content?.classList.toggle('hidden');
+    chevron?.classList.toggle('rotate-180');
+  });
+
+  // Update hydration display
+  const hydrationSlider = document.getElementById('hydration');
+  const hydrationValue = document.getElementById('hydration-value');
+
+  hydrationSlider?.addEventListener('input', (e) => {
+    const value = e.target.value;
+    if (hydrationValue) {
+      hydrationValue.textContent = `${value}%`;
+    }
+    // Update ARIA for screen readers
+    e.target.setAttribute('aria-valuenow', value);
+    e.target.setAttribute('aria-valuetext', `${value} percent`);
+  });
+
+  // Update pre-ferment percentage display
+  const preFermentSlider = document.getElementById('preFermentPercent');
+  const preFermentValue = document.getElementById('preFermentPercent-value');
+
+  preFermentSlider?.addEventListener('input', (e) => {
+    const value = e.target.value;
+    if (preFermentValue) {
+      preFermentValue.textContent = `${value}%`;
+    }
+    // Update ARIA for screen readers
+    e.target.setAttribute('aria-valuenow', value);
+    e.target.setAttribute('aria-valuetext', `${value} percent`);
+  });
+
+  // Toggle pre-ferment options
+  const preFermentToggle = document.getElementById('usePreFerment');
+  const preFermentOptions = document.getElementById('preFermentOptions');
+
+  preFermentToggle?.addEventListener('change', (e) => {
+    // Update ARIA state for screen readers
+    e.target.setAttribute('aria-checked', e.target.checked.toString());
+    if (preFermentOptions) {
+      preFermentOptions.classList.toggle('hidden', !e.target.checked);
+    }
+  });
+</script>

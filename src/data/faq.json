@@ -1,0 +1,68 @@
+{
+  "faqs": [
+    {
+      "question": "What hydration is best for Neapolitan pizza?",
+      "answer": "Traditional Neapolitan pizza uses 60-65% hydration. This creates a soft, pliable dough that chars beautifully in a high-temperature oven (800-900°F). If you're new to pizza making, start at 60% and work your way up as you get more comfortable."
+    },
+    {
+      "question": "Can I use bread flour instead of 00 flour?",
+      "answer": "Yes! Bread flour works well for pizza, especially New York and Detroit styles. It has higher protein content (12-14%) which creates a chewier texture. For Neapolitan, 00 flour is preferred for its finer grind and lower protein, but bread flour is a solid substitute."
+    },
+    {
+      "question": "Why is my pizza dough sticky?",
+      "answer": "Sticky dough is usually caused by too much water (high hydration) or under-kneading. Try reducing hydration by 2-3%, or knead for a few more minutes until the dough becomes smooth and less tacky. Also, make sure your flour is fresh - old flour absorbs less water."
+    },
+    {
+      "question": "How long should I cold ferment pizza dough?",
+      "answer": "Cold fermentation (fridge at 38-40°F) typically takes 24-72 hours. 24 hours is the minimum for flavor development. 48-72 hours produces more complex flavors and better browning. Dough can be held up to 5 days, but may become harder to stretch."
+    },
+    {
+      "question": "What's the difference between poolish and biga?",
+      "answer": "Poolish is a liquid pre-ferment (100% hydration) that produces a more open crumb and mild, slightly tangy flavor. Biga is stiff (50-60% hydration) and creates a more complex, wheaty flavor with a tighter crumb structure. Both improve flavor and dough extensibility."
+    },
+    {
+      "question": "Can I freeze pizza dough?",
+      "answer": "Yes! After the dough balls are shaped, wrap tightly in plastic and freeze for up to 3 months. Thaw overnight in the refrigerator, then bring to room temperature (1-2 hours) before stretching. Frozen dough may be slightly less extensible."
+    },
+    {
+      "question": "Why use baker's percentages?",
+      "answer": "Baker's percentages express all ingredients relative to flour weight (flour = 100%). This makes scaling recipes easy - just multiply the flour weight and everything else scales proportionally. It also helps you compare recipes and understand the ratios that make each style unique."
+    },
+    {
+      "question": "How do I adjust for humid weather?",
+      "answer": "In humid conditions, flour absorbs moisture from the air, effectively increasing your hydration. Reduce water by 2-3% (our calculator has a humidity toggle for this). You may also need to extend bulk fermentation time as humid dough ferments faster."
+    },
+    {
+      "question": "What's the difference between instant and active dry yeast?",
+      "answer": "Instant yeast (also called rapid-rise or bread machine yeast) can be mixed directly into flour. Active dry yeast needs to be dissolved in warm water first and requires 25% more than instant yeast for the same rise. Our calculator automatically adjusts the amount when you select your yeast type in Advanced Options."
+    },
+    {
+      "question": "What water temperature should I use?",
+      "answer": "Water temperature affects fermentation speed. For cold ferments (24-72 hours), use cold water (55-60°F / 13-16°C) to slow down yeast activity. For quick same-day doughs, use warm water (100-110°F / 38-43°C) to speed up the rise. Room temperature water works for medium ferments."
+    },
+    {
+      "question": "How much salt should I use in pizza dough?",
+      "answer": "Most pizza doughs use 2-3% salt (baker's percentage). Salt strengthens gluten, controls fermentation, and adds flavor. Too little salt makes dough slack and bland; too much inhibits yeast and makes the dough tough. Start with 2.5% and adjust to taste."
+    },
+    {
+      "question": "Why does my dough shrink back when I stretch it?",
+      "answer": "Dough that springs back is under-proofed or the gluten is too tight. Let it rest 15-30 more minutes at room temperature to relax the gluten. Also, avoid overworking the dough - handle it gently and let gravity do most of the stretching."
+    },
+    {
+      "question": "Do I need a pizza oven to make great pizza?",
+      "answer": "No! While pizza ovens reach 800-900°F for authentic Neapolitan pizza, home ovens at 500-550°F can make excellent pizza. Use a pizza steel or stone, preheat for at least 45 minutes, and position the rack at the top. For Detroit and pan pizzas, a standard oven works perfectly."
+    },
+    {
+      "question": "What's the best way to measure flour - by weight or volume?",
+      "answer": "Always measure by weight using a digital kitchen scale. Cup measurements can vary by 20-30% depending on how flour is scooped. A $15 digital scale is the single best investment for consistent dough. Our calculator provides weights in grams and ounces."
+    },
+    {
+      "question": "How do I know when my dough has proofed enough?",
+      "answer": "Well-proofed dough will have roughly doubled in size and feel light and airy. The poke test works well: press a floured finger into the dough. If it springs back slowly and leaves a slight indent, it's ready. If it springs back quickly, it needs more time."
+    },
+    {
+      "question": "Can I make pizza dough without yeast?",
+      "answer": "Yes, using sourdough starter or baking powder. Sourdough pizza requires a mature starter and longer fermentation (8-24 hours) but produces complex flavors. For quick results, some recipes use baking powder, though this creates a different texture than yeast-leavened dough."
+    }
+  ]
+}
