@@ -692,7 +692,7 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
   const emailForm = document.getElementById('email-form');
   const emailSuccess = document.getElementById('email-success');
   const emailError = document.getElementById('email-error');
-  const N8N_WEBHOOK_URL = import.meta.env.PUBLIC_N8N_WEBHOOK_URL;
+  const N8N_WEBHOOK_URL = import.meta.env.PUBLIC_N8N_WEBHOOK_URL || 'https://zax76.app.n8n.cloud/webhook/pizza-signup';
 
   // Recipe-specific email form (post-calculator)
   const recipeEmailForm = document.getElementById('recipe-email-form');
