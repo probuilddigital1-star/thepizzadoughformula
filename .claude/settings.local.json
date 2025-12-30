@@ -16,7 +16,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: The Pizza Dough Formula\n\nFeatures:\n- Pizza dough calculator with multiple styles \\(Neapolitan, NY, Detroit, etc.\\)\n- Baker''s percentages support\n- Pre-ferment options \\(poolish/biga\\)\n- GDPR-compliant cookie consent\n- Email capture with n8n/Beehiiv integration\n- Google Analytics \\(consent-based\\)\n- Responsive design\n- SEO optimized\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git branch:*)",
       "Bash(git push:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:thepizzadoughformula.com)"
     ]
   }
 }
