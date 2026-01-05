@@ -28,7 +28,7 @@
       "category": "steels",
       "description": "Conducts heat 20x better than stone for crispier crusts and better leoparding",
       "priceRange": "$70-120",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+steel+baking",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+steel+baking&tag=probuild20-20",
       "image": null,
       "forStyles": ["neapolitan", "newYork", "thinCrispy"],
       "featured": true
@@ -39,7 +39,7 @@
       "category": "scales",
       "description": "Essential for baker's percentages - accurate to 1g for perfect dough every time",
       "priceRange": "$15-30",
-      "affiliateUrl": "https://www.amazon.com/s?k=digital+kitchen+scale+grams",
+      "affiliateUrl": "https://www.amazon.com/s?k=digital+kitchen+scale+grams&tag=probuild20-20",
       "image": null,
       "forStyles": ["all"],
       "featured": true
@@ -50,7 +50,7 @@
       "category": "flour",
       "description": "The gold standard for Neapolitan - 12.5% protein, finely milled for soft, airy crust",
       "priceRange": "$8-15",
-      "affiliateUrl": "https://www.amazon.com/s?k=caputo+00+flour+pizza",
+      "affiliateUrl": "https://www.amazon.com/s?k=caputo+00+flour+pizza&tag=probuild20-20",
       "image": null,
       "forStyles": ["neapolitan", "poolishBiga"],
       "featured": true
@@ -61,7 +61,7 @@
       "category": "flour",
       "description": "High-protein (12.7%) flour that gives NY-style its signature chewy texture",
       "priceRange": "$6-10",
-      "affiliateUrl": "https://www.amazon.com/s?k=king+arthur+bread+flour",
+      "affiliateUrl": "https://www.amazon.com/s?k=king+arthur+bread+flour&tag=probuild20-20",
       "image": null,
       "forStyles": ["newYork", "detroit"],
       "featured": false
@@ -72,7 +72,7 @@
       "category": "tools",
       "description": "Launch pizzas into your oven and retrieve them safely - wood or metal",
       "priceRange": "$20-50",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+peel+wood",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+peel+wood&tag=probuild20-20",
       "image": null,
       "forStyles": ["neapolitan", "newYork"],
       "featured": false
@@ -83,7 +83,7 @@
       "category": "tools",
       "description": "Blue steel pan creates the signature crispy, caramelized cheese edges (frico)",
       "priceRange": "$30-60",
-      "affiliateUrl": "https://www.amazon.com/s?k=detroit+style+pizza+pan",
+      "affiliateUrl": "https://www.amazon.com/s?k=detroit+style+pizza+pan&tag=probuild20-20",
       "image": null,
       "forStyles": ["detroit"],
       "featured": true
@@ -94,7 +94,7 @@
       "category": "tools",
       "description": "Check water temperature for optimal yeast activation (cold vs warm ferment)",
       "priceRange": "$15-100",
-      "affiliateUrl": "https://www.amazon.com/s?k=instant+read+thermometer+kitchen",
+      "affiliateUrl": "https://www.amazon.com/s?k=instant+read+thermometer+kitchen&tag=probuild20-20",
       "image": null,
       "forStyles": ["all"],
       "featured": false
@@ -105,15 +105,15 @@
       "category": "tools",
       "description": "Clear containers with lids - see your dough rise and know when it's ready",
       "priceRange": "$10-25",
-      "affiliateUrl": "https://www.amazon.com/s?k=dough+proofing+container",
+      "affiliateUrl": "https://www.amazon.com/s?k=dough+proofing+container&tag=probuild20-20",
       "image": null,
       "forStyles": ["all"],
       "featured": false
     }
   ],
   "_meta": {
-    "note": "TODO: Replace Amazon search URLs with affiliate links once Associates account is approved",
-    "lastUpdated": "2025-12-28",
+    "note": "Amazon Associates tag: probuild20-20",
+    "lastUpdated": "2026-01-05",
     "affiliateDisclaimer": "We may earn a commission from purchases made through links on this site."
   }
 }
