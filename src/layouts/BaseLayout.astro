@@ -136,13 +136,9 @@ const webAppSchema = schemaType === 'WebApplication' ? {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.svg" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Self-hosted fonts - preload critical heading font for LCP -->
+    <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
 
 
     <!-- Schema.org Organization (always present) -->
@@ -192,7 +188,7 @@ const webAppSchema = schemaType === 'WebApplication' ? {
       </script>
     )}
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col texture-grain">
     <!-- Skip link for keyboard navigation -->
     <a
       href="#main-content"

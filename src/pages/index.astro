@@ -24,26 +24,55 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
   <Header />
 
   <main id="main-content" class="flex-grow">
-    {/* Hero Section */}
-    <section class="bg-gradient-to-b from-cream to-surface py-12 md:py-16">
-      <div class="max-w-4xl mx-auto px-4 text-center">
-        <h1 class="font-heading text-4xl md:text-5xl font-bold text-text mb-4">
-          The Pizza Dough
-          <span class="text-primary block md:inline"> Formula</span>
+    {/* Hero Section - Magazine Editorial Style */}
+    <section class="hero-section relative overflow-hidden py-20 md:py-32">
+      {/* Warm gradient background */}
+      <div class="absolute inset-0 bg-gradient-to-b from-crust via-flour to-flour"></div>
+
+      <div class="relative max-w-4xl mx-auto px-4 text-center">
+        {/* Editorial eyebrow with decorative lines */}
+        <div class="flex items-center justify-center gap-4 mb-8 animate-fade-in stagger-1">
+          <div class="h-px w-12 bg-ember/40"></div>
+          <p class="text-xs font-medium tracking-[0.3em] text-ember uppercase">
+            For Home Pizzaiolos
+          </p>
+          <div class="h-px w-12 bg-ember/40"></div>
+        </div>
+
+        {/* Main headline - dramatic editorial typography */}
+        <h1 class="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-char mb-6 leading-[0.95] tracking-tight animate-fade-in stagger-2">
+          The Art of
+          <span class="block text-ember italic font-normal">Perfect Dough</span>
         </h1>
-        <p class="text-lg text-text-muted max-w-2xl mx-auto mb-8">
-          Perfect pizza dough starts with precise measurements. Calculate exact ingredient ratios
-          for Neapolitan, New York, Detroit, and more styles using baker's percentages.
+
+        {/* Editorial subhead */}
+        <p class="text-lg md:text-xl text-char-soft max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in stagger-3">
+          Master baker's percentages. Calculate precise recipes for Neapolitan,
+          New York, Detroit, and beyond.
         </p>
-        <a
-          href="#calculator"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
-        >
-          Start Calculating
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </a>
+
+        {/* Single prominent CTA */}
+        <div class="animate-fade-in stagger-4">
+          <a
+            href="#calculator"
+            class="group inline-flex items-center justify-center gap-3 px-10 py-4 bg-char text-white font-medium rounded-full hover:bg-ember transition-colors duration-300"
+          >
+            Start Your Recipe
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+
+        {/* Subtle scroll indicator */}
+        <div class="mt-16 animate-fade-in stagger-5">
+          <div class="inline-flex flex-col items-center text-char-soft/50 text-xs tracking-wider">
+            <span class="mb-2">Scroll</span>
+            <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7" />
+            </svg>
+          </div>
+        </div>
       </div>
     </section>
 

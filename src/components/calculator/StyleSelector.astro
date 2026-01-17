@@ -2,30 +2,31 @@
 /**
  * StyleSelector Component
  * Radio card grid for selecting pizza style
- * Uses two-row layout (4+3) for optimal readability
+ * Single 3-column grid with Custom as full-width featured option
  */
 import { PIZZA_STYLES, getAllStyles } from '../../scripts/calculator/presets.js';
 import PizzaStyleIcon from '../icons/PizzaStyleIcon.astro';
 
 const styles = getAllStyles();
-const topRow = styles.slice(0, 4);   // Neapolitan, New York, Detroit, Thin & Crispy
-const bottomRow = styles.slice(4);   // Poolish/Biga, Emergency, Custom
+// Main styles (6) + Custom separate
+const mainStyles = styles.filter(s => s.id !== 'custom');
+const customStyle = styles.find(s => s.id === 'custom');
 ---
 
 <div class="style-selector">
   <h2 class="font-heading text-2xl font-bold text-text mb-2">
-    Choose Your Pizza Style
+    Choose Your Style
   </h2>
   <p class="text-text-muted mb-6">
-    Select a style to load recommended settings, or choose Custom for full control.
+    Select a style for recommended settings, or go custom.
   </p>
 
-  <div class="flex flex-col gap-3" role="radiogroup" aria-label="Pizza style selection">
-    <!-- First row: 4 main styles -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {topRow.map((style, index) => (
+  <div class="flex flex-col gap-4" role="radiogroup" aria-label="Pizza style selection">
+    <!-- Main styles: 3-column grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      {mainStyles.map((style, index) => (
         <label
-          class="style-card group relative flex flex-col p-4 bg-surface border-2 border-border rounded-xl cursor-pointer transition-all hover:border-primary hover:shadow-md focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+          class={`style-card group relative flex flex-col p-4 bg-surface border border-border/60 rounded-xl cursor-pointer transition-all duration-200 hover:border-ember/40 hover:shadow-md hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ember focus-within:ring-offset-2 animate-fade-in stagger-${index + 1}`}
           data-style={style.id}
         >
           <input
@@ -37,100 +38,108 @@ const bottomRow = styles.slice(4);   // Poolish/Biga, Emergency, Custom
           />
 
           {/* Selected indicator */}
-          <div class="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-white bg-border peer-checked:border-white peer-checked:bg-primary shadow-sm transition-colors flex items-center justify-center">
-            <svg class="checkmark-icon w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+          <div class="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full border-2 border-white bg-border peer-checked:bg-ember shadow-sm transition-all duration-200 flex items-center justify-center">
+            <svg class="checkmark-icon w-3 h-3 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
             </svg>
           </div>
 
-          {/* Style icon and name */}
+          {/* Style name and icon inline */}
           <div class="flex items-center gap-2 mb-2">
-            <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
-              <PizzaStyleIcon name={style.icon} class="w-4 h-4 text-primary" />
+            <div class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg bg-ember/10 group-hover:bg-ember/15 transition-colors">
+              <PizzaStyleIcon name={style.icon} class="w-3.5 h-3.5 text-ember" />
             </div>
-            <span class="font-heading font-semibold text-sm text-text leading-tight break-words">{style.name}</span>
+            <h3 class="font-heading font-bold text-sm text-char leading-tight">{style.name}</h3>
           </div>
 
           {/* Description */}
-          <p class="text-xs text-text-muted leading-relaxed flex-grow">{style.description}</p>
+          <p class="text-xs text-char-soft leading-relaxed flex-grow">{style.description}</p>
 
           {/* Equipment hint - hidden on mobile */}
-          <p class="hidden md:block text-xs text-text-muted/70 italic mt-auto pt-2">{style.equipment}</p>
+          <p class="hidden md:block text-[11px] text-char-soft/50 italic mt-2 pt-2 border-t border-border/30">{style.equipment}</p>
 
-          {/* Selected border overlay */}
-          <div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+          {/* Selected state: left accent bar */}
+          <div class="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-ember opacity-0 peer-checked:opacity-100 transition-opacity" />
         </label>
       ))}
     </div>
 
-    <!-- Second row: 3 additional styles -->
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      {bottomRow.map((style) => (
-        <label
-          class="style-card group relative flex flex-col p-4 bg-surface border-2 border-border rounded-xl cursor-pointer transition-all hover:border-primary hover:shadow-md focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
-          data-style={style.id}
-        >
-          <input
-            type="radio"
-            name="pizzaStyle"
-            value={style.id}
-            class="sr-only peer"
-          />
+    {/* Custom option - full width featured card */}
+    {customStyle && (
+      <label
+        class="style-card-custom group relative flex items-center gap-4 p-4 bg-char/[0.03] border border-dashed border-char/20 rounded-xl cursor-pointer transition-all duration-200 hover:border-ember/40 hover:bg-ember/[0.02] focus-within:ring-2 focus-within:ring-ember focus-within:ring-offset-2 animate-fade-in stagger-7"
+        data-style={customStyle.id}
+      >
+        <input
+          type="radio"
+          name="pizzaStyle"
+          value={customStyle.id}
+          class="sr-only peer"
+        />
 
-          {/* Selected indicator */}
-          <div class="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-white bg-border peer-checked:border-white peer-checked:bg-primary shadow-sm transition-colors flex items-center justify-center">
-            <svg class="checkmark-icon w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-          </div>
+        {/* Icon */}
+        <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-char/5 group-hover:bg-ember/10 transition-colors">
+          <PizzaStyleIcon name={customStyle.icon} class="w-5 h-5 text-char-soft group-hover:text-ember transition-colors" />
+        </div>
 
-          {/* Style icon and name */}
-          <div class="flex items-center gap-2 mb-2">
-            <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
-              <PizzaStyleIcon name={style.icon} class="w-4 h-4 text-primary" />
-            </div>
-            <span class="font-heading font-semibold text-sm text-text leading-tight break-words">{style.name}</span>
-          </div>
+        {/* Content */}
+        <div class="flex-grow">
+          <h3 class="font-heading font-bold text-sm text-char">{customStyle.name}</h3>
+          <p class="text-xs text-char-soft">{customStyle.description}</p>
+        </div>
 
-          {/* Description */}
-          <p class="text-xs text-text-muted leading-relaxed flex-grow">{style.description}</p>
-
-          {/* Equipment hint - hidden on mobile */}
-          <p class="hidden md:block text-xs text-text-muted/70 italic mt-auto pt-2">{style.equipment}</p>
-
-          {/* Selected border overlay */}
-          <div class="absolute inset-0 rounded-xl border-2 border-primary opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
-        </label>
-      ))}
-    </div>
+        {/* Selected indicator */}
+        <div class="flex-shrink-0 w-6 h-6 rounded-full border-2 border-char/20 peer-checked:border-ember peer-checked:bg-ember transition-all duration-200 flex items-center justify-center">
+          <svg class="checkmark-icon w-3 h-3 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </label>
+    )}
   </div>
 </div>
 
 <style>
-  /* Card selected state - orange border and subtle background tint */
+  /* Card selected state */
   .style-card:has(input:checked) {
-    border-color: var(--color-primary);
-    background-color: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface));
+    border-color: var(--color-ember);
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--color-ember) 3%, var(--color-surface)) 0%,
+      var(--color-surface) 100%
+    );
+    box-shadow: 0 2px 12px -4px rgba(217, 93, 57, 0.15);
   }
 
-  /* Checkmark visibility when card is selected */
-  .style-card:has(input:checked) .checkmark-icon {
+  .style-card-custom:has(input:checked) {
+    border-color: var(--color-ember);
+    border-style: solid;
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--color-ember) 3%, var(--color-surface)) 0%,
+      var(--color-surface) 100%
+    );
+  }
+
+  /* Checkmark visibility */
+  .style-card:has(input:checked) .checkmark-icon,
+  .style-card-custom:has(input:checked) .checkmark-icon {
     opacity: 1;
   }
 
-  /* Ensure cards contain their content and don't overflow */
+  /* Card base styles */
   .style-card {
-    align-self: stretch;
     min-height: 100px;
-    overflow: hidden;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    overflow: visible;
   }
 
-  /* Responsive minimum heights - taller on desktop to fit equipment hint */
   @media (min-width: 768px) {
     .style-card {
-      min-height: 160px;
+      min-height: 140px;
     }
+  }
+
+  /* Remove hover lift on selected */
+  .style-card:has(input:checked):hover,
+  .style-card-custom:has(input:checked):hover {
+    transform: translateY(0);
   }
 </style>
