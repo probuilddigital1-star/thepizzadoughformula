@@ -24,38 +24,66 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
   <Header />
 
   <main id="main-content" class="flex-grow">
-    {/* Hero Section - Magazine Editorial Style */}
-    <section class="hero-section relative overflow-hidden py-20 md:py-32">
-      {/* Warm gradient background */}
-      <div class="absolute inset-0 bg-gradient-to-b from-crust via-flour to-flour"></div>
+    {/* Hero Section - Magazine Cover Style with Ken Burns */}
+    <section class="hero-section relative h-[85vh] min-h-[600px] overflow-hidden">
+      {/* Background Image with Ken Burns Effect */}
+      <div class="absolute inset-0">
+        <picture>
+          <source srcset="/images/hero-optimized.webp" type="image/webp" />
+          <img
+            src="/images/hero-optimized.jpg"
+            alt="Pizza baking in traditional wood-fired oven"
+            class="w-full h-full object-cover hero-image-ken-burns"
+            style="object-position: 60% center;"
+            loading="eager"
+            fetchpriority="high"
+            width="1920"
+            height="1280"
+          />
+        </picture>
+      </div>
 
-      <div class="relative max-w-4xl mx-auto px-4 text-center">
-        {/* Editorial eyebrow with decorative lines */}
-        <div class="flex items-center justify-center gap-4 mb-8 animate-fade-in stagger-1">
-          <div class="h-px w-12 bg-ember/40"></div>
-          <p class="text-xs font-medium tracking-[0.3em] text-ember uppercase">
+      {/* Gradient Overlay - Left fade for text readability */}
+      <div class="absolute inset-0 hero-gradient-overlay"></div>
+
+      {/* Flour Dust Particles */}
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div class="flour-particle" style="bottom: 20%;"></div>
+        <div class="flour-particle" style="bottom: 10%;"></div>
+        <div class="flour-particle" style="bottom: 30%;"></div>
+        <div class="flour-particle" style="bottom: 15%;"></div>
+        <div class="flour-particle" style="bottom: 25%;"></div>
+        <div class="flour-particle" style="bottom: 5%;"></div>
+        <div class="flour-particle" style="bottom: 35%;"></div>
+        <div class="flour-particle" style="bottom: 12%;"></div>
+      </div>
+
+      {/* Content */}
+      <div class="relative h-full flex flex-col justify-center px-6 md:px-12 lg:px-20 max-w-3xl">
+        {/* Editorial eyebrow */}
+        <div class="mb-6 animate-fade-in stagger-1">
+          <p class="font-editorial text-sm md:text-base tracking-[0.2em] text-ember uppercase">
             For Home Pizzaiolos
           </p>
-          <div class="h-px w-12 bg-ember/40"></div>
         </div>
 
         {/* Main headline - dramatic editorial typography */}
-        <h1 class="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-char mb-6 leading-[0.95] tracking-tight animate-fade-in stagger-2">
+        <h1 class="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-char mb-6 leading-[0.9] tracking-tight animate-fade-in stagger-2">
           The Art of
-          <span class="block text-ember italic font-normal">Perfect Dough</span>
+          <span class="block text-ember italic font-normal mt-2">Perfect Dough</span>
         </h1>
 
-        {/* Editorial subhead */}
-        <p class="text-lg md:text-xl text-char-soft max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in stagger-3">
+        {/* Editorial subhead with Cormorant Garamond */}
+        <p class="font-editorial text-xl md:text-2xl lg:text-3xl text-char-soft max-w-xl mb-10 leading-relaxed animate-fade-in stagger-3">
           Master baker's percentages. Calculate precise recipes for Neapolitan,
           New York, Detroit, and beyond.
         </p>
 
-        {/* Single prominent CTA */}
+        {/* CTA Button */}
         <div class="animate-fade-in stagger-4">
           <a
             href="#calculator"
-            class="group inline-flex items-center justify-center gap-3 px-10 py-4 bg-char text-white font-medium rounded-full hover:bg-ember transition-colors duration-300"
+            class="group inline-flex items-center justify-center gap-3 px-10 py-4 bg-char text-white font-medium rounded-full hover:bg-ember transition-colors duration-300 shadow-lg hover:shadow-xl"
           >
             Start Your Recipe
             <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -63,15 +91,13 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
             </svg>
           </a>
         </div>
+      </div>
 
-        {/* Subtle scroll indicator */}
-        <div class="mt-16 animate-fade-in stagger-5">
-          <div class="inline-flex flex-col items-center text-char-soft/50 text-xs tracking-wider">
-            <span class="mb-2">Scroll</span>
-            <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7" />
-            </svg>
-          </div>
+      {/* Scroll Indicator - Hidden on mobile */}
+      <div class="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-3 animate-fade-in stagger-5">
+        <span class="text-char/60 text-xs tracking-[0.2em] uppercase">Scroll</span>
+        <div class="w-px h-12 bg-char/30 overflow-hidden">
+          <div class="w-full h-full bg-ember scroll-indicator-line"></div>
         </div>
       </div>
     </section>

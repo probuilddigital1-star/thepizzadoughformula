@@ -24,6 +24,15 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-garamond-latin.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @theme {
   /* Brand Colors - Artisan Workshop Palette */
   --color-ember: #D95D39;
@@ -65,6 +74,7 @@
 
   /* Typography - Self-hosted fonts */
   --font-heading: 'Fraunces', Georgia, serif;
+  --font-editorial: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
@@ -423,4 +433,131 @@ body::before {
 /* Enhanced grain overlay - more visible */
 .texture-grain-strong::before {
   opacity: 0.04;
+}
+
+/* ================================
+   Magazine Hero Styles
+   ================================ */
+
+/* Editorial font utility */
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+/* Ken Burns animation - slow cinematic zoom out */
+@keyframes kenBurns {
+  0% {
+    transform: scale(1.15);
+    object-position: 60% 40%;
+  }
+  100% {
+    transform: scale(1.0);
+    object-position: 60% center;
+  }
+}
+
+.hero-image-ken-burns {
+  animation: kenBurns 25s ease-out forwards;
+  will-change: transform;
+}
+
+/* Flour dust particles */
+@keyframes floatParticle {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.flour-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatParticle linear infinite;
+}
+
+.flour-particle:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+.flour-particle:nth-child(2) { left: 20%; animation-duration: 18s; animation-delay: 2s; width: 3px; height: 3px; }
+.flour-particle:nth-child(3) { left: 35%; animation-duration: 20s; animation-delay: 4s; }
+.flour-particle:nth-child(4) { left: 50%; animation-duration: 16s; animation-delay: 1s; width: 5px; height: 5px; }
+.flour-particle:nth-child(5) { left: 65%; animation-duration: 22s; animation-delay: 3s; width: 3px; height: 3px; }
+.flour-particle:nth-child(6) { left: 75%; animation-duration: 17s; animation-delay: 5s; }
+.flour-particle:nth-child(7) { left: 85%; animation-duration: 19s; animation-delay: 2.5s; width: 4px; height: 4px; }
+.flour-particle:nth-child(8) { left: 95%; animation-duration: 21s; animation-delay: 0.5s; width: 3px; height: 3px; }
+
+/* Scroll indicator line animation */
+@keyframes scrollLine {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  50.1% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+.scroll-indicator-line {
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+/* Hero gradient overlay - adapts to content */
+.hero-gradient-overlay {
+  background: linear-gradient(
+    to right,
+    rgba(247, 244, 237, 0.95) 0%,
+    rgba(247, 244, 237, 0.85) 25%,
+    rgba(247, 244, 237, 0.4) 50%,
+    transparent 70%
+  );
+}
+
+@media (max-width: 768px) {
+  .hero-gradient-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(247, 244, 237, 0.98) 0%,
+      rgba(247, 244, 237, 0.9) 30%,
+      rgba(247, 244, 237, 0.6) 60%,
+      rgba(45, 42, 36, 0.3) 100%
+    );
+  }
+}
+
+/* Reduced motion - disable Ken Burns and particles */
+@media (prefers-reduced-motion: reduce) {
+  .hero-image-ken-burns {
+    animation: none;
+    transform: scale(1);
+  }
+
+  .flour-particle {
+    display: none;
+  }
+
+  .scroll-indicator-line {
+    animation: none;
+    transform: scaleY(1);
+  }
 }
