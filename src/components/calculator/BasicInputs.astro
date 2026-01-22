@@ -67,42 +67,28 @@
     </div>
   </div>
 
+  {/* Size Selector */}
+  <div class="mt-4">
+    <span class="text-xs text-text-muted block mb-2" id="size-label">Size:</span>
+    <div id="size-options" class="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="size-label">
+      {/* Size options populated by JavaScript based on selected style */}
+    </div>
+  </div>
+
   {/* Quick presets */}
   <div class="mt-4">
     <span class="text-xs text-text-muted block mb-2">Quick presets:</span>
-    <div class="flex flex-wrap gap-2">
-      <button
-        type="button"
-        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
-        data-balls="2"
-        data-weight="250"
-      >
-        2 pizzas
-      </button>
-      <button
-        type="button"
-        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
-        data-balls="4"
-        data-weight="250"
-      >
-        4 pizzas
-      </button>
-      <button
-        type="button"
-        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
-        data-balls="6"
-        data-weight="280"
-      >
-        6 pizzas
-      </button>
-      <button
-        type="button"
-        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
-        data-balls="1"
-        data-weight="400"
-      >
-        1 Detroit pan
-      </button>
+    <div id="quantity-presets" class="flex flex-wrap gap-2">
+      {/* Quantity presets populated by JavaScript based on selected style */}
     </div>
   </div>
 </div>
+
+<style>
+  /* Size selector pill styling */
+  .size-option input:checked + span {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+</style>

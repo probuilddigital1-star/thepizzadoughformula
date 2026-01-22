@@ -1,0 +1,154 @@
+---
+/**
+ * BreadCalculatorPromo - Cross-promotion CTA for The Dough Formula
+ * A card-style promo linking to the bread calculator sister site
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<section class={`bread-promo-section py-12 md:py-16 ${className}`}>
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="bread-promo-card relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#F5F1E8] via-[#EDE6D6] to-[#E8DCC4] border border-[#D4CFC0] shadow-lg">
+
+      <!-- Decorative wheat pattern overlay -->
+      <div class="absolute inset-0 opacity-[0.03] pointer-events-none" aria-hidden="true">
+        <svg class="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="wheat-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M30 5 Q35 15 30 25 Q25 15 30 5" fill="currentColor" class="text-char"/>
+              <path d="M30 25 Q38 30 30 45 Q22 30 30 25" fill="currentColor" class="text-char"/>
+              <path d="M25 15 Q20 20 15 18" stroke="currentColor" stroke-width="1" fill="none" class="text-char"/>
+              <path d="M35 15 Q40 20 45 18" stroke="currentColor" stroke-width="1" fill="none" class="text-char"/>
+              <path d="M22 32 Q15 35 12 30" stroke="currentColor" stroke-width="1" fill="none" class="text-char"/>
+              <path d="M38 32 Q45 35 48 30" stroke="currentColor" stroke-width="1" fill="none" class="text-char"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#wheat-pattern)"/>
+        </svg>
+      </div>
+
+      <!-- Content -->
+      <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+
+        <!-- Left: Icon/Visual -->
+        <div class="flex-shrink-0">
+          <div class="bread-icon-wrapper w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-[#C4956A] to-[#A67B4F] flex items-center justify-center shadow-md">
+            <svg class="w-10 h-10 md:w-12 md:h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <!-- Bread loaf icon -->
+              <path d="M5 12c0-4 3-7 7-7s7 3 7 7"/>
+              <path d="M4 12h16v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6z"/>
+              <path d="M8 12v4"/>
+              <path d="M12 12v4"/>
+              <path d="M16 12v4"/>
+              <!-- Steam lines -->
+              <path d="M8 3c0 1.5.5 2 0 3" class="steam-line"/>
+              <path d="M12 2c0 1.5.5 2 0 3" class="steam-line"/>
+              <path d="M16 3c0 1.5.5 2 0 3" class="steam-line"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Center: Copy -->
+        <div class="flex-1 text-center md:text-left">
+          <p class="font-editorial text-xs md:text-sm tracking-[0.15em] text-[#8B7355] uppercase mb-2">
+            From the makers of The Pizza Dough Formula
+          </p>
+          <h2 class="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-char leading-tight mb-3">
+            Ready to Rise
+            <span class="block text-[#A67B4F] italic font-normal">Beyond Pizza?</span>
+          </h2>
+          <p class="font-editorial text-base md:text-lg text-char-soft max-w-lg leading-relaxed">
+            From crusty sourdough to soft brioche, calculate perfect bread recipes with baker's percentages.
+          </p>
+        </div>
+
+        <!-- Right: CTA -->
+        <div class="flex-shrink-0">
+          <a
+            href="https://thedoughformula.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bread-cta-btn group inline-flex items-center gap-3 px-8 py-4 bg-char text-white font-medium rounded-full hover:bg-[#A67B4F] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            <span>Try The Dough Formula</span>
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Decorative corner accent -->
+      <div class="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-[#A67B4F]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute -top-4 -left-4 w-24 h-24 rounded-full bg-[#C4956A]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bread-promo-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .bread-promo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(45, 42, 36, 0.15);
+  }
+
+  .bread-icon-wrapper {
+    transition: transform 0.3s ease;
+  }
+
+  .bread-promo-card:hover .bread-icon-wrapper {
+    transform: scale(1.05);
+  }
+
+  /* Steam animation */
+  .steam-line {
+    animation: steam 2s ease-in-out infinite;
+  }
+
+  .steam-line:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  .steam-line:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes steam {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 0.8;
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .bread-promo-card,
+    .bread-icon-wrapper,
+    .bread-cta-btn {
+      transition: none;
+    }
+
+    .bread-promo-card:hover {
+      transform: none;
+    }
+
+    .bread-promo-card:hover .bread-icon-wrapper {
+      transform: none;
+    }
+
+    .steam-line {
+      animation: none;
+    }
+  }
+</style>

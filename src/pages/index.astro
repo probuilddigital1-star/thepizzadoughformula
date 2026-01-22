@@ -15,6 +15,7 @@ import EmergencyTimer from '../components/features/EmergencyTimer.astro';
 import FAQAccordion from '../components/content/FAQAccordion.astro';
 import StyleComparisonTable from '../components/content/StyleComparisonTable.astro';
 import ProductRecommendations from '../components/monetization/ProductRecommendations.astro';
+import BreadCalculatorPromo from '../components/monetization/BreadCalculatorPromo.astro';
 ---
 
 <BaseLayout
@@ -251,6 +252,9 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
       </div>
     </section>
 
+    {/* Bread Calculator Cross-Promo */}
+    <BreadCalculatorPromo />
+
     {/* Features Section */}
     <section class="py-12 bg-cream/50">
       <div class="max-w-4xl mx-auto px-4 space-y-6">
@@ -329,7 +333,7 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
 
 <script>
   import { DoughCalculator } from '../scripts/calculator/engine.js';
-  import { PIZZA_STYLES, getStyleById, getStyleDefaults } from '../scripts/calculator/presets.js';
+  import { PIZZA_STYLES, getStyleById, getStyleDefaults, getSizesForStyle, getWeightForSize } from '../scripts/calculator/presets.js';
   import { formatWeight, getStoredUnit, setStoredUnit, toggleUnit } from '../scripts/calculator/units.js';
   import { encodeRecipe, decodeRecipe, hasRecipeInURL, getRecipeFromURL, copyToClipboard, generateRecipeText } from '../scripts/features/shareRecipe.js';
 
@@ -337,6 +341,7 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
   let calculator = new DoughCalculator();
   let currentUnit = getStoredUnit();
   let currentStyle = 'neapolitan';
+  let currentSize = 'classic';
 
   // DOM elements
   const styleRadios = document.querySelectorAll('input[name="pizzaStyle"]');
@@ -354,7 +359,9 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
   const humidityToggle = document.getElementById('humidityAdjust');
   const totalDoughWeightDisplay = document.getElementById('totalDoughWeight');
   const unitToggleBtn = document.getElementById('unitToggle');
-  const presetBtns = document.querySelectorAll('.preset-btn');
+  const sizeOptionsContainer = document.getElementById('size-options');
+  const quantityPresetsContainer = document.getElementById('quantity-presets');
+  const sizeLabelEl = document.getElementById('size-label');
   const emergencyTimerSection = document.getElementById('emergency-timer-section');
 
   // Recipe output elements
@@ -624,14 +631,109 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
     }
   }
 
+  // Render size options for the selected style
+  function renderSizeOptions(styleId) {
+    const sizes = getSizesForStyle(styleId);
+    if (!sizeOptionsContainer) return;
+
+    // Update label based on type
+    if (sizeLabelEl) {
+      sizeLabelEl.textContent = sizes.type === 'rectangular' ? 'Pan size:' : 'Size:';
+    }
+
+    sizeOptionsContainer.innerHTML = sizes.options.map(size => `
+      <label class="size-option cursor-pointer">
+        <input
+          type="radio"
+          name="pizzaSize"
+          value="${size.id}"
+          class="sr-only peer"
+          ${size.id === sizes.defaultSize ? 'checked' : ''}
+        />
+        <span class="inline-block px-3 py-1.5 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary transition-colors">
+          ${size.label}
+        </span>
+      </label>
+    `).join('');
+
+    // Set current size to default for this style
+    currentSize = sizes.defaultSize;
+
+    // Add event listeners to new radio buttons
+    sizeOptionsContainer.querySelectorAll('input[name="pizzaSize"]').forEach(radio => {
+      radio.addEventListener('change', handleSizeChange);
+    });
+  }
+
+  // Render quantity presets based on style type
+  function renderQuantityPresets(styleId) {
+    const sizes = getSizesForStyle(styleId);
+    if (!quantityPresetsContainer) return;
+
+    const isRectangular = sizes.type === 'rectangular';
+    const presets = isRectangular
+      ? [{ balls: 1, label: '1 pan' }, { balls: 2, label: '2 pans' }]
+      : [{ balls: 2, label: '2 pizzas' }, { balls: 4, label: '4 pizzas' }, { balls: 6, label: '6 pizzas' }];
+
+    quantityPresetsContainer.innerHTML = presets.map(preset => `
+      <button
+        type="button"
+        class="preset-btn px-3 py-1 text-xs font-medium text-text-muted bg-cream border border-border rounded-full hover:border-primary hover:text-primary transition-colors"
+        data-balls="${preset.balls}"
+      >
+        ${preset.label}
+      </button>
+    `).join('');
+
+    // Attach event listeners to new buttons
+    quantityPresetsContainer.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', handlePresetClick);
+    });
+  }
+
+  // Handle size selection change
+  function handleSizeChange(e) {
+    currentSize = e.target.value;
+    const newWeight = getWeightForSize(currentStyle, currentSize);
+
+    if (ballWeightInput) {
+      ballWeightInput.value = newWeight;
+    }
+
+    updateCalculator();
+  }
+
+  // Handle quantity preset click
+  function handlePresetClick(e) {
+    const btn = e.currentTarget;
+    const balls = btn.dataset.balls;
+
+    if (balls && numBallsInput) {
+      numBallsInput.value = balls;
+    }
+
+    // Weight comes from current size selection
+    const weight = getWeightForSize(currentStyle, currentSize);
+    if (ballWeightInput) {
+      ballWeightInput.value = weight;
+    }
+
+    updateCalculator();
+  }
+
   // Apply style defaults
   function applyStyleDefaults(styleId) {
     const defaults = getStyleDefaults(styleId);
     const style = getStyleById(styleId);
     currentStyle = styleId;
 
-    // Update form
-    if (ballWeightInput) ballWeightInput.value = defaults.ballWeight;
+    // Render size options and quantity presets for this style
+    renderSizeOptions(styleId);
+    renderQuantityPresets(styleId);
+
+    // Update ball weight based on default size for this style
+    const sizeWeight = getWeightForSize(styleId, currentSize);
+    if (ballWeightInput) ballWeightInput.value = sizeWeight;
     if (hydrationSlider) {
       hydrationSlider.value = Math.round(defaults.hydration * 100);
       if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
@@ -707,17 +809,6 @@ import ProductRecommendations from '../components/monetization/ProductRecommenda
     }
 
     updateCalculator();
-  });
-
-  // Preset buttons
-  presetBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const balls = btn.dataset.balls;
-      const weight = btn.dataset.weight;
-      if (balls && numBallsInput) numBallsInput.value = balls;
-      if (weight && ballWeightInput) ballWeightInput.value = weight;
-      updateCalculator();
-    });
   });
 
   // Copy recipe

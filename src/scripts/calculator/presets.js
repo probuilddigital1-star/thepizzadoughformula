@@ -34,6 +34,15 @@ export const PIZZA_STYLES = {
       oil: 0,
       sugar: 0
     },
+    sizes: {
+      type: 'round',
+      options: [
+        { id: 'personal', label: '10"', weight: 180 },
+        { id: 'classic', label: '12"', weight: 250 },
+        { id: 'large', label: '14"+', weight: 320 }
+      ],
+      defaultSize: 'classic'
+    },
     flourRecommendation: '00 Flour (Caputo Pizzeria, Antimo Caputo)',
     flourProtein: '11-12.5%',
     waterTemp: '55-60°F / 13-16°C (cold)',
@@ -62,6 +71,15 @@ export const PIZZA_STYLES = {
       yeast: 0.004,
       oil: 0.03,
       sugar: 0.02
+    },
+    sizes: {
+      type: 'round',
+      options: [
+        { id: 'personal', label: '10"', weight: 220 },
+        { id: 'classic', label: '14"', weight: 300 },
+        { id: 'large', label: '18"', weight: 450 }
+      ],
+      defaultSize: 'classic'
     },
     flourRecommendation: 'High-gluten bread flour (King Arthur, All Trumps)',
     flourProtein: '13-14%',
@@ -92,6 +110,15 @@ export const PIZZA_STYLES = {
       oil: 0.04,
       sugar: 0.01
     },
+    sizes: {
+      type: 'rectangular',
+      options: [
+        { id: 'small', label: '8x10"', weight: 300 },
+        { id: 'standard', label: '10x14"', weight: 400 },
+        { id: 'large', label: '12x17"', weight: 550 }
+      ],
+      defaultSize: 'standard'
+    },
     flourRecommendation: 'Bread flour or all-purpose',
     flourProtein: '11-13%',
     waterTemp: '75-80°F / 24-27°C (room temp)',
@@ -120,6 +147,15 @@ export const PIZZA_STYLES = {
       yeast: 0.004,
       oil: 0.02,
       sugar: 0
+    },
+    sizes: {
+      type: 'round',
+      options: [
+        { id: 'personal', label: '10"', weight: 140 },
+        { id: 'classic', label: '12"', weight: 180 },
+        { id: 'large', label: '14"+', weight: 230 }
+      ],
+      defaultSize: 'classic'
     },
     flourRecommendation: 'All-purpose flour',
     flourProtein: '10-12%',
@@ -153,6 +189,15 @@ export const PIZZA_STYLES = {
       preFermentType: 'poolish',
       preFermentFlourPercent: 0.25
     },
+    sizes: {
+      type: 'round',
+      options: [
+        { id: 'personal', label: '10"', weight: 190 },
+        { id: 'classic', label: '12"', weight: 260 },
+        { id: 'large', label: '14"+', weight: 330 }
+      ],
+      defaultSize: 'classic'
+    },
     flourRecommendation: '00 or bread flour',
     flourProtein: '11-13%',
     waterTemp: '65-70°F / 18-21°C (cool)',
@@ -181,6 +226,15 @@ export const PIZZA_STYLES = {
       yeast: 0.01, // Higher yeast for quick rise
       oil: 0.02,
       sugar: 0.01
+    },
+    sizes: {
+      type: 'round',
+      options: [
+        { id: 'personal', label: '10"', weight: 180 },
+        { id: 'classic', label: '12"', weight: 250 },
+        { id: 'large', label: '14"+', weight: 320 }
+      ],
+      defaultSize: 'classic'
     },
     flourRecommendation: 'All-purpose or bread flour',
     flourProtein: '10-13%',
@@ -211,6 +265,15 @@ export const PIZZA_STYLES = {
       yeast: 0.003,
       oil: 0,
       sugar: 0
+    },
+    sizes: {
+      type: 'round',
+      options: [
+        { id: 'personal', label: '10"', weight: 180 },
+        { id: 'classic', label: '12"', weight: 250 },
+        { id: 'large', label: '14"+', weight: 320 }
+      ],
+      defaultSize: 'classic'
     },
     flourRecommendation: 'Your choice',
     flourProtein: 'Varies by flour type',
@@ -261,6 +324,28 @@ export function getStyleDefaults(id) {
  */
 export function getAllStyles() {
   return Object.values(PIZZA_STYLES);
+}
+
+/**
+ * Get sizes configuration for a style
+ * @param {string} styleId - Style ID
+ * @returns {Object} Sizes configuration with type, options, and defaultSize
+ */
+export function getSizesForStyle(styleId) {
+  const style = PIZZA_STYLES[styleId];
+  return style?.sizes || PIZZA_STYLES.custom.sizes;
+}
+
+/**
+ * Get the ball weight for a specific size within a style
+ * @param {string} styleId - Style ID
+ * @param {string} sizeId - Size ID (personal, classic, large, etc.)
+ * @returns {number} Ball weight in grams
+ */
+export function getWeightForSize(styleId, sizeId) {
+  const sizes = getSizesForStyle(styleId);
+  const size = sizes.options.find(s => s.id === sizeId);
+  return size?.weight || sizes.options.find(s => s.id === sizes.defaultSize)?.weight || 250;
 }
 
 export default PIZZA_STYLES;
