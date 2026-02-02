@@ -19,9 +19,57 @@
     "tools": {
       "name": "Pizza Tools",
       "description": "Peels, cutters, and more"
+    },
+    "mixers": {
+      "name": "Mixers",
+      "description": "For effortless dough mixing"
     }
   },
   "products": [
+    {
+      "id": "ooni-koda-16",
+      "name": "Ooni Koda 16 Gas Pizza Oven",
+      "category": "ovens",
+      "description": "Reaches 950°F in 20 minutes - cooks authentic Neapolitan pizza in 60 seconds",
+      "priceRange": "$499-599",
+      "affiliateUrl": "https://www.amazon.com/s?k=ooni+koda+16+pizza+oven&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork"],
+      "featured": true
+    },
+    {
+      "id": "ooni-karu-12",
+      "name": "Ooni Karu 12 Multi-Fuel Oven",
+      "category": "ovens",
+      "description": "Wood, charcoal, or gas - versatile outdoor oven reaching 950°F for perfect char",
+      "priceRange": "$399-449",
+      "affiliateUrl": "https://www.amazon.com/s?k=ooni+karu+12+pizza+oven&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork"],
+      "featured": true
+    },
+    {
+      "id": "breville-pizzaiolo",
+      "name": "Breville Pizzaiolo Indoor Oven",
+      "category": "ovens",
+      "description": "Indoor countertop oven hitting 750°F - bake Neapolitan-style pizza year-round",
+      "priceRange": "$999-1100",
+      "affiliateUrl": "https://www.amazon.com/s?k=breville+pizzaiolo&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork", "thinCrispy"],
+      "featured": false
+    },
+    {
+      "id": "roccbox",
+      "name": "Gozney Roccbox Pizza Oven",
+      "category": "ovens",
+      "description": "Pro-grade portable oven with built-in thermometer - 950°F in just 15 minutes",
+      "priceRange": "$499-549",
+      "affiliateUrl": "https://www.amazon.com/s?k=gozney+roccbox+pizza+oven&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork"],
+      "featured": false
+    },
     {
       "id": "pizza-steel",
       "name": "Pizza Steel",
@@ -109,11 +157,110 @@
       "image": null,
       "forStyles": ["all"],
       "featured": false
+    },
+    {
+      "id": "pizza-stone",
+      "name": "Pizza Stone",
+      "category": "steels",
+      "description": "Cordierite stone distributes heat evenly - great entry point for home bakers",
+      "priceRange": "$30-50",
+      "affiliateUrl": "https://www.amazon.com/s?k=cordierite+pizza+stone&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    },
+    {
+      "id": "bench-scraper",
+      "name": "Bench Scraper",
+      "category": "tools",
+      "description": "Essential for dividing dough and keeping your work surface clean",
+      "priceRange": "$8-15",
+      "affiliateUrl": "https://www.amazon.com/s?k=bench+scraper+dough&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    },
+    {
+      "id": "pizza-cutter-rocker",
+      "name": "Pizza Rocker Cutter",
+      "category": "tools",
+      "description": "Sharp mezzaluna-style blade cuts through crust cleanly without dragging toppings",
+      "priceRange": "$15-30",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+rocker+cutter&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    },
+    {
+      "id": "ir-thermometer",
+      "name": "Infrared Thermometer",
+      "category": "tools",
+      "description": "Know your exact oven/stone temp - critical for Neapolitan at 900°F+",
+      "priceRange": "$15-35",
+      "affiliateUrl": "https://www.amazon.com/s?k=infrared+thermometer+cooking&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork"],
+      "featured": false
+    },
+    {
+      "id": "cast-iron-skillet",
+      "name": "Cast Iron Skillet",
+      "category": "tools",
+      "description": "Perfect for pan pizza and deep dish - retains heat for crispy bottoms",
+      "priceRange": "$25-50",
+      "affiliateUrl": "https://www.amazon.com/s?k=lodge+cast+iron+skillet+12+inch&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["detroit", "panPizza"],
+      "featured": false
+    },
+    {
+      "id": "stand-mixer",
+      "name": "KitchenAid Stand Mixer",
+      "category": "mixers",
+      "description": "Knead dough hands-free with the dough hook - essential for high-hydration doughs",
+      "priceRange": "$280-450",
+      "affiliateUrl": "https://www.amazon.com/s?k=kitchenaid+stand+mixer&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    },
+    {
+      "id": "semolina-flour",
+      "name": "Semolina Flour",
+      "category": "flour",
+      "description": "Dust your peel to prevent sticking - adds subtle crunch to the crust bottom",
+      "priceRange": "$5-12",
+      "affiliateUrl": "https://www.amazon.com/s?k=semolina+flour+pizza&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["all"],
+      "featured": false
+    },
+    {
+      "id": "pizza-screen",
+      "name": "Pizza Screen",
+      "category": "tools",
+      "description": "Aluminum mesh for extra-crispy thin crust - lets air circulate underneath",
+      "priceRange": "$8-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+screen+14+inch&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["thinCrispy", "newYork"],
+      "featured": false
+    },
+    {
+      "id": "dough-boxes",
+      "name": "Pizza Dough Boxes",
+      "category": "tools",
+      "description": "Stackable proofing boxes like the pros use - perfect for cold fermenting multiple doughs",
+      "priceRange": "$20-40",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+dough+proofing+box&tag=probuild20-20",
+      "image": null,
+      "forStyles": ["neapolitan", "newYork"],
+      "featured": false
     }
   ],
   "_meta": {
     "note": "Amazon Associates tag: probuild20-20",
-    "lastUpdated": "2026-01-05",
+    "lastUpdated": "2026-02-02",
     "affiliateDisclaimer": "We may earn a commission from purchases made through links on this site."
   }
 }
