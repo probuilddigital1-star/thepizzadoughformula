@@ -1,0 +1,149 @@
+---
+/**
+ * FAQ Page
+ * Dedicated, indexable page for all frequently asked questions
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+import faqData from '../data/faq.json';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'FAQ' }
+];
+
+// FAQPage schema
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqData.faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+
+// Group FAQs by topic for better UX
+const topics = [
+  {
+    title: 'Dough Basics',
+    icon: '&#127854;',
+    indices: [0, 2, 11, 14, 15]
+  },
+  {
+    title: 'Ingredients',
+    icon: '&#127806;',
+    indices: [1, 10, 13]
+  },
+  {
+    title: 'Fermentation & Yeast',
+    icon: '&#9203;',
+    indices: [3, 8, 9, 5]
+  },
+  {
+    title: 'Techniques & Troubleshooting',
+    icon: '&#128736;',
+    indices: [4, 6, 7, 12]
+  }
+];
+---
+
+<BaseLayout
+  title="Pizza Dough FAQ"
+  description="Answers to the most common pizza dough questions — hydration, flour types, cold fermentation, yeast, troubleshooting sticky dough, and more."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Pizza Dough FAQ
+        </h1>
+        <p class="text-sm text-text-muted mb-4">
+          Last updated: February 1, 2026 · {faqData.faqs.length} questions answered
+        </p>
+        <p class="text-xl text-text-muted max-w-2xl">
+          Everything you need to know about making pizza dough at home, from hydration and flour to fermentation and troubleshooting.
+        </p>
+      </header>
+
+      {/* Quick jump links */}
+      <nav class="bg-surface rounded-xl border border-border p-4 mb-10">
+        <p class="font-heading font-semibold text-text mb-2 text-sm">Jump to topic:</p>
+        <div class="flex flex-wrap gap-2">
+          {topics.map(topic => (
+            <a
+              href={`#${topic.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+              class="text-sm px-3 py-1.5 bg-cream rounded-full text-text hover:bg-primary/10 transition-colors"
+            >
+              {topic.title}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* FAQ sections by topic */}
+      <div class="space-y-12">
+        {topics.map(topic => (
+          <section id={topic.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}>
+            <h2 class="font-heading text-2xl font-semibold text-text mb-6 flex items-center gap-2">
+              <span set:html={topic.icon} />
+              {topic.title}
+            </h2>
+            <div class="space-y-6">
+              {topic.indices.map(i => {
+                const faq = faqData.faqs[i];
+                if (!faq) return null;
+                return (
+                  <div class="border-b border-border pb-6 last:border-0">
+                    <h3 class="font-heading text-lg font-semibold text-text mb-2">
+                      {faq.question}
+                    </h3>
+                    <p class="text-text-muted leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {/* Related pages */}
+      <div class="mt-12 bg-surface rounded-xl border border-border p-6">
+        <h2 class="font-heading text-lg font-semibold text-text mb-4">Learn More</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <a href="/bakers-percentages" class="p-3 rounded-lg bg-cream hover:bg-primary/10 transition-colors">
+            <p class="font-medium text-text text-sm">Baker's Percentages</p>
+            <p class="text-xs text-text-muted">The math behind perfect dough</p>
+          </a>
+          <a href="/pizza-styles" class="p-3 rounded-lg bg-cream hover:bg-primary/10 transition-colors">
+            <p class="font-medium text-text text-sm">Pizza Styles Guide</p>
+            <p class="text-xs text-text-muted">Compare Neapolitan, NY, Detroit & more</p>
+          </a>
+          <a href="/" class="p-3 rounded-lg bg-cream hover:bg-primary/10 transition-colors">
+            <p class="font-medium text-text text-sm">Dough Calculator</p>
+            <p class="text-xs text-text-muted">Get exact measurements</p>
+          </a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -14,6 +14,17 @@ import VolumeConverter from '../components/features/VolumeConverter.astro';
 import EmergencyTimer from '../components/features/EmergencyTimer.astro';
 import FAQAccordion from '../components/content/FAQAccordion.astro';
 import StyleComparisonTable from '../components/content/StyleComparisonTable.astro';
+import PizzaStyleIcon from '../components/icons/PizzaStyleIcon.astro';
+import { PIZZA_STYLES } from '../scripts/calculator/presets.js';
+
+const styleGuides = [
+  { id: 'neapolitan', slug: 'neapolitan', tagline: '60-65% hydration, 00 flour, wood-fired' },
+  { id: 'newYork', slug: 'new-york', tagline: '65% hydration, high-gluten, foldable slices' },
+  { id: 'detroit', slug: 'detroit', tagline: '72% hydration, pan-baked, frico edges' },
+  { id: 'thinCrispy', slug: 'thin-crispy', tagline: '55% hydration, cracker crust, party cut' },
+  { id: 'poolishBiga', slug: 'poolish-biga', tagline: 'Pre-ferment for complex flavor' },
+  { id: 'emergency', slug: 'emergency', tagline: 'Ready in 2 hours, pizza tonight' },
+];
 import ProductRecommendations from '../components/monetization/ProductRecommendations.astro';
 import BreadCalculatorPromo from '../components/monetization/BreadCalculatorPromo.astro';
 ---
@@ -268,6 +279,42 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
 
     {/* Style Comparison */}
     <StyleComparisonTable />
+
+    {/* Explore Pizza Styles - Links to individual style guide pages */}
+    <section class="py-12 md:py-16">
+      <div class="max-w-4xl mx-auto px-4">
+        <h2 class="font-heading text-2xl font-bold text-text text-center mb-3">
+          Explore Pizza Style Guides
+        </h2>
+        <p class="text-text-muted text-center mb-8 max-w-xl mx-auto">
+          Deep dives into each style — history, dough science, step-by-step technique, and common mistakes to avoid.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          {styleGuides.map(({ id, slug, tagline }) => {
+            const style = PIZZA_STYLES[id];
+            return (
+              <a
+                href={`/pizza-styles/${slug}`}
+                class="group flex items-start gap-3 p-4 bg-surface rounded-xl border border-border hover:border-primary/50 hover:shadow-sm transition-all"
+              >
+                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                  <PizzaStyleIcon name={style.icon} class="w-6 h-6 text-primary" />
+                </div>
+                <div class="min-w-0">
+                  <p class="font-heading font-semibold text-text text-sm">{style.name}</p>
+                  <p class="text-xs text-text-muted leading-snug mt-0.5">{tagline}</p>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+        <p class="text-center mt-6">
+          <a href="/pizza-styles" class="text-sm text-primary hover:text-primary-hover font-medium">
+            View full style comparison &rarr;
+          </a>
+        </p>
+      </div>
+    </section>
 
     {/* Email Capture Section - Before FAQ for better visibility */}
     <section id="email-capture" class="py-12 md:py-16 bg-charcoal text-cream">

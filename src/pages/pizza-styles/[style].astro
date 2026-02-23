@@ -1,0 +1,458 @@
+---
+/**
+ * Individual Pizza Style Pages
+ * Dynamic route for each pizza style with detailed content and schema markup
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+import PizzaStyleIcon from '../../components/icons/PizzaStyleIcon.astro';
+import { PIZZA_STYLES } from '../../scripts/calculator/presets.js';
+
+export function getStaticPaths() {
+  return [
+    { params: { style: 'neapolitan' } },
+    { params: { style: 'new-york' } },
+    { params: { style: 'detroit' } },
+    { params: { style: 'thin-crispy' } },
+    { params: { style: 'poolish-biga' } },
+    { params: { style: 'emergency' } },
+  ];
+}
+
+// Content for each style page - SEO-optimized long-form content
+const styleContent: Record<string, {
+  slug: string;
+  metaTitle: string;
+  metaDescription: string;
+  intro: string;
+  history: string;
+  historyTitle: string;
+  doughScience: string;
+  doughScienceTitle: string;
+  technique: string[];
+  techniqueTitle: string;
+  commonMistakes: string[];
+  relatedStyles: string[];
+}> = {
+  neapolitan: {
+    slug: 'neapolitan',
+    metaTitle: 'Neapolitan Pizza Dough Recipe & Calculator',
+    metaDescription: 'Master authentic Neapolitan pizza dough with 60-65% hydration, 00 flour, and 24-72 hour cold fermentation. Free calculator with baker\'s percentages.',
+    intro: 'Neapolitan pizza is the original — born in Naples, Italy, and protected by the Associazione Verace Pizza Napoletana (AVPN). It\'s defined by a soft, pillowy cornicione (rim), charred leopard spots from intense heat, and a thin, slightly wet center. The dough is deceptively simple: flour, water, salt, and yeast. No oil, no sugar. The magic is in the technique and fermentation.',
+    historyTitle: 'The Origins of Neapolitan Pizza',
+    history: 'Neapolitan pizza traces back to 18th century Naples, where flatbreads topped with tomatoes became street food for the working class. The iconic Margherita pizza was reportedly created in 1889 by Raffaele Esposito to honor Queen Margherita of Italy, using tomato (red), mozzarella (white), and basil (green) to represent the Italian flag. In 2017, UNESCO recognized the art of Neapolitan pizza-making as an Intangible Cultural Heritage of Humanity.',
+    doughScienceTitle: 'Understanding the Dough',
+    doughScience: 'Neapolitan dough uses 00 flour (finely milled Italian flour with 11-12.5% protein) at 60-65% hydration. The lower hydration compared to other styles makes the dough easier to hand-stretch into the classic round shape. Cold fermentation for 24-72 hours develops complex flavors — lactic and acetic acids create subtle tang while enzymes break down starches for better browning. The minimal yeast (0.1-0.3%) means slow, controlled fermentation that builds character without overwhelming yeast flavor.',
+    techniqueTitle: 'How to Make Neapolitan Pizza Dough',
+    technique: [
+      'Dissolve salt in cold water (55-60°F / 13-16°C), then add to 00 flour. Mix until a shaggy dough forms.',
+      'Knead for 15-20 minutes by hand until smooth and elastic. The dough should pass the windowpane test — stretch a small piece thin enough to see light through without tearing.',
+      'Bulk ferment at room temperature for 1-2 hours, covered with a damp cloth.',
+      'Divide into 250g balls (for 12" pizzas). Shape each ball by tucking edges underneath to create surface tension.',
+      'Cold ferment in individual containers for 24-72 hours. Longer fermentation = more flavor complexity.',
+      'Remove from fridge 2 hours before baking. Let dough reach room temperature for easier stretching.',
+      'Stretch by hand only — never use a rolling pin. Push gas from center to edges, then use gravity to stretch. The cornicione should remain puffy with trapped gas.',
+      'Bake at 450-500°C (850-900°F) for 60-90 seconds. The extreme heat creates leopard spotting on the crust.'
+    ],
+    commonMistakes: [
+      'Using a rolling pin — this destroys the air bubbles that create the signature puffy cornicione.',
+      'Under-fermenting — rushing with more yeast sacrifices flavor. Plan ahead and give it 24+ hours.',
+      'Baking too cool — below 400°C you\'ll dry out the dough before it chars. Use a pizza oven or broiler method.',
+      'Over-topping — Neapolitan pizza is minimalist. Too many toppings make the thin center soggy.',
+      'Not preheating enough — your pizza stone or steel needs at least 45 minutes at max temperature.'
+    ],
+    relatedStyles: ['newYork', 'poolishBiga']
+  },
+  newYork: {
+    slug: 'new-york',
+    metaTitle: 'New York Style Pizza Dough Recipe & Calculator',
+    metaDescription: 'Perfect New York pizza dough with 65% hydration, high-gluten bread flour, and oil for foldable slices. Free calculator with exact measurements.',
+    intro: 'New York-style pizza is all about the fold. A wide, thin slice with a crispy-yet-pliable crust that you can fold in half and eat while walking down the street. The dough uses high-gluten bread flour, a touch of oil and sugar for browning, and cold fermentation for flavor. It\'s baked at lower temperatures than Neapolitan, producing a golden-brown crust with satisfying chew.',
+    historyTitle: 'How New York Pizza Became Iconic',
+    history: 'Italian immigrants brought pizza to New York in the early 1900s. Gennaro Lombardi opened the first documented American pizzeria in 1905 on Spring Street in Manhattan. New York water — with its unique mineral content — is often credited for the distinctive crust, though this is debated. What\'s not debated: the style evolved to be larger, crispier, and more substantial than its Neapolitan ancestor, designed for New York\'s grab-and-go food culture.',
+    doughScienceTitle: 'The Science of NY Dough',
+    doughScience: 'New York dough uses high-gluten bread flour (13-14% protein) for maximum chew and structure. The higher protein creates stronger gluten networks that can support large, thin slices without flopping. Oil (2-3%) tenderizes the crumb and aids browning at the lower baking temperatures. Sugar (1-2%) accelerates Maillard browning, giving the crust its golden color. At 65% hydration, the dough is workable but moist enough for an open crumb.',
+    techniqueTitle: 'How to Make New York Pizza Dough',
+    technique: [
+      'Combine high-gluten bread flour with cold water (55-60°F). Add salt, sugar, oil, and yeast.',
+      'Knead for 10-15 minutes until smooth and elastic. The dough should be slightly tacky but not sticky.',
+      'Bulk ferment at room temperature for 1-2 hours until slightly puffed.',
+      'Divide into 280-300g balls for 14" pizzas (or 450g for 18" pies).',
+      'Cold ferment for 24-48 hours. This develops flavor and makes the dough easier to stretch.',
+      'Remove from fridge 2 hours before use. Cold dough will shrink back when stretched.',
+      'Hand-stretch or use a gentle toss, working from the center outward. Aim for even thickness with a slight edge.',
+      'Bake on a preheated pizza steel or stone at 260-290°C (500-550°F) for 8-12 minutes until golden and spotted.'
+    ],
+    commonMistakes: [
+      'Using 00 flour — it\'s too soft for NY-style. You need high-gluten bread flour for proper chew and structure.',
+      'Skipping oil and sugar — these are essential for browning at home oven temperatures.',
+      'Not preheating long enough — give your pizza steel at least 45-60 minutes at maximum temperature.',
+      'Making the crust too thick — NY slices should be thin enough to fold without cracking.',
+      'Over-saucing — a thin, even layer of sauce prevents a soggy center.'
+    ],
+    relatedStyles: ['neapolitan', 'thinCrispy']
+  },
+  detroit: {
+    slug: 'detroit',
+    metaTitle: 'Detroit Style Pizza Dough Recipe & Calculator',
+    metaDescription: 'Make authentic Detroit-style pizza with 72% hydration, crispy frico cheese edges, and airy pan-baked crust. Free calculator with baker\'s percentages.',
+    intro: 'Detroit-style pizza is a thick, rectangular pan pizza with an airy, focaccia-like crumb and the legendary frico — crispy caramelized cheese edges formed where shredded cheese meets the oiled pan walls. The dough is high-hydration, pressed into a well-oiled steel pan, and topped with cheese all the way to the edges. Sauce goes on top, in distinctive racing stripes.',
+    historyTitle: 'Detroit Pizza: From Auto Parts to Pizza Pans',
+    history: 'Detroit pizza was born at Buddy\'s Rendezvous in 1946 when Gus Guerra adapted his wife\'s Sicilian family recipe. The iconic blue steel pans were originally industrial parts trays from Detroit\'s auto factories. The square shape, thick crust, and cheese-to-the-edge style became a Detroit institution. The style remained a local secret until the 2010s when it exploded nationally, with chains like Emmy Squared and Via 313 bringing it to new markets.',
+    doughScienceTitle: 'High-Hydration Pan Dough',
+    doughScience: 'Detroit dough runs 70-75% hydration — significantly wetter than Neapolitan or NY styles. This high water content creates large, irregular air pockets in the crumb, similar to focaccia. The steel pan conducts heat intensely, crisping the bottom and edges while the interior stays light and airy. Bread flour (11-13% protein) provides enough structure to hold the open crumb without being too chewy. Oil in the pan and dough creates the signature crispy exterior.',
+    techniqueTitle: 'How to Make Detroit Pizza Dough',
+    technique: [
+      'Mix bread flour, room temperature water (75-80°F), salt, yeast, oil, and sugar until combined.',
+      'Use the stretch-and-fold technique: every 30 minutes for the first 2 hours, stretch one side of the dough up and fold it over itself. Rotate and repeat. This builds gluten without heavy kneading.',
+      'Let the dough rise at room temperature for 3-4 hours total, until doubled in size.',
+      'Generously oil a Detroit-style steel pan (blue steel or Lloyd\'s pan).',
+      'Transfer dough to the pan. Press toward the edges. Let rest 30 minutes, then press again to fill corners.',
+      'Top with Wisconsin brick cheese (or a mix of cheddar and mozzarella) all the way to the pan edges — this creates the frico.',
+      'Add toppings, then ladle sauce in two or three racing stripes on top.',
+      'Bake at 230-260°C (450-500°F) for 12-15 minutes until the cheese edges are deeply caramelized and crispy.'
+    ],
+    commonMistakes: [
+      'Not enough oil in the pan — you need a generous amount for the crispy bottom and frico edges.',
+      'Under-proofing — the dough needs to fully fill the pan. If it springs back, let it rest longer.',
+      'Using mozzarella only — traditional Detroit uses brick cheese, which melts into a crispy layer. Mix cheddar and mozz as a substitute.',
+      'Putting sauce under the cheese — Detroit style has sauce on top in racing stripes.',
+      'Wrong pan — flimsy aluminum won\'t work. You need a heavy steel pan for proper heat transfer and frico.'
+    ],
+    relatedStyles: ['newYork', 'emergency']
+  },
+  thinCrispy: {
+    slug: 'thin-crispy',
+    metaTitle: 'Thin & Crispy Pizza Dough Recipe & Calculator',
+    metaDescription: 'Make tavern-style thin and crispy pizza dough with 55% hydration and cracker-like crust. Free calculator for party-cut square slices.',
+    intro: 'Thin and crispy pizza — also called tavern-style or bar pizza — is a Midwest and Northeast staple. The crust is rolled thin, almost cracker-like, with a satisfying snap when you bite through. It\'s traditionally cut into squares (party cut) rather than triangles, making it perfect for sharing. Low hydration and a rolling pin are the keys to this style.',
+    historyTitle: 'Tavern-Style: The People\'s Pizza',
+    history: 'Tavern-style pizza emerged in Chicago\'s neighborhood bars in the mid-20th century as an alternative to deep-dish. It was designed to be eaten with one hand while the other held a beer. The square cut created smaller, snackable pieces perfect for sharing at the bar. Cities like St. Louis developed their own variations (Provel cheese, ultra-thin). This style outsells deep-dish in Chicago itself — it\'s the true everyday pizza of the Midwest.',
+    doughScienceTitle: 'Low Hydration for Maximum Crunch',
+    doughScience: 'At 55% hydration, thin and crispy dough is the driest pizza dough you\'ll make. This low water content makes the dough easy to roll very thin without it springing back or sticking. The result is a dense, cracker-like crust that crisps up beautifully. All-purpose flour (10-12% protein) is preferred over bread flour — less gluten development means a more tender, snappy bite rather than chewy. Docking (poking holes with a fork) prevents steam bubbles from forming during baking.',
+    techniqueTitle: 'How to Make Thin & Crispy Pizza Dough',
+    technique: [
+      'Mix all-purpose flour with cool water (65-70°F), salt, yeast, and a small amount of oil.',
+      'Knead briefly — just 5-8 minutes until smooth. You don\'t want extensive gluten development.',
+      'Let rest at room temperature for 1-2 hours. Alternatively, cold ferment overnight for more flavor.',
+      'Divide into 180g balls for 12" pizzas.',
+      'Roll out with a rolling pin on a floured surface until very thin — about 2-3mm. Rotate the dough frequently.',
+      'Dock the entire surface with a fork to prevent large bubbles during baking.',
+      'Transfer to a pizza screen, sheet pan, or preheated steel.',
+      'Top lightly (thin crust can\'t support heavy toppings) and bake at 230-260°C (450-500°F) for 8-10 minutes.',
+      'Cut into squares (party cut), not triangles.'
+    ],
+    commonMistakes: [
+      'Using bread flour — too much protein creates a chewy crust instead of crispy-snappy.',
+      'Too much hydration — above 58% and you can\'t roll it thin enough.',
+      'Forgetting to dock — undocked thin dough will puff up with huge bubbles in the oven.',
+      'Overloading toppings — thin crust can\'t support heavy toppings. Keep it light.',
+      'Cutting into triangles — tavern-style is always party cut (squares).'
+    ],
+    relatedStyles: ['neapolitan', 'emergency']
+  },
+  poolishBiga: {
+    slug: 'poolish-biga',
+    metaTitle: 'Poolish & Biga Pizza Dough Recipe & Calculator',
+    metaDescription: 'Elevate your pizza with poolish or biga pre-ferments. Rich, complex flavor from 12-16 hour fermentation. Free calculator with exact ratios.',
+    intro: 'Pre-fermented doughs use a portion of flour and water that ferments separately before being incorporated into the final dough. This extra step — taking 12-16 hours — develops rich, complex flavors that straight doughs can\'t achieve. Poolish (liquid, 100% hydration) produces an open crumb with mild tang. Biga (stiff, 50-60% hydration) creates deeper wheaty flavors with a tighter structure.',
+    historyTitle: 'The Art of Pre-Fermentation',
+    history: 'Pre-ferments have been used in bread baking for centuries. Poolish (named for Polish bakers who popularized it in France) became a staple of French bread-making. Biga is the Italian counterpart, used in ciabatta and many traditional Italian breads. Both techniques were adopted by artisan pizza makers seeking more flavor complexity than straight dough methods could provide. Today, many award-winning pizzerias use some form of pre-ferment.',
+    doughScienceTitle: 'How Pre-Ferments Improve Dough',
+    doughScience: 'During the 12-16 hour pre-ferment, yeast produces CO2, alcohol, and organic acids that contribute to flavor. Enzymes (amylase, protease) break down starches and proteins, improving dough extensibility and browning. The acids also strengthen the gluten network. By pre-fermenting 20-40% of the total flour, you get these benefits without over-fermenting the final dough. Poolish\'s high hydration promotes more enzymatic activity, while biga\'s lower hydration concentrates flavors differently.',
+    techniqueTitle: 'How to Make Pre-Fermented Pizza Dough',
+    technique: [
+      'Day 1 — Make the pre-ferment: Mix 25% of total flour with equal water (for poolish) or 50-60% water (for biga), plus a tiny amount of yeast (0.1%).',
+      'Cover and ferment at room temperature (65-75°F) for 12-16 hours. Poolish is ready when bubbly and slightly domed. Biga should be doubled and have a pleasant yeasty smell.',
+      'Day 2 — Mix final dough: Combine the pre-ferment with remaining flour, water, and salt. Add remaining yeast.',
+      'Knead for 10-15 minutes until smooth. The pre-ferment makes the dough more extensible.',
+      'Bulk ferment for 2-3 hours at room temperature until doubled.',
+      'Divide into balls (260g for 12" pizzas). Shape with surface tension.',
+      'Proof balls for 2-4 hours at room temperature before stretching.',
+      'Bake at 260-300°C (500-575°F) for 5-8 minutes. Pre-fermented doughs brown faster due to enzymatic activity.'
+    ],
+    commonMistakes: [
+      'Over-fermenting the pre-ferment — if it collapses or smells like alcohol, it\'s gone too far. It should be bubbly and domed.',
+      'Using too much yeast in the pre-ferment — you need very little (0.1%). Too much and it will over-ferment.',
+      'Not adjusting hydration — the water in the pre-ferment counts toward total hydration. Calculate accordingly.',
+      'Skipping the pre-ferment rest — if it\'s not bubbly and active, the final dough won\'t benefit.',
+      'Rushing the final proof — pre-fermented dough still needs 2-4 hours after balling.'
+    ],
+    relatedStyles: ['neapolitan', 'newYork']
+  },
+  emergency: {
+    slug: 'emergency',
+    metaTitle: 'Quick Pizza Dough Recipe - Ready in 2 Hours',
+    metaDescription: 'Same-day pizza dough ready in 2 hours. Quick emergency recipe with warm water and higher yeast for when you need pizza tonight. Free calculator.',
+    intro: 'Sometimes you need pizza tonight and don\'t have 24 hours for cold fermentation. Emergency dough uses warm water and higher yeast to produce a workable dough in about 2 hours. It won\'t have the complex flavor of a long-fermented dough, but it\'s genuinely good pizza — and infinitely better than delivery.',
+    historyTitle: 'The Case for Quick Dough',
+    history: 'Quick doughs have always existed alongside long-fermented ones. Home cooks have been making same-day pizza dough for decades using various shortcuts. While artisan pizza culture emphasizes multi-day fermentation, the reality is that most pizza consumed worldwide is made with same-day dough. A well-made quick dough with proper hydration and technique still produces excellent results.',
+    doughScienceTitle: 'Fast Fermentation Science',
+    doughScience: 'Emergency dough uses 3-4x more yeast than cold-ferment recipes and warm water (100-110°F / 38-43°C) to accelerate fermentation. At these temperatures, yeast doubles its activity every 10°F. The tradeoff: faster rise means less time for enzymes to develop complex flavors and less acid production. Adding a small amount of sugar feeds the yeast and improves browning. Oil tenderizes the crumb, compensating for the shorter gluten development time.',
+    techniqueTitle: 'How to Make Emergency Pizza Dough',
+    technique: [
+      'Use warm water (100-110°F / 38-43°C) — test with your finger; it should feel like a warm bath.',
+      'Dissolve yeast and sugar in the warm water. Wait 5 minutes for it to foam (proof the yeast).',
+      'Add flour, salt, and oil. Mix until combined, then knead for 8-10 minutes until smooth.',
+      'Cover with a damp towel or plastic wrap. Place in a warm spot (near a warm oven or in a microwave with a cup of hot water).',
+      'Let rise for 2 hours until doubled in size.',
+      'Divide into balls (250g for 12" pizzas). Let rest 15 minutes for easier stretching.',
+      'Shape and top immediately — don\'t let the dough over-proof.',
+      'Bake at 230-260°C (450-500°F) for 8-12 minutes on a preheated pizza steel or stone.'
+    ],
+    commonMistakes: [
+      'Water too hot — above 120°F kills yeast. Use 100-110°F.',
+      'Not enough rise time — even "emergency" dough needs at least 2 hours. Skipping this makes dense, tough pizza.',
+      'Using cold water with the same yeast amount — cold water slows yeast dramatically. If using cold water, you need to wait much longer.',
+      'Overworking the dough — 8-10 minutes of kneading is sufficient. Over-kneading makes it tough.',
+      'Forgetting the rest after balling — even 15 minutes makes a huge difference in stretchability.'
+    ],
+    relatedStyles: ['thinCrispy', 'detroit']
+  }
+};
+
+const { style: styleSlug } = Astro.params;
+const content = Object.values(styleContent).find(s => s.slug === styleSlug);
+
+if (!content) {
+  return Astro.redirect('/pizza-styles');
+}
+
+// Map slug to preset ID
+const slugToId: Record<string, string> = {
+  'neapolitan': 'neapolitan',
+  'new-york': 'newYork',
+  'detroit': 'detroit',
+  'thin-crispy': 'thinCrispy',
+  'poolish-biga': 'poolishBiga',
+  'emergency': 'emergency',
+};
+
+const presetId = slugToId[styleSlug!] || 'neapolitan';
+const preset = PIZZA_STYLES[presetId];
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Pizza Styles', href: '/pizza-styles' },
+  { label: `${preset.name} Pizza` }
+];
+
+// Recipe schema for this style
+const recipeSchema = {
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": `${preset.name} Pizza Dough`,
+  "description": content.intro,
+  "recipeCategory": "Pizza Dough",
+  "recipeCuisine": presetId === 'neapolitan' ? 'Italian' : presetId === 'newYork' ? 'American' : presetId === 'detroit' ? 'American' : 'International',
+  "keywords": `${preset.name} pizza dough, ${preset.name} pizza recipe, pizza dough calculator`,
+  "recipeYield": "4 dough balls",
+  "prepTime": "PT30M",
+  "cookTime": preset.bakeTime.includes('60-90 sec') ? "PT2M" : "PT12M",
+  "totalTime": presetId === 'emergency' ? "PT3H" : "PT26H",
+  "recipeIngredient": [
+    `${preset.flourRecommendation} (100%)`,
+    `Water (${Math.round(preset.defaults.hydration * 100)}%)`,
+    `Salt (${preset.defaults.salt * 100}%)`,
+    `Yeast (${preset.defaults.yeast * 100}%)`,
+    ...(preset.defaults.oil > 0 ? [`Olive oil (${preset.defaults.oil * 100}%)`] : []),
+    ...(preset.defaults.sugar > 0 ? [`Sugar (${preset.defaults.sugar * 100}%)`] : [])
+  ],
+  "recipeInstructions": content.technique.map((step, i) => ({
+    "@type": "HowToStep",
+    "position": i + 1,
+    "text": step
+  })),
+  "nutrition": {
+    "@type": "NutritionInformation",
+    "servingSize": "1 dough ball"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "The Pizza Dough Formula",
+    "url": "https://thepizzadoughformula.com"
+  }
+};
+---
+
+<BaseLayout
+  title={content.metaTitle}
+  description={content.metaDescription}
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <script type="application/ld+json" set:html={JSON.stringify(recipeSchema)} />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="flex-shrink-0 w-14 h-14 flex items-center justify-center bg-primary/10 rounded-xl">
+            <PizzaStyleIcon name={preset.icon} class="w-8 h-8 text-primary" />
+          </div>
+          <div>
+            <h1 class="font-heading text-3xl md:text-4xl font-bold text-text">
+              {preset.name} Pizza Dough
+            </h1>
+            <p class="text-text-muted">{preset.description}</p>
+          </div>
+        </div>
+        <p class="text-sm text-text-muted">
+          Last updated: February 1, 2026 · 6 min read
+        </p>
+      </header>
+
+      {/* Key Specs Card */}
+      <div class="bg-surface rounded-xl border border-border p-6 mb-8">
+        <h2 class="font-heading text-lg font-semibold text-text mb-4">At a Glance</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <dt class="text-text-muted">Hydration</dt>
+            <dd class="font-mono font-semibold text-text">{Math.round(preset.defaults.hydration * 100)}%</dd>
+          </div>
+          <div>
+            <dt class="text-text-muted">Ball Weight</dt>
+            <dd class="font-mono font-semibold text-text">{preset.defaults.ballWeight}g</dd>
+          </div>
+          <div>
+            <dt class="text-text-muted">Bake Temp</dt>
+            <dd class="font-semibold text-text">{preset.bakeTemp}</dd>
+          </div>
+          <div>
+            <dt class="text-text-muted">Bake Time</dt>
+            <dd class="font-semibold text-text">{preset.bakeTime}</dd>
+          </div>
+          <div>
+            <dt class="text-text-muted">Flour</dt>
+            <dd class="font-semibold text-text">{preset.flourRecommendation}</dd>
+          </div>
+          <div>
+            <dt class="text-text-muted">Equipment</dt>
+            <dd class="font-semibold text-text">{preset.equipment}</dd>
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-border">
+          <a
+            href={`/?s=${preset.id}`}
+            class="inline-flex items-center gap-2 text-primary hover:text-primary-hover font-medium"
+          >
+            Open in Calculator
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">{content.intro}</p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.historyTitle}</h2>
+        <p>{content.history}</p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.doughScienceTitle}</h2>
+        <p>{content.doughScience}</p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.techniqueTitle}</h2>
+        <ol class="space-y-3 list-decimal list-outside pl-5">
+          {content.technique.map(step => (
+            <li class="text-text-muted">{step}</li>
+          ))}
+        </ol>
+
+        {/* Pro Tips */}
+        <div class="bg-olive/10 rounded-lg p-6 my-8">
+          <h3 class="font-heading text-lg font-semibold text-text mb-3">Pro Tips</h3>
+          <ul class="space-y-2 text-sm">
+            {preset.tips.map(tip => (
+              <li class="flex items-start gap-2">
+                <span class="text-olive flex-shrink-0 mt-0.5">&#10003;</span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Fermentation Guide */}
+        <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 my-8">
+          <p class="font-semibold text-text mb-1">Fermentation Guide</p>
+          <p class="text-text-muted text-sm">{preset.fermentInstructions}</p>
+          <p class="text-text-muted text-sm mt-2">
+            <strong>Water temperature:</strong> {preset.waterTemp}
+          </p>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">Common Mistakes to Avoid</h2>
+        <ul class="space-y-3">
+          {content.commonMistakes.map(mistake => (
+            <li class="flex items-start gap-2 text-text-muted">
+              <span class="text-red-500 flex-shrink-0 mt-0.5">&#10007;</span>
+              <span>{mistake}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* CTA */}
+      <div class="mt-12 bg-surface rounded-xl border border-border p-6 text-center">
+        <h2 class="font-heading text-xl font-semibold text-text mb-2">
+          Ready to Make {preset.name} Pizza?
+        </h2>
+        <p class="text-text-muted mb-4">
+          Get exact measurements for your {preset.name.toLowerCase()} dough with our free calculator.
+        </p>
+        <a
+          href={`/?s=${preset.id}`}
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Calculate {preset.name} Dough
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+
+      {/* Related Styles */}
+      <div class="mt-10">
+        <h2 class="font-heading text-xl font-semibold text-text mb-4">Related Pizza Styles</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {content.relatedStyles.map(relId => {
+            const rel = PIZZA_STYLES[relId];
+            const relContent = Object.values(styleContent).find(s => slugToId[s.slug] === relId);
+            if (!rel || !relContent) return null;
+            return (
+              <a
+                href={`/pizza-styles/${relContent.slug}`}
+                class="flex items-center gap-3 p-4 bg-surface rounded-lg border border-border hover:border-primary/50 transition-colors"
+              >
+                <PizzaStyleIcon name={rel.icon} class="w-8 h-8 text-primary flex-shrink-0" />
+                <div>
+                  <p class="font-medium text-text">{rel.name} Pizza</p>
+                  <p class="text-sm text-text-muted">{rel.description}</p>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Breadcrumb back */}
+      <div class="mt-8 pt-6 border-t border-border">
+        <a href="/pizza-styles" class="text-primary hover:text-primary-hover text-sm font-medium">
+          &larr; View All Pizza Styles
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
