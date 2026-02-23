@@ -63,6 +63,54 @@
     {
       "question": "Can I make pizza dough without yeast?",
       "answer": "Yes, using sourdough starter or baking powder. Sourdough pizza requires a mature starter and longer fermentation (8-24 hours) but produces complex flavors. For quick results, some recipes use baking powder, though this creates a different texture than yeast-leavened dough."
+    },
+    {
+      "question": "Can I use all-purpose flour for pizza dough?",
+      "answer": "Yes, all-purpose flour works for pizza dough and is a good starting point for beginners. It has moderate protein (10-12%), which produces a softer, more tender crust than bread flour. It's ideal for thin and crispy styles but may not develop as much chew for New York-style. For best results, look for unbleached all-purpose flour, which has slightly more protein and better flavor."
+    },
+    {
+      "question": "What temperature should pizza dough be when shaping?",
+      "answer": "Pizza dough should be at room temperature (65-75°F / 18-24°C) before shaping. Cold dough straight from the fridge is too tight and will spring back when stretched. Remove your dough balls from the refrigerator 1-2 hours before you plan to shape them, and let them rest covered on the counter until they feel soft and pliable."
+    },
+    {
+      "question": "How long can I cold ferment pizza dough?",
+      "answer": "Most pizza dough can be cold fermented in the refrigerator for 1 to 5 days. The sweet spot for flavor and texture is typically 48-72 hours. Beyond 5 days, the dough may over-ferment, becoming overly sour, difficult to stretch, and prone to tearing. If you need to store it longer, freezing is a better option."
+    },
+    {
+      "question": "Why is my pizza dough too elastic and won't stretch?",
+      "answer": "Overly elastic dough that snaps back is usually caused by tight gluten that hasn't had time to relax. Let the dough rest at room temperature for 20-30 minutes before trying again. Other causes include using high-protein flour, over-kneading, or shaping the dough while it's still cold from the fridge."
+    },
+    {
+      "question": "What's the best pizza stone or pizza steel?",
+      "answer": "A pizza steel is generally the best choice for home ovens because steel conducts heat 18 times faster than stone, giving you a crispier, more charred crust in less time. A 3/8-inch thick steel plate is ideal. Pizza stones work well too and are more affordable — choose one at least 1/2-inch thick for better heat retention. Preheat either option for at least 45-60 minutes at your oven's maximum temperature."
+    },
+    {
+      "question": "How do I convert a recipe to baker's percentages?",
+      "answer": "Divide the weight of each ingredient by the total flour weight, then multiply by 100. For example, if a recipe uses 500g flour and 325g water, the hydration is (325 / 500) x 100 = 65%. Do this for every ingredient and you'll have a complete baker's percentage formula that's easy to scale up or down. Our calculator uses baker's percentages natively, so you can plug in any style's ratios directly."
+    },
+    {
+      "question": "What does hydration mean in pizza dough?",
+      "answer": "Hydration is the ratio of water to flour expressed as a percentage. A dough with 65% hydration has 65g of water for every 100g of flour. Lower hydration (55-60%) produces a stiffer, easier-to-handle dough with a denser crumb. Higher hydration (65-75%) creates a wetter, stickier dough that yields a lighter, more open crumb with bigger air pockets."
+    },
+    {
+      "question": "Can I make pizza dough ahead of time?",
+      "answer": "Absolutely — making dough ahead of time actually improves it. A slow, cold fermentation in the refrigerator develops deeper flavor and better texture than a quick same-day rise. Prepare your dough 1-3 days before you need it, portion it into balls, and store them in lightly oiled, sealed containers in the fridge. Just remember to pull them out 1-2 hours before shaping."
+    },
+    {
+      "question": "Why does my pizza dough not rise?",
+      "answer": "The most common cause is dead or expired yeast — check the expiration date and proof your yeast in warm water (100-110°F) with a pinch of sugar to confirm it's active. Other causes include water that was too hot (above 120°F kills yeast), too much salt added directly on top of yeast, or a cold environment that slows fermentation significantly. Make sure your dough is in a warm spot (75-80°F) for the bulk rise."
+    },
+    {
+      "question": "What's the difference between Neapolitan and New York pizza dough?",
+      "answer": "Neapolitan dough is simpler — just flour, water, salt, and yeast — with lower hydration (60-65%) and uses finely milled 00 flour. It's baked at extremely high temperatures (800-900°F) for 60-90 seconds. New York dough adds olive oil and sugar, uses bread flour or high-gluten flour, runs slightly higher hydration (63-68%), and bakes at lower temperatures (500-550°F) for 8-12 minutes, producing a chewier, foldable slice."
+    },
+    {
+      "question": "How do I get a crispy pizza crust at home?",
+      "answer": "The keys to a crispy home crust are maximum heat and a good baking surface. Preheat your oven to its highest setting (500-550°F) with a pizza steel or stone on the top rack for at least 45 minutes. Use a lower hydration dough (55-62%), stretch it thin, and don't overload the toppings. For extra crispiness, brush the bottom of the crust lightly with olive oil before baking."
+    },
+    {
+      "question": "Should I use olive oil in pizza dough?",
+      "answer": "It depends on the style. Olive oil adds tenderness, flavor, and a slightly golden color to the crust. New York, Detroit, and thin-and-crispy styles typically include 2-5% olive oil. Traditional Neapolitan dough does not use oil, keeping the dough lean for that characteristic puff and char. If you want a softer, more forgiving dough that's easier to stretch, a small amount of oil helps."
     }
   ]
 }

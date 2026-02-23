@@ -17,7 +17,7 @@ export default defineConfig({
           item.priority = 1.0;
           item.changefreq = 'daily';
         }
-        if (item.url.includes('/pizza-styles') || item.url.includes('/bakers-percentages') || item.url.includes('/faqs')) {
+        if (item.url.includes('/pizza-styles') || item.url.includes('/bakers-percentages') || item.url.includes('/faqs') || item.url.includes('/guides')) {
           item.priority = 0.9;
         }
         return item;

@@ -1,0 +1,176 @@
+---
+/**
+ * Cold Fermentation Guide
+ * SEO content page targeting cold ferment keywords
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Guides', href: '/guides' },
+  { label: 'Cold Fermentation' }
+];
+---
+
+<BaseLayout
+  title="Cold Fermentation Guide for Pizza Dough"
+  description="Learn how to cold ferment pizza dough for deeper flavor and better texture. Step-by-step guide covering 24hr, 48hr, and 72hr cold fermentation timelines."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Cold Fermentation Guide for Pizza Dough
+        </h1>
+        <p class="text-sm text-text-muted">
+          Last updated: February 1, 2026 · 5 min read
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          Cold fermentation slows yeast activity by chilling dough in the refrigerator, developing complex flavors and improving texture over 24 to 72 hours.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          Cold fermentation is one of the simplest ways to dramatically improve your pizza. By letting dough ferment slowly in the refrigerator, you develop flavors that a quick rise simply cannot produce.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What Is Cold Fermentation?</h2>
+        <p>
+          Cold fermentation (also called cold proofing or retarding) means placing your mixed dough in the refrigerator at 38-42 degrees F (3-5 degrees C) for an extended period. The cold temperature slows yeast activity dramatically but does not stop it entirely. Enzymes in the flour continue breaking down starches into sugars, building a depth of flavor that fast ferments cannot match.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Why Cold Ferment?</h2>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Better Flavor</h3>
+        <p>
+          The slow enzyme activity produces organic acids and aromatic compounds over time. After 48 hours, you will notice a distinctly more complex, slightly tangy flavor compared to same-day dough. This is the biggest reason pizzerias cold ferment.
+        </p>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Improved Texture</h3>
+        <p>
+          Long fermentation relaxes gluten, making the dough easier to stretch. The slow gas production creates a more even crumb structure with better oven spring. The result is a lighter, more digestible crust.
+        </p>
+
+        <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Schedule Flexibility</h3>
+        <p>
+          Cold fermentation fits around your life. Mix dough on a weeknight, refrigerate it, and bake pizza two or three days later when it is convenient. The fridge gives you a wide window of usability.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Temperature and Timing</h2>
+        <p>
+          Keep your refrigerator between <strong>38-42 degrees F (3-5 degrees C)</strong>. Warmer temperatures speed fermentation and shorten the usable window. Colder can slow it too much.
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-2 font-heading font-semibold text-text">Duration</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Flavor</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Texture</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Best For</th>
+              </tr>
+            </thead>
+            <tbody class="text-text-muted">
+              <tr class="border-b border-border/50">
+                <td class="py-2 font-mono">24 hours</td>
+                <td class="py-2">Mild improvement</td>
+                <td class="py-2">Slightly more extensible</td>
+                <td class="py-2">Weeknight convenience</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2 font-mono">48 hours</td>
+                <td class="py-2">Noticeably complex</td>
+                <td class="py-2">Easy to stretch, open crumb</td>
+                <td class="py-2">Best balance of flavor and effort</td>
+              </tr>
+              <tr>
+                <td class="py-2 font-mono">72 hours</td>
+                <td class="py-2">Deep, tangy, aromatic</td>
+                <td class="py-2">Very extensible, delicate</td>
+                <td class="py-2">Maximum flavor development</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">How to Cold Ferment: Step by Step</h2>
+
+        <ol class="list-decimal list-inside space-y-3">
+          <li>
+            <strong>Mix your dough</strong> using your preferred recipe. Our calculator can generate recipes for any <a href="/pizza-styles" class="text-primary hover:text-primary-hover underline">pizza style</a>. Use slightly less yeast than a same-day recipe calls for (0.1-0.3% instant yeast works well).
+          </li>
+          <li>
+            <strong>Knead until smooth,</strong> about 8-10 minutes by hand or 5-6 minutes with a mixer. The dough should pass the windowpane test.
+          </li>
+          <li>
+            <strong>Let it bulk ferment at room temperature</strong> for 1-2 hours, or until it has grown by about 50%. This kick-starts yeast activity before the cold slows it down.
+          </li>
+          <li>
+            <strong>Divide and ball the dough.</strong> Shape into tight, round balls and place them in individual oiled containers or on an oiled sheet tray covered tightly with plastic wrap.
+          </li>
+          <li>
+            <strong>Refrigerate for 24-72 hours.</strong> The dough will continue to rise slowly. It is ready when the balls have roughly doubled and feel puffy with some give.
+          </li>
+          <li>
+            <strong>Remove from the fridge 1-2 hours before baking.</strong> Let the dough come to room temperature so it relaxes and stretches easily.
+          </li>
+          <li>
+            <strong>Shape and bake</strong> as normal. Cold-fermented dough often stretches more easily than same-day dough.
+          </li>
+        </ol>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Signs of Over-Fermentation</h2>
+        <p>
+          Watch for these signs that your dough has gone too far:
+        </p>
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>Excessive sourness</strong> that overpowers the wheat flavor.</li>
+          <li><strong>Flat, slack dough</strong> that will not hold its shape when balled.</li>
+          <li><strong>Large bubbles on the surface</strong> and a wrinkly, loose skin.</li>
+          <li><strong>Alcohol smell</strong> when you open the container.</li>
+          <li><strong>Dough tears easily</strong> rather than stretching.</li>
+        </ul>
+        <p>
+          If you see these signs, the gluten has broken down too much. Reduce fermentation time or lower your yeast percentage next time. See our <a href="/guides/troubleshooting" class="text-primary hover:text-primary-hover underline">troubleshooting guide</a> for more fixes.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Yeast Adjustments for Cold Ferment</h2>
+        <p>
+          For cold fermentation, reduce yeast compared to a same-day recipe. A good starting point is 0.1-0.2% instant yeast for 48-72 hour ferments. Our calculator adjusts yeast automatically based on the style you choose. Learn more about how ingredient ratios work in our <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a> guide.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Try the Calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,165 @@
+---
+/**
+ * Pizza Dough Hydration Guide
+ * SEO content page targeting hydration-related keywords
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Guides', href: '/guides' },
+  { label: 'Hydration' }
+];
+---
+
+<BaseLayout
+  title="Pizza Dough Hydration Guide"
+  description="Learn what hydration means in pizza dough, how to calculate it, and which hydration levels work best for Neapolitan, New York, Detroit, and other pizza styles."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Pizza Dough Hydration Guide
+        </h1>
+        <p class="text-sm text-text-muted">
+          Last updated: February 1, 2026 · 5 min read
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          Hydration is the ratio of water to flour in your dough, expressed as a percentage. It is the single biggest factor controlling your crust's texture, from crispy and firm to soft and airy.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          Hydration is one of the most important numbers in any pizza dough recipe. Understanding it gives you control over texture, workability, and the final character of your crust.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What Is Hydration?</h2>
+        <p>
+          In <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a>, hydration is the weight of water divided by the weight of flour, multiplied by 100. Flour is always the baseline at 100%.
+        </p>
+
+        <div class="bg-cream rounded-lg p-6 my-6">
+          <p class="font-mono text-center text-lg text-text">
+            Hydration % = (Water Weight / Flour Weight) x 100
+          </p>
+        </div>
+
+        <p>
+          For example, if you use 600g of flour and 390g of water, your hydration is 390 / 600 x 100 = <strong>65%</strong>.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Low Hydration: 50-58%</h2>
+        <p>
+          Low-hydration doughs are stiff, easy to shape, and produce a dense, cracker-like crust. They roll out thin without springing back much and hold their shape well during handling.
+        </p>
+        <p>
+          <strong>Common styles:</strong> <a href="/pizza-styles/thin-crispy" class="text-primary hover:text-primary-hover underline">Thin and crispy</a> pizza, crackers, and flatbreads. Some bar-style pizzas also use lower hydration for a snappy texture.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Medium Hydration: 60-67%</h2>
+        <p>
+          This is the sweet spot for most pizza styles. The dough is manageable, stretches well by hand, and produces a crust with good structure and moderate chew. Most beginners should start here.
+        </p>
+        <p>
+          <strong>Common styles:</strong> <a href="/pizza-styles/neapolitan" class="text-primary hover:text-primary-hover underline">Neapolitan</a> (typically 60-65%), <a href="/pizza-styles/new-york" class="text-primary hover:text-primary-hover underline">New York</a> (62-66%). These hydrations balance workability with a light, tender crumb.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">High Hydration: 68-75%</h2>
+        <p>
+          High-hydration doughs are wet, sticky, and harder to handle, but they reward you with an open, airy crumb and a light, almost cloud-like interior. The extra water creates more steam during baking, puffing up the crust.
+        </p>
+        <p>
+          <strong>Common styles:</strong> <a href="/pizza-styles/detroit" class="text-primary hover:text-primary-hover underline">Detroit</a> (70-75%), some Roman al taglio styles, and focaccia-style pizzas. Pan pizzas benefit from high hydration because the pan supports the slack dough.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">How Hydration Affects Texture</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-2 font-heading font-semibold text-text">Hydration</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Dough Feel</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Crust Result</th>
+              </tr>
+            </thead>
+            <tbody class="text-text-muted">
+              <tr class="border-b border-border/50">
+                <td class="py-2 font-mono">50-58%</td>
+                <td class="py-2">Stiff, easy to roll</td>
+                <td class="py-2">Crispy, dense, cracker-like</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2 font-mono">60-65%</td>
+                <td class="py-2">Smooth, easy to stretch</td>
+                <td class="py-2">Balanced chew and tenderness</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2 font-mono">66-70%</td>
+                <td class="py-2">Slightly tacky, extensible</td>
+                <td class="py-2">Light, open crumb, soft</td>
+              </tr>
+              <tr>
+                <td class="py-2 font-mono">71-75%</td>
+                <td class="py-2">Wet, sticky, slack</td>
+                <td class="py-2">Very airy, large bubbles</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Tips for Handling High-Hydration Dough</h2>
+
+        <p>
+          Working with wet dough takes practice. Here are techniques that help:
+        </p>
+
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>Wet your hands</strong> instead of flouring them. Water prevents sticking without toughening the surface.</li>
+          <li><strong>Use stretch and folds</strong> during bulk fermentation. Every 30 minutes, fold the dough over itself to build strength without adding flour.</li>
+          <li><strong>Be patient with autolyse.</strong> Letting flour and water rest together for 20-30 minutes before adding salt and yeast helps gluten develop passively.</li>
+          <li><strong>Use a bench scraper</strong> for handling. Scoop and flip rather than pulling the dough apart.</li>
+          <li><strong>Cold ferment your dough.</strong> A <a href="/guides/cold-fermentation" class="text-primary hover:text-primary-hover underline">cold ferment</a> firms up wet dough, making it much easier to shape the next day.</li>
+          <li><strong>Adjust your flour.</strong> Higher-protein <a href="/guides/flour-types" class="text-primary hover:text-primary-hover underline">bread flour</a> absorbs more water, making high hydrations more manageable.</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Find Your Ideal Hydration</h2>
+        <p>
+          Our calculator automatically sets the right hydration for each <a href="/pizza-styles" class="text-primary hover:text-primary-hover underline">pizza style</a>. You can also adjust it manually in the advanced options to dial in your preferred texture. See our <a href="/faqs" class="text-primary hover:text-primary-hover underline">FAQ</a> for answers to common hydration questions.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Try the Calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

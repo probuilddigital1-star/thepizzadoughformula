@@ -1,0 +1,100 @@
+---
+/**
+ * Guides Index Page
+ * Lists all pizza dough guides
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Guides' }
+];
+
+const guides = [
+  {
+    title: 'Pizza Flour Guide: 00 vs Bread Flour vs All-Purpose',
+    description: 'Understand protein content, gluten development, and which flour works best for each pizza style.',
+    href: '/guides/flour-types'
+  },
+  {
+    title: 'Pizza Dough Hydration Guide',
+    description: 'Learn what hydration means, how it affects your dough, and which levels work for different styles.',
+    href: '/guides/hydration'
+  },
+  {
+    title: 'Cold Fermentation Guide for Pizza Dough',
+    description: 'Master the cold ferment technique for deeper flavor, better texture, and flexible scheduling.',
+    href: '/guides/cold-fermentation'
+  },
+  {
+    title: 'Pizza Dough Troubleshooting Guide',
+    description: 'Fix common pizza dough problems: sticky dough, dough that won\'t stretch, dense crust, and more.',
+    href: '/guides/troubleshooting'
+  }
+];
+---
+
+<BaseLayout
+  title="Pizza Dough Guides"
+  description="In-depth guides on pizza dough ingredients, techniques, and troubleshooting. Learn about flour types, hydration, cold fermentation, and more."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Pizza Dough Guides
+        </h1>
+        <p class="text-lg text-text-muted">
+          Everything you need to know about making great pizza dough at home.
+        </p>
+      </header>
+
+      <div class="space-y-6">
+        {guides.map((guide) => (
+          <a
+            href={guide.href}
+            class="block bg-surface border border-border rounded-lg p-6 hover:border-primary/50 hover:shadow-md transition-all"
+          >
+            <h2 class="font-heading text-xl font-semibold text-text mb-2">
+              {guide.title}
+            </h2>
+            <p class="text-text-muted text-sm">
+              {guide.description}
+            </p>
+            <span class="inline-flex items-center gap-1 text-primary text-sm font-medium mt-3">
+              Read guide
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Try the Calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

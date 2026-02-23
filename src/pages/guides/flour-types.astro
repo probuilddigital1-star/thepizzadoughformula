@@ -1,0 +1,162 @@
+---
+/**
+ * Pizza Flour Guide
+ * SEO content page targeting flour type comparisons
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Guides', href: '/guides' },
+  { label: 'Flour Types' }
+];
+---
+
+<BaseLayout
+  title="Pizza Flour Guide: 00 vs Bread Flour vs All-Purpose"
+  description="Compare 00 flour, bread flour, and all-purpose flour for pizza. Learn which flour to use for Neapolitan, New York, Detroit, and other pizza styles."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Pizza Flour Guide: 00 vs Bread Flour vs All-Purpose
+        </h1>
+        <p class="text-sm text-text-muted">
+          Last updated: February 1, 2026 · 5 min read
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          The best flour for pizza depends on your style. 00 flour is ideal for Neapolitan, bread flour suits New York and Detroit, and all-purpose works for everyday baking.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          Flour is the foundation of every pizza dough. The type you choose affects gluten development, texture, browning, and how your crust feels in your hand. Understanding the differences will help you pick the right flour for the pizza you want to make.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What Makes Flour Different</h2>
+        <p>
+          The main difference between flours is <strong>protein content</strong>. Higher protein means more gluten, which gives dough its stretch and chew. Protein content typically ranges from about 8% in cake flour to 14% or more in high-gluten bread flour. The grind fineness also matters: finer flours absorb water differently and produce a smoother dough.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">00 Flour (Tipo 00)</h2>
+        <p>
+          Italian 00 flour is classified by grind, not protein. It is milled extremely fine, producing a silky, elastic dough. Most pizza-grade 00 flours have 11.5-13% protein, which is enough for good gluten development without making the crust tough.
+        </p>
+        <p>
+          <strong>Best for:</strong> <a href="/pizza-styles/neapolitan" class="text-primary hover:text-primary-hover underline">Neapolitan pizza</a>, where you want a soft, pillowy cornicione that chars in spots at high heat. The fine grind also works well for thin, crispy Roman-style pies.
+        </p>
+        <p>
+          <strong>Note:</strong> 00 flour absorbs less water than bread flour, so you may need to adjust <a href="/guides/hydration" class="text-primary hover:text-primary-hover underline">hydration</a> slightly when substituting.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Bread Flour</h2>
+        <p>
+          Bread flour has 12-14% protein, giving it strong gluten-forming ability. The higher protein creates a chewier, sturdier crust that can hold up to heavy toppings and longer bake times at moderate temperatures.
+        </p>
+        <p>
+          <strong>Best for:</strong> <a href="/pizza-styles/new-york" class="text-primary hover:text-primary-hover underline">New York style</a> and <a href="/pizza-styles/detroit" class="text-primary hover:text-primary-hover underline">Detroit style</a> pizza. The extra gluten strength helps NY slices hold their fold and gives Detroit its signature airy, open crumb. It also performs well in long <a href="/guides/cold-fermentation" class="text-primary hover:text-primary-hover underline">cold ferments</a>.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">All-Purpose Flour</h2>
+        <p>
+          All-purpose flour sits in the middle at 10-12% protein. It produces a softer, more tender crust than bread flour. While it will not give you the same chew, it is perfectly capable of making good pizza.
+        </p>
+        <p>
+          <strong>Best for:</strong> Everyday pizza baking, <a href="/pizza-styles/thin-crispy" class="text-primary hover:text-primary-hover underline">thin and crispy</a> styles, and situations where bread flour or 00 is not available. Many home bakers get great results with all-purpose, especially for same-day doughs.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Whole Wheat and Semolina</h2>
+        <p>
+          <strong>Whole wheat flour</strong> adds nutty flavor and more fiber, but the bran interferes with gluten development. Use it as a blend: replace 10-30% of your white flour with whole wheat for flavor without sacrificing structure.
+        </p>
+        <p>
+          <strong>Semolina flour</strong> (durum wheat) is coarser and adds a slight yellow color and pleasant crunch. It is most commonly used for dusting peels and work surfaces to prevent sticking, though some recipes incorporate a small percentage into the dough itself.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Flour Comparison Table</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-2 font-heading font-semibold text-text">Flour Type</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Protein</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Best Styles</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Texture</th>
+              </tr>
+            </thead>
+            <tbody class="text-text-muted">
+              <tr class="border-b border-border/50">
+                <td class="py-2">00 (Tipo 00)</td>
+                <td class="py-2 font-mono">11.5-13%</td>
+                <td class="py-2">Neapolitan, Roman</td>
+                <td class="py-2">Soft, tender, blistered</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Bread Flour</td>
+                <td class="py-2 font-mono">12-14%</td>
+                <td class="py-2">New York, Detroit</td>
+                <td class="py-2">Chewy, sturdy, open crumb</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">All-Purpose</td>
+                <td class="py-2 font-mono">10-12%</td>
+                <td class="py-2">Thin & crispy, everyday</td>
+                <td class="py-2">Tender, moderate chew</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Whole Wheat</td>
+                <td class="py-2 font-mono">13-14%</td>
+                <td class="py-2">Blend only (10-30%)</td>
+                <td class="py-2">Dense, nutty flavor</td>
+              </tr>
+              <tr>
+                <td class="py-2">Semolina</td>
+                <td class="py-2 font-mono">12-13%</td>
+                <td class="py-2">Dusting, small additions</td>
+                <td class="py-2">Gritty, golden color</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Try Different Flours with the Calculator</h2>
+        <p>
+          Our calculator uses <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a> to give you precise measurements for any flour type. Select a <a href="/pizza-styles" class="text-primary hover:text-primary-hover underline">pizza style</a> to see the recommended flour and adjust your recipe accordingly. Have questions? Check our <a href="/faqs" class="text-primary hover:text-primary-hover underline">FAQ</a> for more tips.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Try the Calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

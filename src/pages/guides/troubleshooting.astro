@@ -1,0 +1,182 @@
+---
+/**
+ * Pizza Dough Troubleshooting Guide
+ * SEO content page targeting common dough problems
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Guides', href: '/guides' },
+  { label: 'Troubleshooting' }
+];
+---
+
+<BaseLayout
+  title="Pizza Dough Troubleshooting Guide"
+  description="Fix common pizza dough problems including sticky dough, dough that won't stretch, dense crust, and more. Causes and solutions for every issue."
+  type="article"
+  schemaType="Article"
+  datePublished="2025-01-01"
+  dateModified="2026-02-01"
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Pizza Dough Troubleshooting Guide
+        </h1>
+        <p class="text-sm text-text-muted">
+          Last updated: February 1, 2026 · 6 min read
+        </p>
+      </header>
+
+      {/* Key Takeaway Box */}
+      <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
+        <p class="font-semibold text-text mb-1">Key Takeaway</p>
+        <p class="text-text-muted text-sm">
+          Most pizza dough problems come down to hydration, fermentation time, or gluten development. Identifying the root cause makes the fix straightforward.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          Even experienced bakers run into dough problems. This guide covers the most common issues, explains why they happen, and tells you exactly how to fix them.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Dough Is Too Sticky</h2>
+        <p>
+          <strong>Cause:</strong> The most common reason is too much water relative to flour. High <a href="/guides/hydration" class="text-primary hover:text-primary-hover underline">hydration</a> doughs (above 68%) will naturally feel sticky. Under-kneading also leaves dough wet and unstructured because gluten has not developed enough to absorb the water. Humidity and flour type matter too: <a href="/guides/flour-types" class="text-primary hover:text-primary-hover underline">all-purpose flour</a> absorbs less water than bread flour.
+        </p>
+        <p>
+          <strong>Fix:</strong> Resist adding more flour, which changes your recipe ratios. Instead, wet your hands with water while working the dough. Use stretch and folds every 30 minutes during bulk fermentation to build gluten strength. If the dough is unworkable, add flour one tablespoon at a time and note the adjustment for next time. For future batches, reduce hydration by 2-3%.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Dough Is Too Dry</h2>
+        <p>
+          <strong>Cause:</strong> Not enough water, or the flour absorbed more moisture than expected. This happens when measuring by volume instead of weight, or when using high-protein bread flour at a hydration designed for all-purpose.
+        </p>
+        <p>
+          <strong>Fix:</strong> Add water one teaspoon at a time, kneading after each addition until the dough reaches the right consistency. It should be smooth and slightly tacky but not stick to a clean surface. Always measure ingredients by weight using a kitchen scale for consistent results. Our calculator provides weights using <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a>, so you get precise ratios every time.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Dough Won't Stretch (Springs Back)</h2>
+        <p>
+          <strong>Cause:</strong> The gluten is too tight. This happens when you try to shape dough immediately after kneading or dividing. Kneading aligns and tightens gluten strands, and they need time to relax. Using flour with very high protein content can also make dough more elastic and resistant to stretching.
+        </p>
+        <p>
+          <strong>Fix:</strong> Let the dough rest. Cover it and wait 15-30 minutes, then try again. The gluten will relax and the dough will become more extensible. If it keeps springing back, rest it another 15 minutes. Also make sure your dough is at room temperature before shaping; cold dough from the fridge is much tighter. If you consistently have this problem, try a slightly higher hydration or a shorter knead.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Dough Won't Rise</h2>
+        <p>
+          <strong>Cause:</strong> Dead yeast, water that was too hot (above 120 degrees F / 49 degrees C kills yeast), or too much salt in direct contact with yeast. Cold room temperature also dramatically slows rising.
+        </p>
+        <p>
+          <strong>Fix:</strong> Test your yeast first: dissolve a teaspoon in warm water (100-110 degrees F / 38-43 degrees C) with a pinch of sugar. If it foams within 10 minutes, the yeast is alive. Always check expiration dates. When mixing, do not let salt and yeast touch directly in the bowl before flour and water are added. For slow-rising dough, move it to a warmer spot (75-80 degrees F / 24-27 degrees C) or give it more time. A <a href="/guides/cold-fermentation" class="text-primary hover:text-primary-hover underline">cold ferment</a> in the fridge will take 24+ hours to show significant rise, and that is normal.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Dense, Heavy Crust</h2>
+        <p>
+          <strong>Cause:</strong> Under-fermentation, insufficient kneading, or too low a hydration. If the dough has not fermented long enough, there is not enough gas trapped in the gluten network to create a light, airy crumb. Over-handling during shaping can also press out the gas you worked to develop.
+        </p>
+        <p>
+          <strong>Fix:</strong> Extend your fermentation time. The dough should roughly double in size during bulk ferment. Knead until the dough passes the windowpane test: stretch a small piece thin enough to see light through without tearing. When shaping, handle gently and avoid pressing out all the air bubbles, especially in the cornicione (rim). Consider trying a higher hydration for your <a href="/pizza-styles" class="text-primary hover:text-primary-hover underline">pizza style</a>, which produces a lighter crumb.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Dough Tears When Stretching</h2>
+        <p>
+          <strong>Cause:</strong> Under-developed gluten or over-fermented dough. If you did not knead enough, the gluten network is weak and cannot stretch without breaking. On the other end, over-fermented dough has weakened gluten from excessive enzyme activity, especially after long cold ferments past 72 hours.
+        </p>
+        <p>
+          <strong>Fix:</strong> For under-kneaded dough, knead longer next time or add stretch and folds during bulk fermentation. For over-fermented dough, reduce fermentation time or lower your yeast percentage. Also check your flour: low-protein <a href="/guides/flour-types" class="text-primary hover:text-primary-hover underline">all-purpose flour</a> tears more easily than bread flour when pushed to high hydrations or long ferments.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Uneven Baking</h2>
+        <p>
+          <strong>Cause:</strong> Uneven dough thickness (thicker in the center, thin at the edges), oven hot spots, or the pizza was not on a preheated surface. A cold baking surface causes the bottom to cook slowly while the top browns too fast.
+        </p>
+        <p>
+          <strong>Fix:</strong> When stretching, work from the center outward, leaving the rim thicker on purpose. The center should be thin and even. Preheat your pizza stone or steel for at least 45-60 minutes at the highest oven temperature. If you have hot spots, rotate the pizza halfway through baking. For consistently even results, a pizza steel conducts heat more evenly than a stone.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Quick Reference</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-2 font-heading font-semibold text-text">Problem</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Likely Cause</th>
+                <th class="text-left py-2 font-heading font-semibold text-text">Quick Fix</th>
+              </tr>
+            </thead>
+            <tbody class="text-text-muted">
+              <tr class="border-b border-border/50">
+                <td class="py-2">Too sticky</td>
+                <td class="py-2">High hydration or under-kneading</td>
+                <td class="py-2">Wet hands, stretch and folds</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Too dry</td>
+                <td class="py-2">Low hydration or volume measuring</td>
+                <td class="py-2">Add water 1 tsp at a time</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Springs back</td>
+                <td class="py-2">Tight gluten, cold dough</td>
+                <td class="py-2">Rest 15-30 min, warm to room temp</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Won't rise</td>
+                <td class="py-2">Dead yeast or too-hot water</td>
+                <td class="py-2">Test yeast, use 100-110F water</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Dense crust</td>
+                <td class="py-2">Under-fermented or over-handled</td>
+                <td class="py-2">Longer ferment, gentle shaping</td>
+              </tr>
+              <tr class="border-b border-border/50">
+                <td class="py-2">Tears easily</td>
+                <td class="py-2">Weak or degraded gluten</td>
+                <td class="py-2">Knead more or ferment less</td>
+              </tr>
+              <tr>
+                <td class="py-2">Uneven bake</td>
+                <td class="py-2">Cold surface or thick center</td>
+                <td class="py-2">Preheat stone 45+ min, stretch evenly</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Get the Ratios Right</h2>
+        <p>
+          Many dough problems start with incorrect ingredient ratios. Our calculator uses <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a> to give you precise measurements for every <a href="/pizza-styles" class="text-primary hover:text-primary-hover underline">pizza style</a>, taking the guesswork out of your recipe. Check our <a href="/faqs" class="text-primary hover:text-primary-hover underline">FAQ</a> for additional tips.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Try the Calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
