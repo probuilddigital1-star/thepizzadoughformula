@@ -1,0 +1,101 @@
+---
+/**
+ * Contact Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Contact' }
+];
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch with The Pizza Dough Formula. Send feedback, report a bug, or ask a pizza question."
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <header class="mb-8">
+        <h1 class="font-heading text-4xl font-bold text-text mb-3">
+          Contact
+        </h1>
+        <p class="text-lg text-text-muted">
+          Got a question, found a bug, or want to suggest a new feature? Send a note.
+          Real human reads every email.
+        </p>
+      </header>
+
+      {/* Email card */}
+      <div class="bg-primary/5 border border-primary/20 rounded-xl p-6 md:p-8 mb-10">
+        <p class="text-sm font-semibold text-text-muted uppercase tracking-wide mb-2">
+          Email
+        </p>
+        <a
+          href="mailto:admin@thedoughformula.com"
+          class="font-heading text-2xl md:text-3xl font-semibold text-primary hover:text-primary-hover break-all"
+        >
+          admin@thedoughformula.com
+        </a>
+        <p class="text-sm text-text-muted mt-3">
+          Replies usually arrive within a few business days.
+        </p>
+      </div>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What gets a fast reply</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>Bug reports.</strong> Tell me what you tried, what you expected, and what happened. A screenshot helps.</li>
+          <li><strong>Calculator feedback.</strong> If a recipe came out off, share your style, hydration, flour brand, and bake setup so I can investigate.</li>
+          <li><strong>Feature ideas.</strong> Especially anything that would make planning a pizza night easier.</li>
+          <li><strong>Content corrections.</strong> If something on a guide page is wrong or out of date, I want to fix it.</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Before you write</h2>
+        <p>
+          Quick pizza questions are often answered on the
+          <a href="/faqs" class="text-primary hover:text-primary-hover underline">FAQ page</a>
+          or in the
+          <a href="/guides" class="text-primary hover:text-primary-hover underline">guides</a>.
+          If you cannot find what you need, the inbox is open.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What I cannot help with</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li>Paid sponsorships, link exchanges, or guest-post pitches (no thanks)</li>
+          <li>Free product reviews from brands</li>
+          <li>One-on-one cooking lessons</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Privacy</h2>
+        <p>
+          Anything you send is used only to respond to you. Your email address is not added to a
+          newsletter or shared with anyone. See the
+          <a href="/privacy" class="text-primary hover:text-primary-hover underline">Privacy Policy</a>
+          for details.
+        </p>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+        >
+          Back to the calculator
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

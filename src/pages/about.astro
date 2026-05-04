@@ -16,11 +16,12 @@ const breadcrumbs = [
 
 <BaseLayout
   title="About"
-  description="Learn about The Pizza Dough Formula - why we built this free pizza dough calculator and who it's for."
+  description="The story behind The Pizza Dough Formula and Zack Pearson, the home baker who built it."
   type="article"
   schemaType="Article"
   datePublished="2025-01-01"
-  dateModified="2025-12-28"
+  dateModified="2026-05-04"
+  author={{ name: 'Zack Pearson', url: 'https://thedoughformula.com' }}
 >
   <Header />
 
@@ -33,7 +34,7 @@ const breadcrumbs = [
           About The Pizza Dough Formula
         </h1>
         <p class="text-sm text-text-muted">
-          Last updated: December 28, 2025
+          By Zack Pearson · Last updated May 4, 2026
         </p>
       </header>
 
@@ -41,67 +42,77 @@ const breadcrumbs = [
       <div class="bg-primary/10 border-l-4 border-primary rounded-r-lg p-4 mb-8">
         <p class="font-semibold text-text mb-1">Key Takeaway</p>
         <p class="text-text-muted text-sm">
-          The Pizza Dough Formula is a free calculator that uses baker's percentages to give you precise,
-          style-specific dough recipes for Neapolitan, New York, Detroit, and more.
+          The Pizza Dough Formula is a free calculator built by a home baker, for home bakers.
+          It uses baker's percentages to give you precise, style-specific dough recipes for
+          Neapolitan, New York, Detroit, and more.
         </p>
       </div>
 
       <div class="prose prose-lg text-text-muted space-y-6">
-        <p class="text-xl leading-relaxed">
-          Great pizza starts with great dough. But getting the ratios right can be confusing,
-          especially when every recipe uses different measurements and methods.
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Who's behind this site</h2>
+        <p>
+          Hi, I'm Zack Pearson. I started baking bread during the pandemic, when a lot of us
+          suddenly had time on our hands and a sourdough starter on the counter. What began as
+          a way to fill long quiet weekends turned into a real obsession with dough, fermentation,
+          and the small variables that separate a flat loaf from a beautiful one.
+        </p>
+        <p>
+          That obsession eventually pulled me toward pizza. Pizza dough lives in the same world
+          as bread, but the rules are stricter: shorter bake times, hotter ovens, and a finished
+          product where the crust is half the experience. I spent a couple of years tweaking
+          hydration, trying different flours, and burning through more dough balls than I want to
+          admit before things started to click.
+        </p>
+        <p>
+          I built <a href="https://thedoughformula.com" rel="noopener" class="text-primary hover:text-primary-hover underline">thedoughformula.com</a>
+          first as a place to organize what I was learning about bread. As the pizza side of my
+          baking grew, it deserved its own home, so I built thepizzadoughformula.com to focus on
+          pizza-specific recipes, tools, and style guides.
         </p>
 
-        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Why We Built This</h2>
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Why this calculator exists</h2>
         <p>
-          We built The Pizza Dough Formula to solve a simple problem: making it easy for
-          anyone to calculate the perfect pizza dough recipe. Whether you're making your
-          first pizza or your thousandth, precise measurements make the difference between
-          good dough and great dough.
+          Most pizza dough recipes are written for one specific style with one specific weight.
+          The moment you want to scale up for a party, switch from Neapolitan to New York, or
+          try a poolish, you have to do the math yourself. I wanted a tool that handled all of
+          that in the background and let me focus on the dough.
         </p>
         <p>
-          Unlike other calculators that give you generic "pizza dough" formulas, we provide
-          style-specific presets. <a href="/pizza-styles/neapolitan" class="text-primary hover:text-primary-hover underline">Neapolitan dough</a> is different from <a href="/pizza-styles/new-york" class="text-primary hover:text-primary-hover underline">New York dough</a>, which is
-          different from <a href="/pizza-styles/detroit" class="text-primary hover:text-primary-hover underline">Detroit dough</a>. Each has optimal hydration levels, ingredient ratios,
-          and techniques that make it unique.
-        </p>
-
-        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Baker's Percentages</h2>
-        <p>
-          We use <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a> because they're the language of professional bakers.
-          Once you understand that all ingredients are expressed as a percentage of flour
-          weight, scaling recipes becomes trivial and comparing formulas becomes intuitive.
-        </p>
-        <p>
-          Our calculator shows you both the weights AND the percentages, so you learn as you go.
+          The calculator uses <a href="/bakers-percentages" class="text-primary hover:text-primary-hover underline">baker's percentages</a>,
+          which is the same system professional bakers use. Every ingredient is expressed as a
+          percentage of flour weight, so scaling a recipe is just multiplication. Once you see
+          the percentages alongside the weights, the patterns behind each style start to make
+          sense on their own.
         </p>
 
-        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Who It's For</h2>
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">What you'll find here</h2>
         <ul class="list-disc list-inside space-y-2">
-          <li><strong>Home pizza enthusiasts</strong> who want consistent, repeatable results</li>
-          <li><strong>Ooni and Roccbox owners</strong> looking for Neapolitan-style dough</li>
-          <li><strong>Beginner bakers</strong> learning about hydration and fermentation</li>
-          <li><strong>Advanced bakers</strong> experimenting with pre-ferments and custom formulas</li>
-          <li><strong>Anyone</strong> who's tired of guessing and wants precision</li>
-        </ul>
-
-        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Features</h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>6 pizza style presets with optimized defaults</li>
-          <li>Pre-ferment support (poolish and biga)</li>
+          <li>A calculator with style presets for <a href="/pizza-styles/neapolitan" class="text-primary hover:text-primary-hover underline">Neapolitan</a>, <a href="/pizza-styles/new-york" class="text-primary hover:text-primary-hover underline">New York</a>, <a href="/pizza-styles/detroit" class="text-primary hover:text-primary-hover underline">Detroit</a>, and more</li>
+          <li>Pre-ferment support for poolish and biga</li>
           <li>Humidity adjustment for sticky-dough days</li>
-          <li>Unit toggle (grams and ounces)</li>
-          <li>Volume-to-weight converter for American recipes</li>
-          <li>Shareable recipe URLs</li>
-          <li>Print-friendly recipe cards</li>
-          <li>100% free, no account required</li>
+          <li>A volume-to-weight converter for older American recipes</li>
+          <li>Printable, shareable recipe cards</li>
+          <li>Long-form guides on <a href="/guides/flour-types" class="text-primary hover:text-primary-hover underline">flour</a>, <a href="/guides/hydration" class="text-primary hover:text-primary-hover underline">hydration</a>, <a href="/guides/cold-fermentation" class="text-primary hover:text-primary-hover underline">cold fermentation</a>, and <a href="/guides/troubleshooting" class="text-primary hover:text-primary-hover underline">troubleshooting</a></li>
+          <li>No account, no paywall, no popups</li>
         </ul>
 
-        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Questions?</h2>
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">How the site stays free</h2>
         <p>
-          Have feedback or suggestions? We'd love to hear from you. Check out our
-          <a href="/faqs" class="text-primary hover:text-primary-hover underline">FAQ page</a>
-          for common questions, or reach out via the contact form below.
+          The site is supported by a few small things: affiliate commissions when readers buy
+          recommended equipment through Amazon and other retailers, and display advertising. None
+          of these influence what gets recommended in the guides or the calculator defaults. If a
+          product shows up in the equipment list, it's because I either own it or have used one.
+          Full details are on the
+          <a href="/affiliate-disclosure" class="text-primary hover:text-primary-hover underline">Affiliate Disclosure</a>
+          page.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Get in touch</h2>
+        <p>
+          Feedback, bug reports, and pizza questions are all welcome. The
+          <a href="/contact" class="text-primary hover:text-primary-hover underline">contact page</a>
+          has details, or you can email me directly at
+          <a href="mailto:admin@thedoughformula.com" class="text-primary hover:text-primary-hover underline">admin@thedoughformula.com</a>.
         </p>
       </div>
 
@@ -111,7 +122,7 @@ const breadcrumbs = [
           class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
         >
           Start Calculating
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
         </a>

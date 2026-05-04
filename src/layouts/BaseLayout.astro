@@ -1,4 +1,9 @@
 ---
+interface Author {
+  name: string;
+  url?: string;
+}
+
 interface Props {
   title: string;
   description: string;
@@ -11,7 +16,14 @@ interface Props {
   dateModified?: string;
   // Schema type override
   schemaType?: 'WebApplication' | 'Article' | 'HowTo' | 'none';
+  // Named author for Article schema (E-E-A-T)
+  author?: Author;
 }
+
+const DEFAULT_AUTHOR: Author = {
+  name: 'Zack Pearson',
+  url: 'https://thedoughformula.com'
+};
 
 const {
   title,
@@ -22,7 +34,8 @@ const {
   noIndex = false,
   datePublished = '2025-01-01',
   dateModified = new Date().toISOString().split('T')[0],
-  schemaType = 'WebApplication'
+  schemaType = 'WebApplication',
+  author = DEFAULT_AUTHOR
 } = Astro.props;
 
 import CookieConsent from '../components/global/CookieConsent.astro';
@@ -33,6 +46,12 @@ const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://thepizzadoughformula.com';
 // Google Analytics 4 Measurement ID
 const GA_ID = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID || 'G-PN2NW5Z0W2';
+
+// Google AdSense Publisher ID (accepts "pub-XXXX" or "ca-pub-XXXX"; normalized below)
+const ADSENSE_RAW = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '';
+const ADSENSE_CLIENT = ADSENSE_RAW
+  ? (ADSENSE_RAW.startsWith('ca-') ? ADSENSE_RAW : `ca-${ADSENSE_RAW}`)
+  : '';
 
 // Organization schema data
 const organizationSchema = {
@@ -47,6 +66,14 @@ const organizationSchema = {
 };
 
 // Article schema for content pages
+const articleAuthorSchema: Record<string, string> = {
+  "@type": "Person",
+  "name": author.name
+};
+if (author.url) {
+  articleAuthorSchema.url = author.url;
+}
+
 const articleSchema = schemaType === 'Article' ? {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -55,11 +82,7 @@ const articleSchema = schemaType === 'Article' ? {
   "url": canonical,
   "datePublished": datePublished,
   "dateModified": dateModified,
-  "author": {
-    "@type": "Organization",
-    "name": siteName,
-    "url": siteUrl
-  },
+  "author": articleAuthorSchema,
   "publisher": {
     "@type": "Organization",
     "name": siteName,
@@ -141,6 +164,14 @@ const webAppSchema = schemaType === 'WebApplication' ? {
     <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
 
+    {/* Google AdSense - loads on all pages so reviewers can verify the script */}
+    {ADSENSE_CLIENT && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
 
     <!-- Schema.org Organization (always present) -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />

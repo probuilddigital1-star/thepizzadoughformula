@@ -1,0 +1,131 @@
+---
+/**
+ * Terms of Service Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+
+const lastUpdated = 'May 2026';
+---
+
+<BaseLayout
+  title="Terms of Service"
+  description="Terms of service for The Pizza Dough Formula. Read the rules and disclaimers that apply when you use this site."
+>
+  <Header />
+
+  <main class="flex-grow">
+    <article class="max-w-3xl mx-auto px-4 py-12 md:py-16">
+      <h1 class="font-heading text-4xl font-bold text-text mb-2">
+        Terms of Service
+      </h1>
+      <p class="text-text-muted mb-8">Last updated: {lastUpdated}</p>
+
+      <div class="prose prose-lg text-text-muted space-y-6">
+        <p class="text-xl leading-relaxed">
+          By using The Pizza Dough Formula, you agree to these terms. Please read them carefully.
+          If you do not agree, please do not use the site.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">1. Acceptance of Terms</h2>
+        <p>
+          These Terms of Service govern your access to and use of thepizzadoughformula.com,
+          including the calculator, content pages, and any related tools or features (the "Site").
+          Your continued use of the Site after any update to these terms means you accept the changes.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">2. Use of the Site</h2>
+        <p>
+          You may use the Site for personal, non-commercial purposes such as planning home baking,
+          learning about pizza, and sharing recipes with friends and family. You agree not to:
+        </p>
+        <ul class="list-disc list-inside space-y-2">
+          <li>Scrape, copy, or republish substantial portions of our content without written permission</li>
+          <li>Reverse engineer, modify, or interfere with the calculator or other tools</li>
+          <li>Use the Site in any way that violates applicable laws or regulations</li>
+          <li>Attempt to disrupt, attack, or compromise the security of the Site</li>
+        </ul>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">3. Calculator Disclaimer</h2>
+        <p>
+          The dough calculator and related tools provide estimates based on baker's percentage
+          formulas. Results depend on factors we cannot measure for you, including flour brand,
+          ambient humidity, oven calibration, yeast freshness, and your own technique. Treat the
+          numbers as a starting point and adjust based on what your dough is actually doing.
+        </p>
+        <p>
+          You are responsible for safe food handling, including proofing temperatures, ingredient
+          freshness, and any allergen considerations for the people you cook for. We accept no
+          liability for outcomes that depend on factors outside our calculator.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">4. Intellectual Property</h2>
+        <p>
+          All content on the Site, including text, graphics, calculator code, logos, and design,
+          is owned by The Pizza Dough Formula or its licensors and is protected by copyright and
+          other intellectual property laws. You may save, print, or share recipes for personal use.
+          Republishing content on another website, in print, or in any commercial product requires
+          written permission.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">5. Affiliate Links</h2>
+        <p>
+          The Site contains affiliate links to products on Amazon and other retailers. If you click
+          one of these links and make a purchase, we may earn a commission at no extra cost to you.
+          See our <a href="/affiliate-disclosure" class="text-primary hover:underline">Affiliate Disclosure</a>
+          for full details.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">6. Third-Party Services and Links</h2>
+        <p>
+          The Site uses third-party services (Google Analytics, Google AdSense, Cloudflare, Amazon)
+          and links to third-party websites. We are not responsible for the content, privacy practices,
+          or terms of any third-party service or site. Review their policies before using them.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">7. Disclaimer of Warranties</h2>
+        <p>
+          The Site is provided "as is" and "as available" without warranties of any kind, express
+          or implied. We do not warrant that the Site will be uninterrupted, error-free, secure,
+          or free from harmful components. Recipes, calculations, and recommendations are provided
+          for informational purposes only.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">8. Limitation of Liability</h2>
+        <p>
+          To the maximum extent permitted by law, The Pizza Dough Formula and its operator shall
+          not be liable for any indirect, incidental, special, consequential, or punitive damages
+          arising from your use of, or inability to use, the Site. Our total liability for any
+          claim related to the Site is limited to one hundred United States dollars (USD $100).
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">9. Changes to These Terms</h2>
+        <p>
+          We may update these terms from time to time. The "Last updated" date at the top of this
+          page reflects the most recent revision. Material changes will be highlighted on the Site
+          when reasonable.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">10. Governing Law</h2>
+        <p>
+          These terms are governed by the laws of the State of Ohio, United States, without regard
+          to conflict-of-law principles. Any dispute arising from your use of the Site shall be
+          resolved in the state or federal courts located in Ohio.
+        </p>
+
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">11. Contact</h2>
+        <p>
+          Questions about these terms? Reach out at:
+        </p>
+        <p class="mt-2">
+          <a href="mailto:admin@thedoughformula.com" class="text-primary hover:underline font-medium">
+            admin@thedoughformula.com
+          </a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
