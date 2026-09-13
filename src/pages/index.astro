@@ -427,41 +427,9 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   const yeastTypeRadios = document.querySelectorAll('input[name="yeastType"]');
   let currentYeastType = 'instant';
 
-  // Load recipe from URL if present
-  if (hasRecipeInURL()) {
-    const urlRecipe = getRecipeFromURL();
-    if (urlRecipe) {
-      // Apply URL recipe settings
-      Object.assign(calculator, urlRecipe);
-
-      // Update form inputs
-      if (urlRecipe.style) {
-        currentStyle = urlRecipe.style;
-        const styleRadio = document.querySelector(`input[name="pizzaStyle"][value="${urlRecipe.style}"]`);
-        if (styleRadio) styleRadio.checked = true;
-      }
-      if (urlRecipe.numBalls && numBallsInput) numBallsInput.value = urlRecipe.numBalls;
-      if (urlRecipe.ballWeight && ballWeightInput) ballWeightInput.value = urlRecipe.ballWeight;
-      if (urlRecipe.hydration && hydrationSlider) {
-        hydrationSlider.value = Math.round(urlRecipe.hydration * 100);
-        if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
-      }
-      if (urlRecipe.salt && saltInput) saltInput.value = (urlRecipe.salt * 100).toFixed(1);
-      if (urlRecipe.yeast && yeastInput) yeastInput.value = (urlRecipe.yeast * 100).toFixed(1);
-      if (urlRecipe.oil !== undefined && oilInput) oilInput.value = (urlRecipe.oil * 100).toFixed(1);
-      if (urlRecipe.sugar !== undefined && sugarInput) sugarInput.value = (urlRecipe.sugar * 100).toFixed(1);
-      if (urlRecipe.usePreFerment && usePreFermentToggle) {
-        usePreFermentToggle.checked = true;
-        document.getElementById('preFermentOptions')?.classList.remove('hidden');
-      }
-      if (urlRecipe.humidityAdjust && humidityToggle) humidityToggle.checked = true;
-
-      // Expand advanced options if custom settings
-      if (urlRecipe.hydration || urlRecipe.salt || urlRecipe.yeast) {
-        document.getElementById('advanced-toggle')?.click();
-      }
-    }
-  }
+  // Recipe settings from the URL (a guide link or saved recipe), or null. They are applied by
+  // initializeCalculator() at the end of this script, once UI references and listeners exist.
+  const urlRecipe = getRecipeFromURL();
 
   // Update calculator and UI
   function updateCalculator() {
@@ -768,8 +736,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     updateCalculator();
   }
 
-  // Apply style defaults
-  function applyStyleDefaults(styleId) {
+  // Apply style defaults. Initialization skips the recalculation and runs it once after URL values are applied.
+  function applyStyleDefaults(styleId, { recalculate = true } = {}) {
     const defaults = getStyleDefaults(styleId);
     const style = getStyleById(styleId);
     currentStyle = styleId;
@@ -804,7 +772,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
       document.getElementById('preFermentPercent-value').textContent = `${preFermentPercentSlider.value}%`;
     }
 
-    updateCalculator();
+    if (recalculate) updateCalculator();
   }
 
   // Event listeners
@@ -1050,7 +1018,59 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     });
   });
 
+  // A saved recipe (n in the URL) carries explicit values to apply over its style's defaults.
+  // Explicit zeros are respected; values missing from the URL keep the style defaults.
+  function applySavedRecipe(recipe) {
+    const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+
+    if (isNumber(recipe.numBalls) && numBallsInput) numBallsInput.value = recipe.numBalls;
+    if (isNumber(recipe.ballWeight) && ballWeightInput) ballWeightInput.value = recipe.ballWeight;
+    if (isNumber(recipe.hydration) && hydrationSlider) {
+      hydrationSlider.value = Math.round(recipe.hydration * 100);
+      if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
+    }
+    if (isNumber(recipe.salt) && saltInput) saltInput.value = (recipe.salt * 100).toFixed(1);
+    if (isNumber(recipe.yeast) && yeastInput) yeastInput.value = (recipe.yeast * 100).toFixed(1);
+    if (isNumber(recipe.oil) && oilInput) oilInput.value = (recipe.oil * 100).toFixed(1);
+    if (isNumber(recipe.sugar) && sugarInput) sugarInput.value = (recipe.sugar * 100).toFixed(1);
+
+    // Pre-ferment
+    if (recipe.usePreFerment && usePreFermentToggle) {
+      usePreFermentToggle.checked = true;
+      document.getElementById('preFermentOptions')?.classList.remove('hidden');
+    }
+    if (['poolish', 'biga'].includes(recipe.preFermentType)) {
+      const pfRadio = document.querySelector(`input[name="preFermentType"][value="${recipe.preFermentType}"]`);
+      if (pfRadio) pfRadio.checked = true;
+    }
+    if (isNumber(recipe.preFermentFlourPercent) && preFermentPercentSlider) {
+      preFermentPercentSlider.value = Math.round(recipe.preFermentFlourPercent * 100);
+      document.getElementById('preFermentPercent-value').textContent = `${preFermentPercentSlider.value}%`;
+    }
+    if (recipe.humidityAdjust && humidityToggle) humidityToggle.checked = true;
+
+    // Expand advanced options so custom settings are visible
+    const advancedToggle = document.getElementById('advanced-toggle');
+    const hasCustomSettings = isNumber(recipe.hydration) || isNumber(recipe.salt) || isNumber(recipe.yeast);
+    if (hasCustomSettings && advancedToggle?.getAttribute('aria-expanded') !== 'true') {
+      advancedToggle.click();
+    }
+  }
+
+  // Initialize from the URL: a guide link (?s=) or saved recipe selects its style, whose defaults
+  // render first. Unknown or missing styles fall back to Neapolitan.
+  function initializeCalculator() {
+    const initialStyle = Object.keys(PIZZA_STYLES).includes(urlRecipe?.style) ? urlRecipe.style : 'neapolitan';
+    const styleRadio = document.querySelector(`input[name="pizzaStyle"][value="${initialStyle}"]`);
+    if (styleRadio) styleRadio.checked = true;
+
+    applyStyleDefaults(initialStyle, { recalculate: false });
+    if (urlRecipe?.numBalls !== undefined) applySavedRecipe(urlRecipe);
+
+    updateCalculator();
+  }
+
   // Initial calculation
-  applyStyleDefaults('neapolitan');
+  initializeCalculator();
   updateShareLinks();
 </script>

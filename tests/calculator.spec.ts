@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 test.describe('Pizza Dough Calculator - Full QA Test Suite', () => {
 
@@ -294,5 +294,204 @@ test.describe('Pizza Dough Calculator - Full QA Test Suite', () => {
       const metaDescription = page.locator('meta[name="description"]');
       await expect(metaDescription).toHaveAttribute('content', /pizza dough calculator/i);
     });
+  });
+});
+
+test.describe('Guide-to-calculator handoff', () => {
+  // Record uncaught script errors and console errors for every load in a test.
+  function trackErrors(page: Page) {
+    const pageErrors: string[] = [];
+    const consoleErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() !== 'error') return;
+
+      // Third-party resource failures are not calculator errors: AdSense ad requests return 403 off the
+      // production host. Script errors and same-origin resource failures are still recorded.
+      const { url } = message.location();
+      const isThirdPartyResource =
+        message.text().startsWith('Failed to load resource') && !!url && new URL(url).origin !== new URL(page.url()).origin;
+      if (!isThirdPartyResource) consoleErrors.push(`${message.text()} ${url}`);
+    });
+    return { pageErrors, consoleErrors };
+  }
+
+  // Snapshot the controls and output that must agree after initialization.
+  function readCalculatorState(page: Page) {
+    return page.evaluate(() => {
+      const input = (id: string) => document.getElementById(id) as HTMLInputElement;
+      const checked = (name: string) =>
+        (document.querySelector(`input[name="${name}"]:checked`) as HTMLInputElement | null)?.value ?? null;
+      const isHidden = (id: string) => document.getElementById(id)?.classList.contains('hidden') ?? null;
+
+      return {
+        style: checked('pizzaStyle'),
+        size: checked('pizzaSize'),
+        numBalls: input('numBalls').value,
+        ballWeight: input('ballWeight').value,
+        advancedExpanded: document.getElementById('advanced-toggle')?.getAttribute('aria-expanded'),
+        hydration: input('hydration').value,
+        hydrationLabel: document.getElementById('hydration-value')?.textContent,
+        salt: input('salt').value,
+        yeast: input('yeast').value,
+        oil: input('oil').value,
+        sugar: input('sugar').value,
+        usePreFerment: input('usePreFerment').checked,
+        preFermentOptionsHidden: isHidden('preFermentOptions'),
+        preFermentType: checked('preFermentType'),
+        preFermentPercent: input('preFermentPercent').value,
+        preFermentPercentLabel: document.getElementById('preFermentPercent-value')?.textContent,
+        humidityAdjust: input('humidityAdjust').checked,
+        recipeStyleName: document.getElementById('recipeStyleName')?.textContent,
+        totalDoughWeight: document.getElementById('totalDoughWeight')?.textContent,
+        singleStageHidden: isHidden('singleStageRecipe'),
+        twoStageHidden: isHidden('twoStageRecipe'),
+        shareUrl: input('shareUrl').value,
+      };
+    });
+  }
+
+  // Preset ids come from PIZZA_STYLES in src/scripts/calculator/presets.js.
+  const GUIDE_LINKS = [
+    { styleId: 'newYork', recipeName: 'New York Pizza Dough', usePreFerment: false },
+    { styleId: 'poolishBiga', recipeName: 'Poolish/Biga Pizza Dough', usePreFerment: true },
+  ];
+
+  for (const { styleId, recipeName, usePreFerment } of GUIDE_LINKS) {
+    test(`/?s=${styleId} matches selecting the style manually`, async ({ page }) => {
+      const errors = trackErrors(page);
+
+      await page.goto('/');
+      await page.locator(`label[data-style="${styleId}"]`).click();
+      const manual = await readCalculatorState(page);
+
+      await page.goto(`/?s=${styleId}`);
+      const linked = await readCalculatorState(page);
+
+      await expect(page.locator(`input[name="pizzaStyle"][value="${styleId}"]`)).toBeChecked();
+      expect(linked).toEqual(manual);
+      expect(linked.recipeStyleName).toBe(recipeName);
+      expect(linked.usePreFerment).toBe(usePreFerment);
+      expect(errors.pageErrors).toEqual([]);
+    });
+  }
+
+  test('invalid style values fall back to Neapolitan', async ({ page }) => {
+    const errors = trackErrors(page);
+
+    await page.goto('/');
+    const home = await readCalculatorState(page);
+
+    // An unknown id, an inherited Object property, and a value that is not a valid CSS selector string.
+    for (const style of ['notastyle', 'toString', '"]']) {
+      await page.goto(`/?s=${encodeURIComponent(style)}`);
+      expect(await readCalculatorState(page), `s=${style}`).toEqual(home);
+    }
+
+    expect(errors.pageErrors).toEqual([]);
+    expect(errors.consoleErrors).toEqual([]);
+  });
+
+  test('saved recipe URL from the share feature reloads the same recipe', async ({ page }) => {
+    const errors = trackErrors(page);
+
+    await page.goto('/');
+    await page.locator('label[data-style="newYork"]').click();
+    await page.locator('#advanced-toggle').click();
+    await page.locator('#numBalls').fill('3');
+    await page.locator('#ballWeight').fill('275');
+    await page.locator('#hydration').fill('70');
+    await page.locator('#salt').fill('2.8');
+    const saved = await readCalculatorState(page);
+
+    await page.goto(saved.shareUrl);
+    const reloaded = await readCalculatorState(page);
+
+    expect(reloaded).toMatchObject({ style: 'newYork', numBalls: '3', ballWeight: '275', hydration: '70', salt: '2.8' });
+    expect(reloaded).toEqual(saved);
+    expect(errors.pageErrors).toEqual([]);
+  });
+
+  test('saved preferment recipe keeps its preferment type and percentage', async ({ page }) => {
+    const errors = trackErrors(page);
+
+    await page.goto('/');
+    await page.locator('label[data-style="poolishBiga"]').click();
+    await page.locator('#advanced-toggle').click();
+    await page.locator('input[name="preFermentType"][value="biga"]').check();
+    await page.locator('#preFermentPercent').fill('40');
+    const saved = await readCalculatorState(page);
+
+    await page.goto(saved.shareUrl);
+    const reloaded = await readCalculatorState(page);
+
+    expect(reloaded).toMatchObject({ usePreFerment: true, preFermentType: 'biga', preFermentPercent: '40' });
+    expect(reloaded).toEqual(saved);
+    expect(errors.pageErrors).toEqual([]);
+  });
+
+  test('explicit zero oil and sugar in a saved recipe override style defaults', async ({ page }) => {
+    const errors = trackErrors(page);
+
+    await page.goto('/?s=newYork&n=2&w=300&h=65&sa=20&y=4&o=0&su=0');
+
+    // Neapolitan also has zero oil and sugar, so the recipe name confirms New York's defaults were
+    // overridden rather than never applied.
+    expect(await readCalculatorState(page)).toMatchObject({
+      style: 'newYork',
+      recipeStyleName: 'New York Pizza Dough',
+      numBalls: '2',
+      salt: '2.0',
+      yeast: '0.4',
+      oil: '0.0',
+      sugar: '0.0',
+    });
+    expect(errors.pageErrors).toEqual([]);
+  });
+
+  test('size and quantity controls work after a guide link', async ({ page }) => {
+    const errors = trackErrors(page);
+
+    await page.goto('/?s=newYork');
+    await page.locator('#quantity-presets').getByText('6 pizzas').click();
+    await expect(page.locator('#numBalls')).toHaveValue('6');
+    await expect(page.locator('#ballWeight')).toHaveValue('300');
+
+    await page.locator('#size-options label', { hasText: '18"' }).click();
+    await expect(page.locator('#ballWeight')).toHaveValue('450');
+    await expect(page.locator('#totalDoughWeight')).toContainText('2700');
+    expect(errors.pageErrors).toEqual([]);
+  });
+
+  test('homepage without parameters starts with Neapolitan defaults', async ({ page }) => {
+    const errors = trackErrors(page);
+
+    await page.goto('/');
+
+    expect(await readCalculatorState(page)).toEqual({
+      style: 'neapolitan',
+      size: 'classic',
+      numBalls: '4',
+      ballWeight: '250',
+      advancedExpanded: 'false',
+      hydration: '62',
+      hydrationLabel: '62%',
+      salt: '2.5',
+      yeast: '0.3',
+      oil: '0.0',
+      sugar: '0.0',
+      usePreFerment: false,
+      preFermentOptionsHidden: true,
+      preFermentType: 'poolish',
+      preFermentPercent: '25',
+      preFermentPercentLabel: '25%',
+      humidityAdjust: false,
+      recipeStyleName: 'Neapolitan Pizza Dough',
+      totalDoughWeight: '1000g',
+      singleStageHidden: false,
+      twoStageHidden: true,
+      shareUrl: expect.stringMatching(/\/\?s=neapolitan&n=4&w=250&h=62&sa=25&y=3$/),
+    });
+    expect(errors.pageErrors).toEqual([]);
   });
 });
