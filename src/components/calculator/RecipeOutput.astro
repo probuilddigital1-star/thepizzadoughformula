@@ -343,6 +343,8 @@
 </div>
 
 <script>
+  import { track } from '../../lib/analytics';
+
   // Print functionality
   document.querySelectorAll('#printRecipe, #printRecipe2').forEach(btn => {
     btn?.addEventListener('click', () => window.print());
@@ -383,6 +385,9 @@
       await navigator.clipboard.writeText(shareUrl.value);
       shareConfirmation?.classList.remove('hidden');
       setTimeout(() => shareConfirmation?.classList.add('hidden'), 2000);
+
+      const style = document.querySelector<HTMLInputElement>('input[name="pizzaStyle"]:checked')?.value;
+      track('recipe_shared', { style, method: 'copy_link', placement: 'share-modal' });
     }
   });
 

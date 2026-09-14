@@ -44,14 +44,6 @@ import '../styles/global.css';
 const siteName = 'The Pizza Dough Formula';
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://thepizzadoughformula.com';
-// Google Analytics 4 Measurement ID
-const GA_ID = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID || 'G-PN2NW5Z0W2';
-
-// Google AdSense Publisher ID (accepts "pub-XXXX" or "ca-pub-XXXX"; normalized below)
-const ADSENSE_RAW = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID || '';
-const ADSENSE_CLIENT = ADSENSE_RAW
-  ? (ADSENSE_RAW.startsWith('ca-') ? ADSENSE_RAW : `ca-${ADSENSE_RAW}`)
-  : '';
 
 // Organization schema data
 const organizationSchema = {
@@ -164,15 +156,6 @@ const webAppSchema = schemaType === 'WebApplication' ? {
     <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
 
-    {/* Google AdSense - loads on all pages so reviewers can verify the script */}
-    {ADSENSE_CLIENT && (
-      <script
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-        crossorigin="anonymous"
-      ></script>
-    )}
-
     <!-- Schema.org Organization (always present) -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 
@@ -185,40 +168,6 @@ const webAppSchema = schemaType === 'WebApplication' ? {
     {articleSchema && (
       <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
     )}
-
-    <!-- Google Analytics 4 - Consent-based loading -->
-    {GA_ID && (
-      <script define:vars={{ GA_ID }}>
-        // GA will only load after cookie consent is accepted
-        window.GA_MEASUREMENT_ID = GA_ID;
-
-        function loadGoogleAnalytics() {
-          if (window.gaLoaded) return;
-          window.gaLoaded = true;
-
-          // Load gtag script
-          const script = document.createElement('script');
-          script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-          script.async = true;
-          document.head.appendChild(script);
-
-          // Initialize gtag
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = gtag;
-          gtag('js', new Date());
-          gtag('config', GA_ID);
-        }
-
-        // Check if consent was already given (on page load)
-        if (localStorage.getItem('cookieConsent') === 'accepted') {
-          loadGoogleAnalytics();
-        }
-
-        // Listen for consent event
-        window.addEventListener('cookieConsentAccepted', loadGoogleAnalytics);
-      </script>
-    )}
   </head>
   <body class="min-h-screen flex flex-col texture-grain">
     <!-- Skip link for keyboard navigation -->
@@ -230,5 +179,12 @@ const webAppSchema = schemaType === 'WebApplication' ? {
     </a>
     <slot />
     <CookieConsent />
+
+    <!-- Cookie-free analytics (PostHog). Does nothing without PUBLIC_POSTHOG_KEY or under Do Not Track. -->
+    <script>
+      import { initAnalytics } from '../lib/analytics';
+
+      void initAnalytics();
+    </script>
   </body>
 </html>

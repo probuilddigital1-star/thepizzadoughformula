@@ -10,6 +10,8 @@
 import affiliateData from '../../data/affiliateProducts.json';
 
 interface Props {
+  // Where this block sits; sent as `placement` on affiliate events (see docs/analytics-events.md)
+  placement: string;
   style?: string;
   limit?: number;
   showTitle?: boolean;
@@ -17,6 +19,7 @@ interface Props {
 }
 
 const {
+  placement,
   style = 'all',
   limit = 4,
   showTitle = true,
@@ -54,7 +57,7 @@ const productSchemas = products.map(product => ({
 ---
 
 {products.length > 0 && (
-  <div class="product-recommendations">
+  <div class="product-recommendations" data-placement={placement} data-style={style === 'all' ? 'none' : style}>
     {/* Product Schema for SEO */}
     {productSchemas.map(schema => (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
@@ -79,7 +82,6 @@ const productSchemas = products.map(product => ({
           rel="noopener sponsored"
           class="product-card group flex items-start gap-4 p-4 bg-surface border border-border rounded-lg transition-all hover:border-primary hover:shadow-md"
           data-product-id={product.id}
-          onclick="if(typeof gtag==='function')gtag('event','affiliate_click',{product_id:this.dataset.productId})"
         >
           <div class="flex-1 min-w-0">
             <h4 class="font-semibold text-text group-hover:text-primary transition-colors">
@@ -107,3 +109,51 @@ const productSchemas = products.map(product => ({
     </p>
   </div>
 )}
+
+<script>
+  import { track } from '../../lib/analytics';
+
+  // Amazon tracking ID from a link's `tag` parameter, or 'none' when the link has none
+  function trackingIdFromUrl(href: string): string {
+    try {
+      return new URL(href).searchParams.get('tag') || 'none';
+    } catch {
+      return 'none';
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('.product-recommendations[data-placement]').forEach((block) => {
+    const placement = block.dataset.placement;
+    const style = block.dataset.style;
+    const links = Array.from(block.querySelectorAll<HTMLAnchorElement>('a[data-product-id]'));
+
+    // affiliate_exposure: once per block per page view, when any part of the block enters the viewport
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        track('affiliate_exposure', {
+          placement,
+          style,
+          product_ids: links.map((link) => link.dataset.productId ?? ''),
+        });
+      });
+      observer.observe(block);
+    }
+
+    // affiliate_click: left clicks, plus middle clicks that open the link in a new tab
+    function handleLinkClick(event: MouseEvent) {
+      if (event.type === 'auxclick' && event.button !== 1) return;
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[data-product-id]') : null;
+      if (!link) return;
+      track('affiliate_click', {
+        placement,
+        style,
+        product_id: link.dataset.productId,
+        tracking_id: trackingIdFromUrl(link.href),
+      });
+    }
+    block.addEventListener('click', handleLinkClick);
+    block.addEventListener('auxclick', handleLinkClick);
+  });
+</script>

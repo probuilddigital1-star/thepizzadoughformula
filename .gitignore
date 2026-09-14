@@ -1,5 +1,7 @@
 # build output
 dist/
+# analytics test build (playwright.analytics.config.ts)
+dist-analytics/
 # generated types
 .astro/
 

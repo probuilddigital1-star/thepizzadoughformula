@@ -7,12 +7,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test:analytics": "playwright test --config playwright.analytics.config.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.6",
+    "posthog-js": "^1.407.2",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

@@ -138,9 +138,9 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
               Level Up Your <span id="emailStyleName" class="text-primary">Neapolitan</span> Game
             </h3>
             <p class="text-sm text-text-muted mb-4">
-              Get weekly tips, troubleshooting guides, and pro techniques for perfect pizza.
+              Pizza tips and troubleshooting guides, sent when there's something new to share. No set schedule.
             </p>
-            <form id="recipe-email-form" class="space-y-3">
+            <form id="recipe-email-form" class="space-y-3" data-placement="post-calculator">
               <div class="flex flex-col sm:flex-row gap-2">
                 <div class="flex-1">
                   <label for="recipe-email" class="sr-only">Email address</label>
@@ -175,7 +175,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
               </label>
             </form>
             <p id="recipe-email-success" class="hidden mt-3 text-olive font-medium text-sm">
-              You're in! Check your inbox soon.
+              You're in! Thanks for signing up.
             </p>
             <p id="recipe-email-error" class="hidden mt-3 text-red-500 font-medium text-sm">
               Something went wrong. Please try again.
@@ -259,7 +259,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
             The right tools make all the difference
           </p>
         </div>
-        <ProductRecommendations featured={true} limit={4} showTitle={false} />
+        <ProductRecommendations placement="homepage-equipment" featured={true} limit={4} showTitle={false} />
       </div>
     </section>
 
@@ -325,7 +325,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
         <p class="text-cream/70 mb-6">
           Join our newsletter for exclusive dough techniques, troubleshooting guides, and new features.
         </p>
-        <form id="email-form" class="max-w-md mx-auto space-y-3">
+        <form id="email-form" class="max-w-md mx-auto space-y-3" data-placement="newsletter-section">
           <div class="flex flex-col sm:flex-row gap-3">
             <div class="flex-1">
               <label for="newsletter-email" class="sr-only">Email address</label>
@@ -360,13 +360,13 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
           </label>
         </form>
         <p id="email-success" class="hidden mt-4 text-olive-light font-medium">
-          Thanks for subscribing! Check your inbox.
+          Thanks for subscribing!
         </p>
         <p id="email-error" class="hidden mt-4 text-red-400 font-medium">
           Something went wrong. Please try again.
         </p>
         <p class="text-xs text-cream/50 mt-4">
-          No spam, ever. Unsubscribe anytime.
+          No spam, ever. To be removed from the list, email admin@thedoughformula.com.
         </p>
       </div>
     </section>
@@ -383,6 +383,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   import { PIZZA_STYLES, getStyleById, getStyleDefaults, getSizesForStyle, getWeightForSize } from '../scripts/calculator/presets.js';
   import { formatWeight, getStoredUnit, setStoredUnit, toggleUnit } from '../scripts/calculator/units.js';
   import { encodeRecipe, decodeRecipe, hasRecipeInURL, getRecipeFromURL, copyToClipboard, generateRecipeText } from '../scripts/features/shareRecipe.js';
+  import { track } from '../lib/analytics';
 
   // Initialize calculator
   let calculator = new DoughCalculator();
@@ -448,6 +449,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     });
 
     const recipe = calculator.calculate();
+    // recipe_invalid is reserved for ADR step 2b: once recipe validation exists, record it here when a
+    // user change produces a recipe that cannot be made (see docs/analytics-events.md).
     updateRecipeDisplay(recipe);
   }
 
@@ -835,6 +838,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
       const success = await copyToClipboard(text);
 
       if (success) {
+        track('recipe_copied', recipeActionProps());
         const originalText = btn.innerHTML;
         btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!';
         // Announce to screen readers
@@ -893,10 +897,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
       if (response.ok) {
         emailSuccess?.classList.remove('hidden');
         emailForm.reset();
-        // Track email signup event
-        if (typeof gtag === 'function') {
-          gtag('event', 'email_signup', { source: 'pizza-calculator' });
-        }
+        // A 2xx from the webhook, not a confirmed spreadsheet row (see docs/analytics-events.md)
+        track('newsletter_signup_submitted', { placement: emailForm.dataset.placement });
       } else {
         throw new Error('Network response was not ok');
       }
@@ -941,13 +943,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
       if (response.ok) {
         recipeEmailSuccess?.classList.remove('hidden');
         recipeEmailForm.reset();
-        // Track email signup event with style context
-        if (typeof gtag === 'function') {
-          gtag('event', 'email_signup', {
-            source: 'recipe-capture',
-            pizza_style: style?.name || currentStyle
-          });
-        }
+        // A 2xx from the webhook, not a confirmed spreadsheet row (see docs/analytics-events.md)
+        track('newsletter_signup_submitted', { style: currentStyle, placement: recipeEmailForm.dataset.placement });
       } else {
         throw new Error('Network response was not ok');
       }
@@ -1001,22 +998,71 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
         shareCTABtn.innerHTML = originalText;
       }, 2000);
 
-      // Track share event
-      if (typeof gtag === 'function') {
-        gtag('event', 'share', { method: 'copy_link', content_type: 'recipe' });
-      }
+      track('recipe_shared', { style: currentStyle, method: 'copy_link', placement: 'share-section' });
     }
   });
 
-  // Track social share clicks
+  // Record social share clicks (each link opens the platform's share page in a new tab)
   [shareTwitter, shareFacebook, shareReddit].forEach(btn => {
     btn?.addEventListener('click', () => {
-      if (typeof gtag === 'function') {
-        const platform = btn.id.replace('share', '').toLowerCase();
-        gtag('event', 'share', { method: platform, content_type: 'recipe' });
-      }
+      const method = btn.id.replace('share', '').toLowerCase();
+      track('recipe_shared', { style: currentStyle, method, placement: 'share-section' });
     });
   });
+
+  // Properties shared by recipe_copied and recipe_printed
+  function recipeActionProps() {
+    return { style: currentStyle, preferment: calculator.usePreFerment, unit: currentUnit };
+  }
+
+  // Record prints; RecipeOutput.astro opens the print dialog
+  document.querySelectorAll('#printRecipe, #printRecipe2').forEach(btn => {
+    btn?.addEventListener('click', () => track('recipe_printed', recipeActionProps()));
+  });
+
+  // calculator_used: the first user-initiated change to the calculator on this page view. Values set
+  // from code (initialization, style defaults) dispatch no events, and isTrusted skips events that
+  // scripts dispatch. The newsletter form inside #calculator does not count as calculator use.
+  let calculatorUseTracked = false;
+  function trackCalculatorUse(event) {
+    if (calculatorUseTracked || !event.isTrusted) return;
+    if (!(event.target instanceof Element) || event.target.closest('form')) return;
+    calculatorUseTracked = true;
+    track('calculator_used', { style: currentStyle });
+  }
+  const calculatorSection = document.getElementById('calculator');
+  calculatorSection?.addEventListener('input', trackCalculatorUse);
+  calculatorSection?.addEventListener('change', trackCalculatorUse);
+  // Quantity presets are buttons that set the inputs without an input event
+  quantityPresetsContainer?.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('.preset-btn')) trackCalculatorUse(event);
+  });
+
+  // newsletter_form_viewed: once per form per page view, when the form enters the viewport
+  if ('IntersectionObserver' in window) {
+    const newsletterObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        newsletterObserver.unobserve(entry.target);
+        track('newsletter_form_viewed', {
+          style: entry.target === recipeEmailForm ? currentStyle : undefined,
+          placement: entry.target.dataset.placement,
+        });
+      });
+    });
+    [emailForm, recipeEmailForm].forEach(form => form && newsletterObserver.observe(form));
+  }
+
+  // Path of a same-site referrer (a style guide, for example), 'external' for other sites, or 'none'
+  function referrerPath() {
+    if (!document.referrer) return 'none';
+    try {
+      const referrer = new URL(document.referrer);
+      return referrer.origin === window.location.origin ? referrer.pathname : 'external';
+    } catch {
+      return 'none';
+    }
+  }
 
   // A saved recipe (n in the URL) carries explicit values to apply over its style's defaults.
   // Explicit zeros are respected; values missing from the URL keep the style defaults.
@@ -1060,7 +1106,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   // Initialize from the URL: a guide link (?s=) or saved recipe selects its style, whose defaults
   // render first. Unknown or missing styles fall back to Neapolitan.
   function initializeCalculator() {
-    const initialStyle = Object.keys(PIZZA_STYLES).includes(urlRecipe?.style) ? urlRecipe.style : 'neapolitan';
+    const hasValidStyle = Object.keys(PIZZA_STYLES).includes(urlRecipe?.style);
+    const initialStyle = hasValidStyle ? urlRecipe.style : 'neapolitan';
     const styleRadio = document.querySelector(`input[name="pizzaStyle"][value="${initialStyle}"]`);
     if (styleRadio) styleRadio.checked = true;
 
@@ -1068,6 +1115,15 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     if (urlRecipe?.numBalls !== undefined) applySavedRecipe(urlRecipe);
 
     updateCalculator();
+
+    // Guide pages link to /?s=<style>. Saved recipe links carry s as well, so saved_recipe separates them.
+    if (hasValidStyle) {
+      track('guide_to_calculator', {
+        style: initialStyle,
+        referrer_path: referrerPath(),
+        saved_recipe: urlRecipe.numBalls !== undefined,
+      });
+    }
   }
 
   // Initial calculation

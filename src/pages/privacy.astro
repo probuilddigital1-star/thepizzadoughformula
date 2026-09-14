@@ -6,7 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 
-const lastUpdated = 'December 2025';
+const lastUpdated = 'September 2026';
 ---
 
 <BaseLayout
@@ -33,7 +33,9 @@ const lastUpdated = 'December 2025';
         <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Calculator Data</h3>
         <p>
           All calculations are performed locally in your browser. We do not store your
-          recipes, ingredient preferences, or calculator settings on our servers.
+          recipes or calculator settings on our servers. The analytics described below
+          record a few general choices, such as the pizza style you select, whether a
+          pre-ferment is turned on, and whether amounts are shown in grams or ounces.
         </p>
 
         <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Local Storage</h3>
@@ -42,92 +44,108 @@ const lastUpdated = 'December 2025';
         </p>
         <ul class="list-disc list-inside space-y-2">
           <li>Unit preference (grams/ounces)</li>
+          <li>Whether you have closed the analytics notice</li>
           <li>Emergency timer state</li>
         </ul>
         <p>
-          This data stays on your device and is never transmitted to us.
+          This data stays on your device and is never transmitted to us. The analytics
+          identifier described below is also kept in localStorage, but it is sent with
+          analytics data.
         </p>
 
         <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Email Newsletter</h3>
         <p>
-          If you subscribe to our newsletter, we collect your email address and record your
-          consent timestamp. We use this only to send you pizza tips, new features, and
-          occasional updates. You can unsubscribe at any time.
+          If you sign up for the newsletter, your email address and the time you agreed to
+          receive emails are sent through n8n, an automation service, and added to a
+          spreadsheet kept by the site owner. The sign-up form below the calculator also
+          sends the name of the pizza style you had selected. We use your address only for
+          pizza tips and site updates.
         </p>
         <p class="mt-2">
-          <strong>Data retention:</strong> Email addresses are retained until you unsubscribe
-          or request deletion.
+          No confirmation email is sent after you sign up, and there is no automated
+          unsubscribe link. To have your address removed, email
+          <a href="mailto:admin@thedoughformula.com" class="text-primary hover:underline">admin@thedoughformula.com</a>
+          and it will be deleted from the spreadsheet.
+        </p>
+        <p class="mt-2">
+          <strong>Data retention:</strong> Email addresses are kept until you ask for them
+          to be removed.
         </p>
 
         <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Analytics</h3>
         <p>
-          We use Google Analytics to understand how visitors use our site. This includes:
+          We use PostHog to understand how the site is used. PostHog does not set cookies on
+          this site. It keeps one randomly generated identifier in your browser's localStorage,
+          so the pages you view are counted as one visitor instead of a new visitor on every
+          page. The identifier stays until you clear your browser's data for this site, so a
+          later visit from the same browser is recognized too.
         </p>
+        <p>PostHog records:</p>
         <ul class="list-disc list-inside space-y-2">
-          <li>Pages visited</li>
-          <li>Time spent on site</li>
-          <li>Device and browser information</li>
-          <li>General geographic location (country/region)</li>
+          <li>Pages viewed and the page you arrived from</li>
+          <li>Actions on the site, such as copying, printing, or sharing a recipe, the pizza style selected, and clicks on equipment links</li>
+          <li>Recordings of how pages are used, such as scrolling and clicks. Everything typed into form fields is hidden in these recordings. Text shown on the page, including calculated recipe amounts, is visible.</li>
+          <li>Reports of script errors, so we can find and fix problems</li>
+          <li>Browser type, device type, screen size, and an approximate location based on your IP address</li>
         </ul>
         <p>
-          This data is anonymized and aggregated. We do not track individual users
-          or sell this information.
+          Analytics does not collect your name or email address. If your browser sends a
+          Do Not Track signal, analytics does not load.
         </p>
 
-        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Cookies</h2>
+        <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Cookies and Local Storage</h2>
         <p>
-          We use cookies to improve your experience. Analytics cookies are only loaded
-          after you give consent via our cookie banner.
+          This site does not use cookies for analytics or advertising. The table below lists
+          what the site keeps in your browser's localStorage.
         </p>
 
         <div class="overflow-x-auto mt-4">
           <table class="w-full text-sm border border-border rounded-lg overflow-hidden">
             <thead class="bg-cream">
               <tr>
-                <th class="px-4 py-2 text-left font-semibold text-text">Cookie</th>
+                <th class="px-4 py-2 text-left font-semibold text-text">Name</th>
                 <th class="px-4 py-2 text-left font-semibold text-text">Purpose</th>
                 <th class="px-4 py-2 text-left font-semibold text-text">Duration</th>
               </tr>
             </thead>
             <tbody>
               <tr class="border-t border-border">
-                <td class="px-4 py-2 font-mono text-xs">cookieConsent</td>
-                <td class="px-4 py-2">Stores your cookie preference</td>
-                <td class="px-4 py-2">1 year</td>
+                <td class="px-4 py-2 font-mono text-xs">preferredUnit</td>
+                <td class="px-4 py-2">Remembers whether you use grams or ounces</td>
+                <td class="px-4 py-2">Until you clear site data</td>
               </tr>
               <tr class="border-t border-border bg-cream/30">
-                <td class="px-4 py-2 font-mono text-xs">_ga</td>
-                <td class="px-4 py-2">Google Analytics visitor ID</td>
-                <td class="px-4 py-2">2 years</td>
+                <td class="px-4 py-2 font-mono text-xs">analyticsNoticeDismissed</td>
+                <td class="px-4 py-2">Remembers that you closed the analytics notice</td>
+                <td class="px-4 py-2">Until you clear site data</td>
               </tr>
               <tr class="border-t border-border">
-                <td class="px-4 py-2 font-mono text-xs">_gid</td>
-                <td class="px-4 py-2">Google Analytics session ID</td>
-                <td class="px-4 py-2">24 hours</td>
+                <td class="px-4 py-2 font-mono text-xs">emergencyTimer</td>
+                <td class="px-4 py-2">Keeps the Emergency dough timer running if you leave the page</td>
+                <td class="px-4 py-2">Until the timer is cleared</td>
+              </tr>
+              <tr class="border-t border-border bg-cream/30">
+                <td class="px-4 py-2 font-mono text-xs">ph_[project token]_posthog</td>
+                <td class="px-4 py-2">PostHog analytics identifier</td>
+                <td class="px-4 py-2">Until you clear site data</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <p class="mt-4">
-          You can manage or withdraw cookie consent at any time by clearing your browser's
-          localStorage and refreshing the page.
+          You can remove all of these at any time by clearing your browser's data for this site.
         </p>
 
         <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">Third-Party Services</h2>
         <ul class="list-disc list-inside space-y-2">
           <li>
-            <strong>Google Analytics</strong> - Website analytics
-            (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
+            <strong>PostHog</strong> - Analytics, session recordings, and error reports
+            (<a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
           </li>
           <li>
-            <strong>Google AdSense</strong> - Display advertising. Google and its partners may
-            use cookies to serve ads based on your prior visits to this site or other sites. You
-            can opt out of personalized advertising by visiting
-            <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Google Ad Settings</a>
-            or
-            <a href="https://www.aboutads.info/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">aboutads.info</a>.
-            (<a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
+            <strong>n8n</strong> - Sends newsletter sign-ups to the site owner's spreadsheet
+            (<a href="https://n8n.io/legal/privacy/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
           </li>
           <li>
             <strong>Cloudflare</strong> - Website hosting and CDN
@@ -144,7 +162,7 @@ const lastUpdated = 'December 2025';
         <ul class="list-disc list-inside space-y-2">
           <li>Request a copy of any personal data we hold about you</li>
           <li>Request deletion of your personal data</li>
-          <li>Unsubscribe from our newsletter at any time</li>
+          <li>Have your email address removed from the newsletter list by emailing us</li>
           <li>Clear local storage data through your browser settings</li>
         </ul>
 
