@@ -61,13 +61,17 @@ also uses two `sessionStorage` keys (`ph_<token>_posthog` and `ph_<token>_primar
 - **Properties:** `page`, `style` (the style selected after the change), `placement` (`none`).
 - **Source:** `trackCalculatorUse()` in `src/pages/index.astro`.
 
-### `recipe_invalid` (reserved)
+### `recipe_invalid`
 
-Not implemented. Reserved for step 2b, when recipe validation exists: record a user change that
-produces a recipe the validation rejects (for example, a pre-ferment needing more water than the
-whole recipe allows). A comment in `updateCalculator()` in `src/pages/index.astro` marks where it
-goes, and the `AnalyticsEvent` type in `src/lib/analytics.ts` lists it as reserved. Define its
-properties when step 2b defines the validation rules.
+- **Trigger:** a user change to the calculator produces a recipe that `DoughCalculator.validate()` in
+  `src/scripts/calculator/engine.js` rejects, for example a pre-ferment that needs more water than
+  the whole recipe has. The initial render never sends it, including a shared link that opens with an
+  impossible recipe.
+- **Frequency:** once each time the rejection reason changes. Further changes that keep the same
+  reason do not send it again; a valid recipe resets it.
+- **Properties:** `page`, `style`, `placement` (`none`), `reason` (`preferment_water_exceeds_total`,
+  `preferment_flour_exceeds_total`, or `invalid_input`).
+- **Source:** `render()` in `src/pages/index.astro`.
 
 ### `recipe_copied`
 

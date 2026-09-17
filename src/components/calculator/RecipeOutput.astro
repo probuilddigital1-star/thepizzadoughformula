@@ -138,7 +138,7 @@
       <button
         type="button"
         id="printRecipe"
-        class="flex items-center gap-2 px-4 py-2 bg-charcoal text-white rounded-lg hover:bg-charcoal-light transition-colors"
+        class="flex items-center gap-2 px-4 py-2 bg-charcoal text-white rounded-lg hover:bg-charcoal-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Print recipe"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -149,7 +149,7 @@
       <button
         type="button"
         id="shareRecipe"
-        class="flex items-center gap-2 px-4 py-2 bg-olive text-white rounded-lg hover:bg-olive-dark transition-colors"
+        class="flex items-center gap-2 px-4 py-2 bg-olive text-white rounded-lg hover:bg-olive-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Share recipe"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -160,7 +160,7 @@
       <button
         type="button"
         id="copyRecipe"
-        class="flex items-center gap-2 px-4 py-2 border border-border text-text rounded-lg hover:border-primary hover:text-primary transition-colors"
+        class="flex items-center gap-2 px-4 py-2 border border-border text-text rounded-lg hover:border-primary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Copy recipe to clipboard"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -228,7 +228,7 @@
         <ul id="finalDoughIngredients" class="space-y-3">
           <li class="flex items-center justify-between py-2 border-b border-border/50 bg-olive/5 -mx-2 px-2 rounded">
             <span class="text-text font-medium">Poolish (from above)</span>
-            <span class="font-mono font-medium text-olive">All of it</span>
+            <span class="font-mono font-medium text-olive" data-final-ingredient="preFerment">All of it</span>
           </li>
           <li class="flex items-center justify-between py-2 border-b border-border/50">
             <span class="text-text">Flour (remaining)</span>
@@ -268,7 +268,7 @@
         <button
           type="button"
           id="printRecipe2"
-          class="flex items-center gap-2 px-4 py-2 bg-charcoal text-white rounded-lg hover:bg-charcoal-light transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-charcoal text-white rounded-lg hover:bg-charcoal-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Print recipe"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -279,7 +279,7 @@
         <button
           type="button"
           id="shareRecipe2"
-          class="flex items-center gap-2 px-4 py-2 bg-olive text-white rounded-lg hover:bg-olive-dark transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-olive text-white rounded-lg hover:bg-olive-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Share recipe"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -290,7 +290,7 @@
         <button
           type="button"
           id="copyRecipe2"
-          class="flex items-center gap-2 px-4 py-2 border border-border text-text rounded-lg hover:border-primary hover:text-primary transition-colors"
+          class="flex items-center gap-2 px-4 py-2 border border-border text-text rounded-lg hover:border-primary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Copy recipe to clipboard"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -323,7 +323,7 @@
         <button
           type="button"
           id="copyShareUrl"
-          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Copy
         </button>

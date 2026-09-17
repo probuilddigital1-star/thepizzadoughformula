@@ -29,57 +29,50 @@ export const UNITS = {
 };
 
 /**
- * Convert weight from grams to specified unit
+ * Display precision per unit: quantities below `smallBelow` get `smallDecimals`, larger ones
+ * `largeDecimals` (large quantities keep the display they have always had).
+ */
+const PRECISION = {
+  grams: { smallBelow: 10, smallDecimals: 1, largeDecimals: 0 },
+  ounces: { smallBelow: 1, smallDecimals: 2, largeDecimals: 1 }
+};
+
+const roundTo = (value, decimals) => Math.round(value * 10 ** decimals) / 10 ** decimals;
+
+/**
+ * Convert weight from grams to specified unit (unrounded)
  * @param {number} grams - Weight in grams
  * @param {'grams'|'ounces'} unit - Target unit
  * @returns {number} Converted weight
  */
 export function convertWeight(grams, unit = 'grams') {
   const unitDef = UNITS[unit];
-  if (!unitDef) return grams;
-
-  const converted = unitDef.convert(grams);
-
-  // Round appropriately based on unit
-  if (unit === 'ounces') {
-    // Round to 1 decimal place for ounces
-    return Math.round(converted * 10) / 10;
-  }
-  // Round to nearest whole number for grams
-  return Math.round(converted);
+  return unitDef ? unitDef.convert(grams) : grams;
 }
 
 /**
- * Format weight with unit abbreviation
+ * Format a weight for display. The screen, the copied recipe text and the print output all use this.
+ * Grams: one decimal below 10 g (0.3g, 2.0g), whole grams from 10 g up (250g).
+ * Ounces: two decimals below 1 oz (0.01oz), one decimal from 1 oz up (21.4oz).
+ * A positive amount too small for the smallest step shows as "<0.1g" or "<0.01oz".
  * @param {number} grams - Weight in grams
  * @param {'grams'|'ounces'} unit - Target unit
  * @returns {string} Formatted weight string
  */
 export function formatWeight(grams, unit = 'grams') {
-  const converted = convertWeight(grams, unit);
-  const unitDef = UNITS[unit];
-  return `${converted}${unitDef.abbrev}`;
-}
+  const unitId = UNITS[unit] ? unit : 'grams';
+  const { abbrev, convert } = UNITS[unitId];
+  const { smallBelow, smallDecimals, largeDecimals } = PRECISION[unitId];
+  const value = convert(grams);
 
-/**
- * Format weight with proper decimal handling
- * Small amounts (< 10g) get 1 decimal place
- * @param {number} grams - Weight in grams
- * @param {'grams'|'ounces'} unit - Target unit
- * @returns {string} Formatted weight string
- */
-export function formatWeightPrecise(grams, unit = 'grams') {
-  const unitDef = UNITS[unit];
-  let converted = unitDef.convert(grams);
+  if (value === 0) return `0${abbrev}`;
 
-  // For small amounts, show 1 decimal place
-  if (grams < 10) {
-    converted = Math.round(converted * 10) / 10;
-  } else {
-    converted = Math.round(converted);
+  const small = roundTo(value, smallDecimals);
+  if (Math.abs(small) < smallBelow) {
+    if (small === 0) return `<${(10 ** -smallDecimals).toFixed(smallDecimals)}${abbrev}`;
+    return `${small.toFixed(smallDecimals)}${abbrev}`;
   }
-
-  return `${converted}${unitDef.abbrev}`;
+  return `${roundTo(value, largeDecimals)}${abbrev}`;
 }
 
 /**
@@ -88,7 +81,8 @@ export function formatWeightPrecise(grams, unit = 'grams') {
  */
 export function getStoredUnit() {
   if (typeof localStorage === 'undefined') return 'grams';
-  return localStorage.getItem('preferredUnit') || 'grams';
+  const stored = localStorage.getItem('preferredUnit');
+  return stored === 'ounces' ? 'ounces' : 'grams';
 }
 
 /**
@@ -113,7 +107,6 @@ export default {
   UNITS,
   convertWeight,
   formatWeight,
-  formatWeightPrecise,
   getStoredUnit,
   setStoredUnit,
   toggleUnit

@@ -171,4 +171,29 @@ test.describe('PostHog events', () => {
     );
     expect(posthogKeys).toHaveLength(1);
   });
+
+  test('an impossible pre-ferment sends recipe_invalid once with its reason', async ({ page, context }) => {
+    const sent = await interceptPostHog(context);
+
+    await page.goto('/');
+    await waitForEvent(sent, '$pageview');
+    await page.locator('#advanced-toggle').click();
+    await page.locator('#hydration').fill('45');
+    await page.locator('label:has(#usePreFerment)').click();
+    await page.locator('#preFermentPercent').fill('50');
+    await expect(page.locator('#recipe-issue')).toBeVisible();
+    // Still impossible for the same reason: no second event
+    await page.locator('#preFermentPercent').fill('49');
+    await flushThroughMarker(page, sent);
+
+    const invalid = named(sent, 'recipe_invalid');
+    expect(invalid).toHaveLength(1);
+    expect(invalid[0].properties).toMatchObject({
+      page: '/',
+      style: 'neapolitan',
+      placement: 'none',
+      reason: 'preferment_water_exceeds_total',
+    });
+    expect(sent.unreadable).toEqual([]);
+  });
 });

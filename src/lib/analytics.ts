@@ -24,7 +24,7 @@
 export type AnalyticsEvent =
   | 'guide_to_calculator'
   | 'calculator_used'
-  // 'recipe_invalid' is reserved for ADR step 2b (recipe validation); add it here when that ships.
+  | 'recipe_invalid'
   | 'recipe_copied'
   | 'recipe_printed'
   | 'recipe_shared'

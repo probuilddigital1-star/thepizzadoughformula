@@ -127,6 +127,11 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
 
           {/* Right Column: Output */}
           <div class="lg:sticky lg:top-24 lg:self-start">
+            {/* Shown by the script below when the inputs describe a recipe that cannot be made */}
+            <div id="recipe-issue" class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4" role="alert" hidden>
+              <p class="font-heading font-semibold text-red-800">This recipe can't be made as set</p>
+              <p id="recipe-issue-text" class="mt-1 text-sm text-red-800"></p>
+            </div>
             <RecipeOutput />
           </div>
         </div>
@@ -197,7 +202,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
         <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <button
             id="shareCTA"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Copy recipe link to clipboard"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -379,14 +384,17 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
 </BaseLayout>
 
 <script>
-  import { DoughCalculator } from '../scripts/calculator/engine.js';
+  import { DoughCalculator, DEFAULT_RECIPE_STATE } from '../scripts/calculator/engine.js';
   import { PIZZA_STYLES, getStyleById, getStyleDefaults, getSizesForStyle, getWeightForSize } from '../scripts/calculator/presets.js';
   import { formatWeight, getStoredUnit, setStoredUnit, toggleUnit } from '../scripts/calculator/units.js';
-  import { encodeRecipe, decodeRecipe, hasRecipeInURL, getRecipeFromURL, copyToClipboard, generateRecipeText } from '../scripts/features/shareRecipe.js';
+  import { buildRecipeView, copyToClipboard, describeBatch, encodeRecipe, generateRecipeText, getRecipeFromURL } from '../scripts/features/shareRecipe.js';
   import { track } from '../lib/analytics';
 
-  // Initialize calculator
-  let calculator = new DoughCalculator();
+  // One recipe state holds every calculator input. render() produces the screen, the copied text, the
+  // print output and the share URL from it.
+  let recipeState = { ...DEFAULT_RECIPE_STATE };
+  let recipeResult = null;
+  let lastIssueCode = null;
   let currentUnit = getStoredUnit();
   let currentStyle = 'neapolitan';
   let currentSize = 'classic';
@@ -426,227 +434,191 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
 
   // Yeast type elements
   const yeastTypeRadios = document.querySelectorAll('input[name="yeastType"]');
-  let currentYeastType = 'instant';
+
+  // Validation message and the actions that need a valid recipe
+  const recipeIssue = document.getElementById('recipe-issue');
+  const recipeIssueText = document.getElementById('recipe-issue-text');
+  const recipeAnnouncement = document.getElementById('recipe-announcement');
+  const preFermentTitle = document.getElementById('preFermentTitle');
+  const finalDoughSummary = document.getElementById('finalDoughSummary');
+  const recipeActionButtons = document.querySelectorAll('#printRecipe, #printRecipe2, #shareRecipe, #shareRecipe2, #copyRecipe, #copyRecipe2, #copyShareUrl, #shareCTA');
 
   // Recipe settings from the URL (a guide link or saved recipe), or null. They are applied by
   // initializeCalculator() at the end of this script, once UI references and listeners exist.
   const urlRecipe = getRecipeFromURL();
 
-  // Update calculator and UI
-  function updateCalculator() {
-    calculator = new DoughCalculator({
-      numBalls: parseInt(numBallsInput?.value) || 4,
-      ballWeight: parseInt(ballWeightInput?.value) || 250,
-      hydration: parseInt(hydrationSlider?.value) / 100 || 0.65,
-      salt: parseFloat(saltInput?.value) / 100 || 0.02,
-      yeast: parseFloat(yeastInput?.value) / 100 || 0.003,
-      oil: parseFloat(oilInput?.value) / 100 || 0,
-      sugar: parseFloat(sugarInput?.value) / 100 || 0,
-      usePreFerment: usePreFermentToggle?.checked || false,
-      preFermentType: document.querySelector('input[name="preFermentType"]:checked')?.value || 'poolish',
-      preFermentFlourPercent: parseInt(preFermentPercentSlider?.value) / 100 || 0.25,
-      humidityAdjust: humidityToggle?.checked || false
-    });
-
-    const recipe = calculator.calculate();
-    // recipe_invalid is reserved for ADR step 2b: once recipe validation exists, record it here when a
-    // user change produces a recipe that cannot be made (see docs/analytics-events.md).
-    updateRecipeDisplay(recipe);
+  // Percentage for a text field: at least one decimal and up to three (2.0, 0.3, 2.75)
+  function percentText(fraction) {
+    const percent = Math.round(fraction * 100 * 1000) / 1000;
+    return Number.isInteger(percent * 10) ? percent.toFixed(1) : String(percent);
   }
 
-  // Update recipe display
-  function updateRecipeDisplay(recipe) {
-    const style = getStyleById(currentStyle);
-    const styleName = style?.name || 'Custom';
+  // Set a range slider from a fraction and keep its label and ARIA values in step. The browser clamps
+  // the value to the slider's min, max and step.
+  function setRangeControl(input, label, fraction) {
+    if (!input) return;
+    input.value = String(Math.round(fraction * 100 * 1000) / 1000);
+    if (label) label.textContent = `${input.value}%`;
+    input.setAttribute('aria-valuenow', input.value);
+    input.setAttribute('aria-valuetext', `${input.value} percent`);
+  }
 
-    // Update header
-    if (recipeStyleName) recipeStyleName.textContent = `${styleName} Pizza Dough`;
-    // Update email capture style name
-    if (emailStyleName) emailStyleName.textContent = styleName;
-    if (recipeSummary) {
-      recipeSummary.textContent = `Makes ${calculator.numBalls} dough ball${calculator.numBalls > 1 ? 's' : ''} at ${formatWeight(calculator.ballWeight, currentUnit)} each (${formatWeight(recipe.totalWeight, currentUnit)} total)`;
-    }
+  function setPreFermentEnabled(enabled) {
+    if (!usePreFermentToggle) return;
+    usePreFermentToggle.checked = enabled;
+    usePreFermentToggle.setAttribute('aria-checked', String(enabled));
+    document.getElementById('preFermentOptions')?.classList.toggle('hidden', !enabled);
+  }
 
-    // Update flour recommendation and protein content
-    if (flourRecommendationText && style) {
-      flourRecommendationText.textContent = style.flourRecommendation;
-    }
-    if (flourProteinText && style?.flourProtein) {
-      flourProteinText.textContent = `(${style.flourProtein} protein)`;
-    }
+  // Check the radio with this value; values from the URL are compared, never put into a selector
+  function checkRadio(name, value) {
+    const radio = [...document.querySelectorAll(`input[name="${name}"]`)].find((input) => input.value === value);
+    if (radio) radio.checked = true;
+  }
 
-    // Update water temperature
-    if (waterTempText && style?.waterTemp) {
-      waterTempText.textContent = style.waterTemp;
-    }
+  // A number typed into a field. A blank or non-numeric field falls back; an explicit 0 is kept.
+  function fieldNumber(input, fallback) {
+    const raw = String(input?.value ?? '').trim();
+    if (raw === '') return fallback;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : fallback;
+  }
 
-    // Update fermentation instructions
-    if (fermentInstruction && style?.fermentInstructions) {
-      fermentInstruction.textContent = style.fermentInstructions;
-    }
+  function fieldPercent(input, fallback) {
+    const value = fieldNumber(input, null);
+    return value === null ? fallback : value / 100;
+  }
 
-    // Update bake instruction
-    if (bakeInstruction && style) {
-      bakeInstruction.textContent = `Stretch and bake at ${style.bakeTemp} for ${style.bakeTime}.`;
-    }
+  // Read every calculator input into one recipe state
+  function readRecipeState() {
+    const defaults = DEFAULT_RECIPE_STATE;
+    return {
+      style: currentStyle,
+      unit: currentUnit,
+      numBalls: Math.trunc(fieldNumber(numBallsInput, defaults.numBalls)),
+      ballWeight: fieldNumber(ballWeightInput, defaults.ballWeight),
+      hydration: fieldPercent(hydrationSlider, defaults.hydration),
+      salt: fieldPercent(saltInput, defaults.salt),
+      yeast: fieldPercent(yeastInput, defaults.yeast),
+      yeastType: document.querySelector('input[name="yeastType"]:checked')?.value ?? defaults.yeastType,
+      oil: fieldPercent(oilInput, defaults.oil),
+      sugar: fieldPercent(sugarInput, defaults.sugar),
+      usePreFerment: usePreFermentToggle?.checked ?? defaults.usePreFerment,
+      preFermentType: document.querySelector('input[name="preFermentType"]:checked')?.value ?? defaults.preFermentType,
+      preFermentFlourPercent: fieldPercent(preFermentPercentSlider, defaults.preFermentFlourPercent),
+      humidityAdjust: humidityToggle?.checked ?? defaults.humidityAdjust,
+    };
+  }
 
-    // Update total dough weight display
-    if (totalDoughWeightDisplay) {
-      totalDoughWeightDisplay.textContent = formatWeight(recipe.totalWeight, currentUnit);
-    }
+  // Recalculate from the inputs and redraw every output from the same state. The initial render passes
+  // userChange: false, so a shared link that opens with an impossible recipe does not send recipe_invalid.
+  function render({ userChange }) {
+    recipeState = readRecipeState();
+    recipeResult = new DoughCalculator(recipeState).calculate();
 
-    // Show/hide emergency timer
-    if (emergencyTimerSection) {
-      if (currentStyle === 'emergency') {
-        emergencyTimerSection.classList.remove('hidden');
-      } else {
-        emergencyTimerSection.classList.add('hidden');
-      }
-    }
-
-    if (recipe.stage === 'single') {
-      // Single stage recipe
-      singleStageRecipe?.classList.remove('hidden');
-      twoStageRecipe?.classList.add('hidden');
-
-      // Update ingredients
-      document.querySelector('[data-ingredient="flour"]').textContent = formatWeight(recipe.ingredients.flour, currentUnit);
-      document.querySelector('[data-ingredient="water"]').textContent = formatWeight(recipe.ingredients.water, currentUnit);
-      document.querySelector('[data-ingredient="salt"]').textContent = formatWeight(recipe.ingredients.salt, currentUnit);
-
-      // Apply yeast type conversion (active dry needs 1.25x more)
-      const yeastMultiplier = currentYeastType === 'activeDry' ? 1.25 : 1;
-      const displayYeast = recipe.ingredients.yeast * yeastMultiplier;
-      document.querySelector('[data-ingredient="yeast"]').textContent = formatWeight(displayYeast, currentUnit);
-
-      // Update yeast label based on type
-      const yeastLabelRow = document.querySelector('[data-ingredient="yeast"]')?.closest('li');
-      const yeastLabel = yeastLabelRow?.querySelector('span:first-child');
-      if (yeastLabel) {
-        yeastLabel.textContent = currentYeastType === 'activeDry' ? 'Active Dry Yeast' : 'Instant Yeast';
-      }
-
-      // Update percentages
-      document.getElementById('waterPercent').textContent = `(${recipe.percentages.hydration.toFixed(1)}%)`;
-      document.getElementById('saltPercent').textContent = `(${recipe.percentages.salt.toFixed(1)}%)`;
-      document.getElementById('yeastPercent').textContent = `(${recipe.percentages.yeast.toFixed(1)}%)`;
-
-      // Oil row
-      const oilRow = document.getElementById('oilRow');
-      if (recipe.ingredients.oil > 0) {
-        oilRow?.classList.remove('hidden');
-        document.querySelector('[data-ingredient="oil"]').textContent = formatWeight(recipe.ingredients.oil, currentUnit);
-        document.getElementById('oilPercent').textContent = `(${recipe.percentages.oil.toFixed(1)}%)`;
-      } else {
-        oilRow?.classList.add('hidden');
-      }
-
-      // Sugar row
-      const sugarRow = document.getElementById('sugarRow');
-      if (recipe.ingredients.sugar > 0) {
-        sugarRow?.classList.remove('hidden');
-        document.querySelector('[data-ingredient="sugar"]').textContent = formatWeight(recipe.ingredients.sugar, currentUnit);
-        document.getElementById('sugarPercent').textContent = `(${recipe.percentages.sugar.toFixed(1)}%)`;
-      } else {
-        sugarRow?.classList.add('hidden');
-      }
-
+    updateStyleText(getStyleById(currentStyle));
+    if (recipeResult.valid) {
+      showRecipe(buildRecipeView(recipeResult, recipeState));
     } else {
-      // Two-stage recipe
-      singleStageRecipe?.classList.add('hidden');
-      twoStageRecipe?.classList.remove('hidden');
+      showIssue(recipeResult.issue);
+    }
+    setRecipeActionsEnabled(recipeResult.valid);
+    if (shareUrl) shareUrl.value = recipeResult.valid ? encodeRecipe(recipeState) : '';
+    updateShareLinks();
 
-      // Update pre-ferment title
-      const preFermentTitle = document.getElementById('preFermentTitle');
-      if (preFermentTitle) {
-        preFermentTitle.textContent = `${recipe.preFerment.type === 'poolish' ? 'Poolish' : 'Biga'} (Night Before)`;
-      }
+    // recipe_invalid: a user change that produces a new rejection reason (see docs/analytics-events.md)
+    const issueCode = recipeResult.valid ? null : recipeResult.issue.code;
+    if (userChange && issueCode && issueCode !== lastIssueCode) {
+      track('recipe_invalid', { style: currentStyle, reason: issueCode });
+    }
+    lastIssueCode = issueCode;
+  }
 
-      // Pre-ferment ingredients (apply yeast type conversion)
-      const pfYeastMultiplier = currentYeastType === 'activeDry' ? 1.25 : 1;
-      document.querySelector('[data-pf-ingredient="flour"]').textContent = formatWeight(recipe.preFerment.ingredients.flour, currentUnit);
-      document.querySelector('[data-pf-ingredient="water"]').textContent = formatWeight(recipe.preFerment.ingredients.water, currentUnit);
-      document.querySelector('[data-pf-ingredient="yeast"]').textContent = formatWeight(recipe.preFerment.ingredients.yeast * pfYeastMultiplier, currentUnit);
+  function updateCalculator() {
+    render({ userChange: true });
+  }
 
-      // Update pre-ferment yeast label
-      const pfYeastLabelRow = document.querySelector('[data-pf-ingredient="yeast"]')?.closest('li');
-      const pfYeastLabel = pfYeastLabelRow?.querySelector('span:first-child');
-      if (pfYeastLabel) {
-        pfYeastLabel.textContent = currentYeastType === 'activeDry' ? 'Active Dry Yeast' : 'Instant Yeast';
-      }
+  // Texts that follow the selected style whether or not the recipe is valid
+  function updateStyleText(style) {
+    const styleName = style?.name || 'Custom';
+    if (recipeStyleName) recipeStyleName.textContent = `${styleName} Pizza Dough`;
+    if (emailStyleName) emailStyleName.textContent = styleName;
+    if (flourRecommendationText && style) flourRecommendationText.textContent = style.flourRecommendation;
+    if (flourProteinText && style?.flourProtein) flourProteinText.textContent = `(${style.flourProtein} protein)`;
+    if (waterTempText && style?.waterTemp) waterTempText.textContent = style.waterTemp;
+    if (fermentInstruction && style?.fermentInstructions) fermentInstruction.textContent = style.fermentInstructions;
+    if (bakeInstruction && style) bakeInstruction.textContent = `Stretch and bake at ${style.bakeTemp} for ${style.bakeTime}.`;
+    emergencyTimerSection?.classList.toggle('hidden', currentStyle !== 'emergency');
+  }
 
-      // Final dough summary
-      const finalDoughSummary = document.getElementById('finalDoughSummary');
-      if (finalDoughSummary) {
-        finalDoughSummary.textContent = `Makes ${calculator.numBalls} dough ball${calculator.numBalls > 1 ? 's' : ''} at ${formatWeight(calculator.ballWeight, currentUnit)} each (${formatWeight(recipe.totalWeight, currentUnit)} total)`;
-      }
+  // Fill one ingredient row from the recipe view: label, amount, percentage and visibility
+  function fillRow(amountElement, row) {
+    if (!amountElement) return;
+    const item = amountElement.closest('li');
+    amountElement.textContent = row.amount;
+    const label = item?.firstElementChild;
+    if (label && label !== amountElement) label.textContent = row.label;
+    const percentElement = amountElement.nextElementSibling;
+    if (percentElement && row.percent) percentElement.textContent = `(${row.percent})`;
+    item?.classList.toggle('hidden', !row.visible);
+  }
 
-      // Final dough ingredients (apply yeast type conversion)
-      document.querySelector('[data-final-ingredient="flour"]').textContent = formatWeight(recipe.finalDough.ingredients.flour, currentUnit);
-      document.querySelector('[data-final-ingredient="water"]').textContent = formatWeight(recipe.finalDough.ingredients.water, currentUnit);
-      document.querySelector('[data-final-ingredient="salt"]').textContent = formatWeight(recipe.finalDough.ingredients.salt, currentUnit);
+  function showRecipe(view) {
+    if (recipeIssue) recipeIssue.hidden = true;
+    const single = view.stage === 'single';
+    singleStageRecipe?.classList.toggle('hidden', !single);
+    twoStageRecipe?.classList.toggle('hidden', single);
+    if (recipeSummary) recipeSummary.textContent = view.summary;
+    if (totalDoughWeightDisplay) totalDoughWeightDisplay.textContent = view.totalWeight;
 
-      // Hide yeast row in final dough if 0 (traditional method: all yeast in pre-ferment)
-      const finalYeastRow = document.getElementById('finalYeastRow');
-      if (recipe.finalDough.ingredients.yeast > 0) {
-        finalYeastRow?.classList.remove('hidden');
-        document.querySelector('[data-final-ingredient="yeast"]').textContent = formatWeight(recipe.finalDough.ingredients.yeast * pfYeastMultiplier, currentUnit);
-        const finalYeastLabel = finalYeastRow?.querySelector('span:first-child');
-        if (finalYeastLabel) {
-          finalYeastLabel.textContent = currentYeastType === 'activeDry' ? 'Active Dry Yeast (remaining)' : 'Instant Yeast (remaining)';
-        }
-      } else {
-        finalYeastRow?.classList.add('hidden');
-      }
-
-      // Oil row
-      const finalOilRow = document.getElementById('finalOilRow');
-      if (recipe.finalDough.ingredients.oil > 0) {
-        finalOilRow?.classList.remove('hidden');
-        document.querySelector('[data-final-ingredient="oil"]').textContent = formatWeight(recipe.finalDough.ingredients.oil, currentUnit);
-      } else {
-        finalOilRow?.classList.add('hidden');
-      }
-
-      // Sugar row
-      const finalSugarRow = document.getElementById('finalSugarRow');
-      if (recipe.finalDough.ingredients.sugar > 0) {
-        finalSugarRow?.classList.remove('hidden');
-        document.querySelector('[data-final-ingredient="sugar"]').textContent = formatWeight(recipe.finalDough.ingredients.sugar, currentUnit);
-      } else {
-        finalSugarRow?.classList.add('hidden');
-      }
+    if (single) {
+      view.rows.forEach((row) => fillRow(document.querySelector(`[data-ingredient="${row.key}"]`), row));
+    } else {
+      if (preFermentTitle) preFermentTitle.textContent = view.preFerment.title;
+      view.preFerment.rows.forEach((row) => fillRow(document.querySelector(`[data-pf-ingredient="${row.key}"]`), row));
+      if (finalDoughSummary) finalDoughSummary.textContent = view.summary;
+      view.finalDough.rows.forEach((row) => fillRow(document.querySelector(`[data-final-ingredient="${row.key}"]`), row));
     }
 
-    // Announce recipe update to screen readers
-    const announcement = document.getElementById('recipe-announcement');
-    if (announcement) {
-      announcement.textContent = `Recipe updated: ${calculator.numBalls} dough balls at ${formatWeight(calculator.ballWeight, currentUnit)} each, total ${formatWeight(recipe.totalWeight, currentUnit)}`;
-    }
+    if (recipeAnnouncement) recipeAnnouncement.textContent = `Recipe updated: ${view.summary}`;
+  }
 
-    // Update share URL
-    if (shareUrl) {
-      const recipeSettings = {
-        style: currentStyle,
-        numBalls: calculator.numBalls,
-        ballWeight: calculator.ballWeight,
-        hydration: calculator.hydration,
-        salt: calculator.salt,
-        yeast: calculator.yeast,
-        oil: calculator.oil,
-        sugar: calculator.sugar,
-        usePreFerment: calculator.usePreFerment,
-        preFermentType: calculator.preFermentType,
-        preFermentFlourPercent: calculator.preFermentFlourPercent,
-        humidityAdjust: calculator.humidityAdjust
-      };
-      shareUrl.value = encodeRecipe(recipeSettings);
+  // A recipe that cannot be made: explain why, and show no amounts rather than negative or meaningless ones
+  function showIssue(issue) {
+    if (recipeIssue) recipeIssue.hidden = false;
+    if (recipeIssueText) recipeIssueText.textContent = issue.message;
+    const single = !recipeState.usePreFerment;
+    singleStageRecipe?.classList.toggle('hidden', !single);
+    twoStageRecipe?.classList.toggle('hidden', single);
 
-      // Update social share links
-      if (typeof updateShareLinks === 'function') {
-        updateShareLinks();
-      }
+    const badInput = issue.code === 'invalid_input';
+    const summary = badInput ? 'Recipe not calculated' : describeBatch(recipeState);
+    if (recipeSummary) recipeSummary.textContent = summary;
+    if (finalDoughSummary) finalDoughSummary.textContent = summary;
+    if (totalDoughWeightDisplay) {
+      totalDoughWeightDisplay.textContent = badInput
+        ? 'n/a'
+        : formatWeight(recipeState.numBalls * recipeState.ballWeight, recipeState.unit);
     }
+    document.querySelectorAll('[data-ingredient], [data-pf-ingredient], [data-final-ingredient]').forEach((element) => {
+      element.textContent = 'n/a';
+    });
+
+    if (recipeAnnouncement) recipeAnnouncement.textContent = `Recipe not shown: ${issue.message}`;
+  }
+
+  // Copy, print and share only make sense for a valid recipe
+  function setRecipeActionsEnabled(enabled) {
+    recipeActionButtons.forEach((button) => {
+      button.disabled = !enabled;
+    });
+    [shareTwitter, shareFacebook, shareReddit].forEach((link) => {
+      if (!link) return;
+      link.setAttribute('aria-disabled', String(!enabled));
+      link.tabIndex = enabled ? 0 : -1;
+      link.classList.toggle('pointer-events-none', !enabled);
+      link.classList.toggle('opacity-50', !enabled);
+    });
   }
 
   // Render size options for the selected style
@@ -752,27 +724,17 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     // Update ball weight based on default size for this style
     const sizeWeight = getWeightForSize(styleId, currentSize);
     if (ballWeightInput) ballWeightInput.value = sizeWeight;
-    if (hydrationSlider) {
-      hydrationSlider.value = Math.round(defaults.hydration * 100);
-      if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
-    }
-    if (saltInput) saltInput.value = (defaults.salt * 100).toFixed(1);
-    if (yeastInput) yeastInput.value = (defaults.yeast * 100).toFixed(1);
-    if (oilInput) oilInput.value = (defaults.oil * 100).toFixed(1);
-    if (sugarInput) sugarInput.value = (defaults.sugar * 100).toFixed(1);
+    setRangeControl(hydrationSlider, hydrationValue, defaults.hydration);
+    if (saltInput) saltInput.value = percentText(defaults.salt);
+    if (yeastInput) yeastInput.value = percentText(defaults.yeast);
+    if (oilInput) oilInput.value = percentText(defaults.oil);
+    if (sugarInput) sugarInput.value = percentText(defaults.sugar);
 
     // Pre-ferment
-    if (usePreFermentToggle) {
-      usePreFermentToggle.checked = defaults.usePreFerment || false;
-      document.getElementById('preFermentOptions')?.classList.toggle('hidden', !defaults.usePreFerment);
-    }
-    if (defaults.preFermentType) {
-      const pfRadio = document.querySelector(`input[name="preFermentType"][value="${defaults.preFermentType}"]`);
-      if (pfRadio) pfRadio.checked = true;
-    }
-    if (defaults.preFermentFlourPercent && preFermentPercentSlider) {
-      preFermentPercentSlider.value = Math.round(defaults.preFermentFlourPercent * 100);
-      document.getElementById('preFermentPercent-value').textContent = `${preFermentPercentSlider.value}%`;
+    setPreFermentEnabled(defaults.usePreFerment || false);
+    if (defaults.preFermentType) checkRadio('preFermentType', defaults.preFermentType);
+    if (defaults.preFermentFlourPercent) {
+      setRangeControl(preFermentPercentSlider, document.getElementById('preFermentPercent-value'), defaults.preFermentFlourPercent);
     }
 
     if (recalculate) updateCalculator();
@@ -799,12 +761,9 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   preFermentPercentSlider?.addEventListener('input', updateCalculator);
   humidityToggle?.addEventListener('change', updateCalculator);
 
-  // Yeast type change
+  // Yeast type change (the engine converts active dry yeast)
   yeastTypeRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      currentYeastType = e.target.value;
-      updateCalculator();
-    });
+    radio.addEventListener('change', updateCalculator);
   });
 
   // Unit toggle
@@ -832,9 +791,9 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   // Copy recipe
   document.querySelectorAll('#copyRecipe, #copyRecipe2').forEach(btn => {
     btn?.addEventListener('click', async () => {
-      const recipe = calculator.calculate();
+      if (!recipeResult?.valid) return;
       const style = getStyleById(currentStyle);
-      const text = generateRecipeText(recipe, style?.name || 'Pizza');
+      const text = generateRecipeText(recipeResult, recipeState, style?.name || 'Pizza');
       const success = await copyToClipboard(text);
 
       if (success) {
@@ -1012,6 +971,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   }
 
   shareCTABtn?.addEventListener('click', async () => {
+    if (!recipeResult?.valid) return;
     const url = shareUrl?.value || window.location.href;
     const success = await copyToClipboard(url);
 
@@ -1033,7 +993,11 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
 
   // Record social share clicks (each link opens the platform's share page in a new tab)
   [shareTwitter, shareFacebook, shareReddit].forEach(btn => {
-    btn?.addEventListener('click', () => {
+    btn?.addEventListener('click', (event) => {
+      if (btn.getAttribute('aria-disabled') === 'true') {
+        event.preventDefault();
+        return;
+      }
       const method = btn.id.replace('share', '').toLowerCase();
       track('recipe_shared', { style: currentStyle, method, placement: 'share-section' });
     });
@@ -1041,7 +1005,7 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
 
   // Properties shared by recipe_copied and recipe_printed
   function recipeActionProps() {
-    return { style: currentStyle, preferment: calculator.usePreFerment, unit: currentUnit };
+    return { style: currentStyle, preferment: recipeState.usePreFerment, unit: recipeState.unit };
   }
 
   // Record prints; RecipeOutput.astro opens the print dialog
@@ -1093,36 +1057,27 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     }
   }
 
-  // A saved recipe (n in the URL) carries explicit values to apply over its style's defaults.
-  // Explicit zeros are respected; values missing from the URL keep the style defaults.
+  // A saved recipe (n in the URL) carries explicit values to apply over its style's defaults. Explicit
+  // zeros and switched-off options are applied; values the link does not carry keep the style defaults.
   function applySavedRecipe(recipe) {
     const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
 
     if (isNumber(recipe.numBalls) && numBallsInput) numBallsInput.value = recipe.numBalls;
     if (isNumber(recipe.ballWeight) && ballWeightInput) ballWeightInput.value = recipe.ballWeight;
-    if (isNumber(recipe.hydration) && hydrationSlider) {
-      hydrationSlider.value = Math.round(recipe.hydration * 100);
-      if (hydrationValue) hydrationValue.textContent = `${hydrationSlider.value}%`;
-    }
-    if (isNumber(recipe.salt) && saltInput) saltInput.value = (recipe.salt * 100).toFixed(1);
-    if (isNumber(recipe.yeast) && yeastInput) yeastInput.value = (recipe.yeast * 100).toFixed(1);
-    if (isNumber(recipe.oil) && oilInput) oilInput.value = (recipe.oil * 100).toFixed(1);
-    if (isNumber(recipe.sugar) && sugarInput) sugarInput.value = (recipe.sugar * 100).toFixed(1);
+    if (isNumber(recipe.hydration)) setRangeControl(hydrationSlider, hydrationValue, recipe.hydration);
+    if (isNumber(recipe.salt) && saltInput) saltInput.value = percentText(recipe.salt);
+    if (isNumber(recipe.yeast) && yeastInput) yeastInput.value = percentText(recipe.yeast);
+    if (isNumber(recipe.oil) && oilInput) oilInput.value = percentText(recipe.oil);
+    if (isNumber(recipe.sugar) && sugarInput) sugarInput.value = percentText(recipe.sugar);
+    if (recipe.yeastType) checkRadio('yeastType', recipe.yeastType);
 
-    // Pre-ferment
-    if (recipe.usePreFerment && usePreFermentToggle) {
-      usePreFermentToggle.checked = true;
-      document.getElementById('preFermentOptions')?.classList.remove('hidden');
+    // Pre-ferment and humidity
+    if (typeof recipe.usePreFerment === 'boolean') setPreFermentEnabled(recipe.usePreFerment);
+    if (recipe.preFermentType) checkRadio('preFermentType', recipe.preFermentType);
+    if (isNumber(recipe.preFermentFlourPercent)) {
+      setRangeControl(preFermentPercentSlider, document.getElementById('preFermentPercent-value'), recipe.preFermentFlourPercent);
     }
-    if (['poolish', 'biga'].includes(recipe.preFermentType)) {
-      const pfRadio = document.querySelector(`input[name="preFermentType"][value="${recipe.preFermentType}"]`);
-      if (pfRadio) pfRadio.checked = true;
-    }
-    if (isNumber(recipe.preFermentFlourPercent) && preFermentPercentSlider) {
-      preFermentPercentSlider.value = Math.round(recipe.preFermentFlourPercent * 100);
-      document.getElementById('preFermentPercent-value').textContent = `${preFermentPercentSlider.value}%`;
-    }
-    if (recipe.humidityAdjust && humidityToggle) humidityToggle.checked = true;
+    if (typeof recipe.humidityAdjust === 'boolean' && humidityToggle) humidityToggle.checked = recipe.humidityAdjust;
 
     // Expand advanced options so custom settings are visible
     const advancedToggle = document.getElementById('advanced-toggle');
@@ -1137,20 +1092,19 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   function initializeCalculator() {
     const hasValidStyle = Object.keys(PIZZA_STYLES).includes(urlRecipe?.style);
     const initialStyle = hasValidStyle ? urlRecipe.style : 'neapolitan';
-    const styleRadio = document.querySelector(`input[name="pizzaStyle"][value="${initialStyle}"]`);
-    if (styleRadio) styleRadio.checked = true;
+    checkRadio('pizzaStyle', initialStyle);
 
     applyStyleDefaults(initialStyle, { recalculate: false });
-    if (urlRecipe?.numBalls !== undefined) applySavedRecipe(urlRecipe);
+    if (urlRecipe?.savedRecipe) applySavedRecipe(urlRecipe);
 
-    updateCalculator();
+    render({ userChange: false });
 
     // Guide pages link to /?s=<style>. Saved recipe links carry s as well, so saved_recipe separates them.
     if (hasValidStyle) {
       track('guide_to_calculator', {
         style: initialStyle,
         referrer_path: referrerPath(),
-        saved_recipe: urlRecipe.numBalls !== undefined,
+        saved_recipe: urlRecipe.savedRecipe === true,
       });
     }
   }

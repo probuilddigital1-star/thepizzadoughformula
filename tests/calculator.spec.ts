@@ -61,7 +61,10 @@ test.describe('Pizza Dough Calculator - Full QA Test Suite', () => {
       await page.locator('label[data-style="newYork"]').click();
       await page.waitForTimeout(500);
 
-      await expect(page.locator('text=New York Pizza Dough')).toBeVisible();
+      // The FAQ also mentions "New York pizza dough", so check the recipe title itself
+      const recipeName = page.locator('#recipeStyleName');
+      await expect(recipeName).toBeVisible();
+      await expect(recipeName).toHaveText('New York Pizza Dough');
     });
 
     test('clicking Detroit updates recipe', async ({ page }) => {
@@ -269,7 +272,8 @@ test.describe('Pizza Dough Calculator - Full QA Test Suite', () => {
     test('style selector has proper ARIA attributes', async ({ page }) => {
       await page.goto('/#calculator');
 
-      const radioGroup = page.locator('[role="radiogroup"]');
+      // The size options are a radiogroup too, so scope to the style selector
+      const radioGroup = page.locator('.style-selector [role="radiogroup"]');
       await expect(radioGroup).toHaveAttribute('aria-label', 'Pizza style selection');
     });
 
@@ -281,7 +285,7 @@ test.describe('Pizza Dough Calculator - Full QA Test Suite', () => {
       await expect(firstCard).toBeVisible();
 
       // Cards should have focus-within styles defined
-      await expect(page.locator('[role="radiogroup"]')).toBeVisible();
+      await expect(page.locator('.style-selector [role="radiogroup"]')).toBeVisible();
     });
   });
 
@@ -490,8 +494,183 @@ test.describe('Guide-to-calculator handoff', () => {
       totalDoughWeight: '1000g',
       singleStageHidden: false,
       twoStageHidden: true,
-      shareUrl: expect.stringMatching(/\/\?s=neapolitan&n=4&w=250&h=62&sa=25&y=3$/),
+      shareUrl: expect.stringMatching(/\/\?v=2&s=neapolitan&n=4&w=250&h=62&sa=2\.5&y=0\.3&yt=instant&o=0&su=0&pf=0&ha=0$/),
     });
     expect(errors.pageErrors).toEqual([]);
+  });
+});
+
+test.describe('Recipe outputs agree', () => {
+  // Capture the copied text and print calls instead of using the real clipboard and print dialog.
+  async function captureCopyAndPrint(page: Page) {
+    await page.addInitScript(() => {
+      const target = window as unknown as { __copiedText: string | null; __printCalls: number };
+      target.__copiedText = null;
+      target.__printCalls = 0;
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: async (text: string) => {
+            target.__copiedText = text;
+          },
+        },
+      });
+      window.print = () => {
+        target.__printCalls += 1;
+      };
+    });
+  }
+
+  // Label and amount of the yeast row in a recipe card
+  function yeastLine(page: Page, card: string, attribute: string) {
+    return page.locator(`${card} [${attribute}="yeast"]`).evaluate((amount) => ({
+      label: amount.closest('li')?.firstElementChild?.textContent?.trim() ?? '',
+      amount: amount.textContent?.trim() ?? '',
+    }));
+  }
+
+  const cases = [
+    { yeastType: 'instant', unit: 'grams', preferment: false, label: 'Instant Yeast', amount: '1.8g' },
+    { yeastType: 'activeDry', unit: 'grams', preferment: false, label: 'Active Dry Yeast', amount: '2.3g' },
+    { yeastType: 'instant', unit: 'ounces', preferment: false, label: 'Instant Yeast', amount: '0.06oz' },
+    { yeastType: 'activeDry', unit: 'ounces', preferment: false, label: 'Active Dry Yeast', amount: '0.08oz' },
+    { yeastType: 'activeDry', unit: 'grams', preferment: true, label: 'Active Dry Yeast', amount: null },
+  ];
+
+  for (const c of cases) {
+    const name = `${c.yeastType} yeast in ${c.unit}${c.preferment ? ' with a pre-ferment' : ''}`;
+    test(`screen, copied text and print show the same yeast line: ${name}`, async ({ page }) => {
+      await captureCopyAndPrint(page);
+      await page.goto(c.preferment ? '/?s=poolishBiga' : '/');
+      await page.locator('#advanced-toggle').click();
+      await page.locator(`input[name="yeastType"][value="${c.yeastType}"]`).check();
+      if (c.unit === 'ounces') await page.locator('#unitToggle').click();
+
+      const card = c.preferment ? '#twoStageRecipe' : '#singleStageRecipe';
+      const attribute = c.preferment ? 'data-pf-ingredient' : 'data-ingredient';
+      const onScreen = await yeastLine(page, card, attribute);
+      expect(onScreen.label).toBe(c.label);
+      if (c.amount) expect(onScreen.amount).toBe(c.amount);
+
+      // Copied text
+      await page.locator(`${card} button:has-text("Copy")`).click();
+      const copied = (await (await page.waitForFunction(() => (window as unknown as { __copiedText: string | null }).__copiedText)).jsonValue()) as string;
+      const copiedLine = copied.split('\n').find((line) => line.startsWith(`${onScreen.label}:`));
+      expect(copiedLine, copied).toBeDefined();
+      expect(copiedLine!.startsWith(`${onScreen.label}: ${onScreen.amount}`), copiedLine).toBe(true);
+
+      // Print output: the same card under print styles
+      await page.locator(`${card} button:has-text("Print")`).click();
+      expect(await page.evaluate(() => (window as unknown as { __printCalls: number }).__printCalls)).toBe(1);
+      await page.emulateMedia({ media: 'print' });
+      await expect(page.locator(`${card} li`, { has: page.locator(`[${attribute}="yeast"]`) })).toBeVisible();
+      expect(await yeastLine(page, card, attribute)).toEqual(onScreen);
+      await expect(page.locator(`${card} button:has-text("Print")`)).toBeHidden();
+    });
+  }
+});
+
+test.describe('Impossible pre-ferment', () => {
+  const recipeActions = ['#printRecipe', '#printRecipe2', '#shareRecipe', '#shareRecipe2', '#copyRecipe', '#copyRecipe2', '#shareCTA'];
+
+  test('explains the conflict, shows no amounts, and disables copy, print and share until fixed', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    await page.goto('/');
+    await page.locator('#advanced-toggle').click();
+    await page.locator('#hydration').fill('45');
+    await page.locator('label:has(#usePreFerment)').click();
+    await page.locator('#preFermentPercent').fill('50');
+
+    const issue = page.locator('#recipe-issue');
+    await expect(issue).toBeVisible();
+    await expect(page.locator('#recipe-issue-text')).toContainText('poolish made with 50% of the flour');
+    await expect(page.locator('#recipe-issue-text')).toContainText('only has 45%');
+    for (const selector of recipeActions) await expect(page.locator(selector), selector).toBeDisabled();
+    for (const selector of ['#shareTwitter', '#shareFacebook', '#shareReddit']) {
+      await expect(page.locator(selector)).toHaveAttribute('aria-disabled', 'true');
+    }
+    await expect(page.locator('#shareUrl')).toHaveValue('');
+    const amounts = await page.locator('#twoStageRecipe [data-pf-ingredient], #twoStageRecipe [data-final-ingredient]').allTextContents();
+    expect(amounts.every((text) => text.trim() === 'n/a'), amounts.join(', ')).toBe(true);
+
+    // Enough hydration for the pre-ferment makes the recipe valid again
+    await page.locator('#hydration').fill('60');
+    await expect(issue).toBeHidden();
+    for (const selector of recipeActions) await expect(page.locator(selector), selector).toBeEnabled();
+    await expect(page.locator('#shareTwitter')).toHaveAttribute('aria-disabled', 'false');
+    await expect(page.locator('#shareUrl')).toHaveValue(/[?&]pf=1&pft=poolish&pfp=50&/);
+    await expect(page.locator('[data-final-ingredient="water"]')).toHaveText(/^\d+g$/);
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('a shared link with an impossible pre-ferment opens with the explanation and disabled actions', async ({ page }) => {
+    await page.goto('/?v=2&s=poolishBiga&n=4&w=260&h=45&sa=2.5&y=0.2&yt=instant&o=0&su=0&pf=1&pft=poolish&pfp=50&ha=0');
+
+    await expect(page.locator('#recipe-issue')).toBeVisible();
+    await expect(page.locator('#recipe-issue-text')).toContainText('50%');
+    for (const selector of recipeActions) await expect(page.locator(selector), selector).toBeDisabled();
+  });
+});
+
+test.describe('Saved links and explicit zeros', () => {
+  test('an earlier-format New York link without oil or sugar keeps both at zero', async ({ page }) => {
+    await page.goto('/?s=newYork&n=2&w=300&h=65&sa=20&y=4');
+
+    await expect(page.locator('#recipeStyleName')).toHaveText('New York Pizza Dough');
+    await expect(page.locator('#oil')).toHaveValue('0.0');
+    await expect(page.locator('#sugar')).toHaveValue('0.0');
+    await expect(page.locator('#oilRow')).toBeHidden();
+  });
+
+  test('an earlier-format Poolish/Biga link without the pre-ferment switch keeps it off', async ({ page }) => {
+    await page.goto('/?s=poolishBiga&n=3&w=260&h=65&sa=25&y=2');
+
+    await expect(page.locator('input[value="poolishBiga"]')).toBeChecked();
+    await expect(page.locator('#usePreFerment')).not.toBeChecked();
+    await expect(page.locator('#singleStageRecipe')).toBeVisible();
+    await expect(page.locator('#twoStageRecipe')).toBeHidden();
+  });
+
+  test('an earlier-format link with the retired flour parameter still loads', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    await page.goto('/?s=newYork&n=2&w=300&h=65&sa=20&y=4&o=3&su=2&ft=bread');
+
+    await expect(page.locator('#numBalls')).toHaveValue('2');
+    await expect(page.locator('#oil')).toHaveValue('3.0');
+    await expect(page.locator('#flourType')).toHaveCount(0);
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('fractional percentages and yeast type survive a reload', async ({ page }) => {
+    const query = '?v=2&s=neapolitan&n=2&w=280&h=62.5&sa=2.75&y=0.15&yt=activeDry&o=0&su=0&pf=0&ha=0';
+    await page.goto(`/${query}`);
+
+    await expect(page.locator('#hydration')).toHaveValue('62.5');
+    await expect(page.locator('#hydration-value')).toHaveText('62.5%');
+    await expect(page.locator('#salt')).toHaveValue('2.75');
+    await expect(page.locator('#yeast')).toHaveValue('0.15');
+    await expect(page.locator('input[name="yeastType"][value="activeDry"]')).toBeChecked();
+    await expect(page.locator('#shareUrl')).toHaveValue(new RegExp(`/${query.replace(/[?.]/g, '\\$&')}$`));
+  });
+
+  test('an explicit zero in a field is kept instead of replaced by a default', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#advanced-toggle').click();
+    await page.locator('#salt').fill('0');
+
+    await expect(page.locator('[data-ingredient="salt"]')).toHaveText('0g');
+    await expect(page.locator('#saltPercent')).toHaveText('(0.0%)');
+    await expect(page.locator('#shareUrl')).toHaveValue(/&sa=0&/);
+
+    await page.locator('#numBalls').fill('0');
+    await expect(page.locator('#recipe-issue-text')).toHaveText('Enter at least 1 dough ball.');
+    await expect(page.locator('#copyRecipe')).toBeDisabled();
+
+    // A blank field falls back to the default instead of blocking the recipe
+    await page.locator('#numBalls').fill('');
+    await expect(page.locator('#recipe-issue')).toBeHidden();
+    await expect(page.locator('#recipeSummary')).toContainText('Makes 4 dough balls');
   });
 });
