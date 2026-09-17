@@ -34,6 +34,10 @@ Final workflow, in order:
    failures here, so a Kit error marks the execution as failed. The sheet row and the response happen
    before the Kit steps and are not affected.
 
+Updated 2026-09-17: Save to Google Sheets now uses "append or update" matching on the `email` column
+(published version `4c60de18-09e5-43c0-a8c7-6b4c646005eb`), so a repeat signup from the same address
+updates that address's row instead of adding another; rows already duplicated before this change remain.
+
 Both Kit nodes authenticate with the n8n credential "Kit API key" (Header Auth, header `X-Kit-Api-Key`,
 created with its allowed domains limited to `api.kit.com`). No key is stored in node parameters. The beehiiv
 HTTP Request node and its inline API key were removed.

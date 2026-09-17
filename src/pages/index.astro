@@ -865,8 +865,26 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
   const recipeEmailError = document.getElementById('recipe-email-error');
   const emailStyleName = document.getElementById('emailStyleName');
 
+  // Newsletter forms ignore repeat submits (a second click or Enter) while a request is in flight.
+  // The disabled button stops clicks; the flags also stop submits that do not go through the button.
+  let emailFormInFlight = false;
+  let recipeEmailFormInFlight = false;
+
+  function setSubmitButtonSending(form, sending) {
+    const button = form.querySelector('button[type="submit"]');
+    if (!button) return;
+    if (sending) {
+      button.dataset.idleText = button.textContent;
+      button.textContent = 'Sending...';
+    } else if (button.dataset.idleText !== undefined) {
+      button.textContent = button.dataset.idleText;
+    }
+    button.disabled = sending;
+  }
+
   emailForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (emailFormInFlight) return;
     const formData = new FormData(emailForm);
     const email = formData.get('email');
 
@@ -882,6 +900,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
       return;
     }
 
+    emailFormInFlight = true;
+    setSubmitButtonSending(emailForm, true);
     try {
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
@@ -905,12 +925,16 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     } catch (error) {
       console.error('Email signup error:', error);
       emailError?.classList.remove('hidden');
+    } finally {
+      emailFormInFlight = false;
+      setSubmitButtonSending(emailForm, false);
     }
   });
 
   // Recipe email form handler (post-calculator)
   recipeEmailForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (recipeEmailFormInFlight) return;
     const formData = new FormData(recipeEmailForm);
     const email = formData.get('recipe-email');
     const style = getStyleById(currentStyle);
@@ -927,6 +951,8 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
       return;
     }
 
+    recipeEmailFormInFlight = true;
+    setSubmitButtonSending(recipeEmailForm, true);
     try {
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: 'POST',
@@ -951,6 +977,9 @@ import BreadCalculatorPromo from '../components/monetization/BreadCalculatorProm
     } catch (error) {
       console.error('Recipe email signup error:', error);
       recipeEmailError?.classList.remove('hidden');
+    } finally {
+      recipeEmailFormInFlight = false;
+      setSubmitButtonSending(recipeEmailForm, false);
     }
   });
 
