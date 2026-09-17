@@ -32,14 +32,20 @@ const {
   ogImage = '/og-image.svg',
   type = 'website',
   noIndex = false,
-  datePublished = '2025-01-01',
-  dateModified = new Date().toISOString().split('T')[0],
+  datePublished,
+  dateModified,
   schemaType = 'WebApplication',
   author = DEFAULT_AUTHOR
 } = Astro.props;
 
 import CookieConsent from '../components/global/CookieConsent.astro';
+import { datesForPath } from '../../scripts/page-dates.mjs';
 import '../styles/global.css';
+
+// Dates come from each page's git history unless the page passes its own (see scripts/page-dates.mjs)
+const historyDates = datesForPath(Astro.url.pathname);
+const publishedDate = datePublished ?? historyDates?.published;
+const modifiedDate = dateModified ?? historyDates?.modified ?? publishedDate;
 
 const siteName = 'The Pizza Dough Formula';
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
@@ -72,8 +78,8 @@ const articleSchema = schemaType === 'Article' ? {
   "headline": title,
   "description": description,
   "url": canonical,
-  "datePublished": datePublished,
-  "dateModified": dateModified,
+  ...(publishedDate ? { "datePublished": publishedDate } : {}),
+  ...(modifiedDate ? { "dateModified": modifiedDate } : {}),
   "author": articleAuthorSchema,
   "publisher": {
     "@type": "Organization",
@@ -108,7 +114,7 @@ const webAppSchema = schemaType === 'WebApplication' ? {
     "Style-specific dough calculations",
     "Baker's percentage conversions",
     "Pre-ferment (poolish/biga) support",
-    "Regional humidity adjustments",
+    "Humidity adjustment",
     "Printable recipe cards",
     "Unit conversion (grams/ounces)",
     "Shareable recipe URLs"

@@ -31,11 +31,13 @@
       "name": "Ooni Koda 16 Gas Pizza Oven",
       "category": "ovens",
       "description": "Reaches 950°F in 20 minutes - cooks authentic Neapolitan pizza in 60 seconds",
-      "priceRange": "$499-599",
-      "affiliateUrl": "https://www.amazon.com/s?k=ooni+koda+16+gas+pizza+oven&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=ooni+koda+16+gas+pizza+oven",
       "image": "/images/products/ooni-koda-16.jpg",
       "imageAlt": "Ooni Koda 16 gas-powered outdoor pizza oven with large 16-inch baking surface",
-      "forStyles": ["neapolitan", "newYork"],
+      "forStyles": [
+        "neapolitan",
+        "newYork"
+      ],
       "featured": true
     },
     {
@@ -43,11 +45,13 @@
       "name": "Ooni Karu 12 Multi-Fuel Oven",
       "category": "ovens",
       "description": "Wood, charcoal, or gas - versatile outdoor oven reaching 950°F for perfect char",
-      "priceRange": "$399-449",
-      "affiliateUrl": "https://www.amazon.com/s?k=ooni+karu+12+multi+fuel+pizza+oven&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=ooni+karu+12+multi+fuel+pizza+oven",
       "image": "/images/products/ooni-karu-12.jpg",
       "imageAlt": "Ooni Karu 12 multi-fuel portable pizza oven with wood and charcoal capability",
-      "forStyles": ["neapolitan", "newYork"],
+      "forStyles": [
+        "neapolitan",
+        "newYork"
+      ],
       "featured": true
     },
     {
@@ -55,11 +59,14 @@
       "name": "Breville Pizzaiolo Indoor Oven",
       "category": "ovens",
       "description": "Indoor countertop oven hitting 750°F - bake Neapolitan-style pizza year-round",
-      "priceRange": "$999-1100",
-      "affiliateUrl": "https://www.amazon.com/s?k=breville+pizzaiolo&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=breville+pizzaiolo",
       "image": "/images/products/breville-pizzaiolo.jpg",
       "imageAlt": "Breville Pizzaiolo countertop electric pizza oven with stainless steel exterior",
-      "forStyles": ["neapolitan", "newYork", "thinCrispy"],
+      "forStyles": [
+        "neapolitan",
+        "newYork",
+        "thinCrispy"
+      ],
       "featured": false
     },
     {
@@ -67,11 +74,13 @@
       "name": "Gozney Roccbox Pizza Oven",
       "category": "ovens",
       "description": "Pro-grade portable oven with built-in thermometer - 950°F in just 15 minutes",
-      "priceRange": "$499-549",
-      "affiliateUrl": "https://www.amazon.com/s?k=gozney+roccbox+pizza+oven&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=gozney+roccbox+pizza+oven",
       "image": "/images/products/roccbox.jpg",
       "imageAlt": "Gozney Roccbox portable gas pizza oven with retractable legs and built-in thermometer",
-      "forStyles": ["neapolitan", "newYork"],
+      "forStyles": [
+        "neapolitan",
+        "newYork"
+      ],
       "featured": false
     },
     {
@@ -79,11 +88,14 @@
       "name": "Pizza Steel",
       "category": "steels",
       "description": "Conducts heat 20x better than stone for crispier crusts and better leoparding",
-      "priceRange": "$70-120",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+baking+steel&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+baking+steel",
       "image": "/images/products/pizza-steel.jpg",
       "imageAlt": "Thick rectangular baking steel plate for pizza on a white background",
-      "forStyles": ["neapolitan", "newYork", "thinCrispy"],
+      "forStyles": [
+        "neapolitan",
+        "newYork",
+        "thinCrispy"
+      ],
       "featured": true
     },
     {
@@ -91,11 +103,12 @@
       "name": "Digital Kitchen Scale",
       "category": "scales",
       "description": "Essential for baker's percentages - accurate to 1g for perfect dough every time",
-      "priceRange": "$15-30",
-      "affiliateUrl": "https://www.amazon.com/s?k=digital+kitchen+scale+grams&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=digital+kitchen+scale+grams",
       "image": "/images/products/kitchen-scale.jpg",
       "imageAlt": "Digital kitchen scale displaying weight in grams with a stainless steel platform",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": true
     },
     {
@@ -103,11 +116,13 @@
       "name": "Caputo 00 Flour",
       "category": "flour",
       "description": "The gold standard for Neapolitan - 12.5% protein, finely milled for soft, airy crust",
-      "priceRange": "$8-15",
-      "affiliateUrl": "https://www.amazon.com/s?k=caputo+00+pizza+flour&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=caputo+00+pizza+flour",
       "image": "/images/products/caputo-flour.jpg",
       "imageAlt": "Blue bag of Caputo Pizzeria 00 flour imported from Italy",
-      "forStyles": ["neapolitan", "poolishBiga"],
+      "forStyles": [
+        "neapolitan",
+        "poolishBiga"
+      ],
       "featured": true
     },
     {
@@ -115,11 +130,13 @@
       "name": "King Arthur Bread Flour",
       "category": "flour",
       "description": "High-protein (12.7%) flour that gives NY-style its signature chewy texture",
-      "priceRange": "$6-10",
-      "affiliateUrl": "https://www.amazon.com/s?k=king+arthur+bread+flour&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=king+arthur+bread+flour",
       "image": "/images/products/bread-flour.jpg",
       "imageAlt": "Bag of King Arthur unbleached bread flour for pizza and baking",
-      "forStyles": ["newYork", "detroit"],
+      "forStyles": [
+        "newYork",
+        "detroit"
+      ],
       "featured": false
     },
     {
@@ -127,11 +144,13 @@
       "name": "Pizza Peel",
       "category": "tools",
       "description": "Launch pizzas into your oven and retrieve them safely - wood or metal",
-      "priceRange": "$20-50",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+peel+wood&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+peel+wood",
       "image": "/images/products/pizza-peel.jpg",
       "imageAlt": "Wooden pizza peel with long handle for sliding pizzas into an oven",
-      "forStyles": ["neapolitan", "newYork"],
+      "forStyles": [
+        "neapolitan",
+        "newYork"
+      ],
       "featured": false
     },
     {
@@ -139,11 +158,12 @@
       "name": "Detroit-Style Pan",
       "category": "tools",
       "description": "Blue steel pan creates the signature crispy, caramelized cheese edges (frico)",
-      "priceRange": "$30-60",
-      "affiliateUrl": "https://www.amazon.com/s?k=detroit+style+pizza+pan&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=detroit+style+pizza+pan",
       "image": "/images/products/detroit-pan.jpg",
       "imageAlt": "Rectangular blue steel Detroit-style pizza pan with tall edges",
-      "forStyles": ["detroit"],
+      "forStyles": [
+        "detroit"
+      ],
       "featured": true
     },
     {
@@ -151,11 +171,12 @@
       "name": "Instant-Read Thermometer",
       "category": "tools",
       "description": "Check water temperature for optimal yeast activation (cold vs warm ferment)",
-      "priceRange": "$15-100",
-      "affiliateUrl": "https://www.amazon.com/s?k=thermapen+instant+read+thermometer&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=thermapen+instant+read+thermometer",
       "image": "/images/products/thermometer.jpg",
       "imageAlt": "ThermoWorks Thermapen instant-read digital kitchen thermometer",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -163,11 +184,12 @@
       "name": "Dough Proofing Container",
       "category": "tools",
       "description": "Clear containers with lids - see your dough rise and know when it's ready",
-      "priceRange": "$10-25",
-      "affiliateUrl": "https://www.amazon.com/s?k=dough+proofing+container&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=dough+proofing+container",
       "image": "/images/products/dough-container.jpg",
       "imageAlt": "Clear plastic dough proofing container with measurement markings and snap-on lid",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -175,11 +197,12 @@
       "name": "Pizza Stone",
       "category": "steels",
       "description": "Cordierite stone distributes heat evenly - great entry point for home bakers",
-      "priceRange": "$30-50",
-      "affiliateUrl": "https://www.amazon.com/s?k=cordierite+pizza+stone&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=cordierite+pizza+stone",
       "image": "/images/products/pizza-stone.jpg",
       "imageAlt": "Round cordierite pizza stone for oven and grill use",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -187,11 +210,12 @@
       "name": "Bench Scraper",
       "category": "tools",
       "description": "Essential for dividing dough and keeping your work surface clean",
-      "priceRange": "$8-15",
-      "affiliateUrl": "https://www.amazon.com/s?k=bench+scraper+dough&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=bench+scraper+dough",
       "image": "/images/products/bench-scraper.jpg",
       "imageAlt": "Stainless steel bench scraper with wooden handle for cutting and portioning dough",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -199,11 +223,12 @@
       "name": "Pizza Rocker Cutter",
       "category": "tools",
       "description": "Sharp mezzaluna-style blade cuts through crust cleanly without dragging toppings",
-      "priceRange": "$15-30",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+rocker+cutter&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+rocker+cutter",
       "image": "/images/products/pizza-cutter-rocker.jpg",
       "imageAlt": "Stainless steel mezzaluna-style pizza rocker cutter with curved blade",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -211,11 +236,13 @@
       "name": "Infrared Thermometer",
       "category": "tools",
       "description": "Know your exact oven/stone temp - critical for Neapolitan at 900°F+",
-      "priceRange": "$15-35",
-      "affiliateUrl": "https://www.amazon.com/s?k=infrared+thermometer+cooking&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=infrared+thermometer+cooking",
       "image": "/images/products/ir-thermometer.jpg",
       "imageAlt": "Handheld infrared laser thermometer gun for measuring oven and pizza stone temperature",
-      "forStyles": ["neapolitan", "newYork"],
+      "forStyles": [
+        "neapolitan",
+        "newYork"
+      ],
       "featured": false
     },
     {
@@ -223,11 +250,13 @@
       "name": "Cast Iron Skillet",
       "category": "tools",
       "description": "Perfect for pan pizza and deep dish - retains heat for crispy bottoms",
-      "priceRange": "$25-50",
-      "affiliateUrl": "https://www.amazon.com/s?k=lodge+cast+iron+skillet+12+inch&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=lodge+cast+iron+skillet+12+inch",
       "image": "/images/products/cast-iron-skillet.jpg",
       "imageAlt": "Lodge 12-inch pre-seasoned cast iron skillet for pan pizza and deep dish",
-      "forStyles": ["detroit", "panPizza"],
+      "forStyles": [
+        "detroit",
+        "panPizza"
+      ],
       "featured": false
     },
     {
@@ -235,11 +264,12 @@
       "name": "KitchenAid Stand Mixer",
       "category": "mixers",
       "description": "Knead dough hands-free with the dough hook - essential for high-hydration doughs",
-      "priceRange": "$280-450",
-      "affiliateUrl": "https://www.amazon.com/s?k=kitchenaid+artisan+stand+mixer&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=kitchenaid+artisan+stand+mixer",
       "image": "/images/products/stand-mixer.jpg",
       "imageAlt": "KitchenAid Artisan series stand mixer with dough hook attachment",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -247,11 +277,12 @@
       "name": "Semolina Flour",
       "category": "flour",
       "description": "Dust your peel to prevent sticking - adds subtle crunch to the crust bottom",
-      "priceRange": "$5-12",
-      "affiliateUrl": "https://www.amazon.com/s?k=semolina+flour+pizza&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=semolina+flour+pizza",
       "image": "/images/products/semolina-flour.jpg",
       "imageAlt": "Bag of coarse semolina flour for dusting pizza peels and adding texture",
-      "forStyles": ["all"],
+      "forStyles": [
+        "all"
+      ],
       "featured": false
     },
     {
@@ -259,11 +290,13 @@
       "name": "Pizza Screen",
       "category": "tools",
       "description": "Aluminum mesh for extra-crispy thin crust - lets air circulate underneath",
-      "priceRange": "$8-20",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+screen+14+inch&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+screen+14+inch",
       "image": "/images/products/pizza-screen.jpg",
       "imageAlt": "Round aluminum mesh pizza screen for crispy thin crust baking",
-      "forStyles": ["thinCrispy", "newYork"],
+      "forStyles": [
+        "thinCrispy",
+        "newYork"
+      ],
       "featured": false
     },
     {
@@ -271,17 +304,19 @@
       "name": "Pizza Dough Boxes",
       "category": "tools",
       "description": "Stackable proofing boxes like the pros use - perfect for cold fermenting multiple doughs",
-      "priceRange": "$20-40",
-      "affiliateUrl": "https://www.amazon.com/s?k=pizza+dough+proofing+box&tag=probuild20-20",
+      "affiliateUrl": "https://www.amazon.com/s?k=pizza+dough+proofing+box",
       "image": "/images/products/dough-boxes.jpg",
       "imageAlt": "White stackable pizza dough proofing boxes with clear lids for cold fermentation",
-      "forStyles": ["neapolitan", "newYork"],
+      "forStyles": [
+        "neapolitan",
+        "newYork"
+      ],
       "featured": false
     }
   ],
   "_meta": {
-    "note": "Amazon Associates tag: probuild20-20",
-    "lastUpdated": "2026-03-07",
-    "affiliateDisclaimer": "We may earn a commission from purchases made through links on this site."
+    "note": "Amazon tracking IDs are set per placement in ProductRecommendations.astro; see docs/analytics-events.md. Product URLs here carry no tag.",
+    "lastUpdated": "2026-09-17",
+    "affiliateDisclaimer": "These are affiliate links: if you buy through one, this site may earn a commission at no extra cost to you."
   }
 }

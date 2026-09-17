@@ -1,22 +1,33 @@
 ---
 /**
  * ProductRecommendations Component
- * Displays affiliate product recommendations
- * Products are filtered by pizza style when provided
+ * Displays affiliate product recommendations, filtered by pizza style when provided.
  *
- * NOTE: Replace placeholder affiliate URLs with actual Amazon Associates links
- * once your account is approved and traffic is established.
+ * The Amazon tracking ID comes from the placement, not from the product data, so commissions can be
+ * attributed to the page that earned them. The product data carries no tag of its own.
+ * See docs/analytics-events.md for the placement and tracking ID tables.
  */
 import affiliateData from '../../data/affiliateProducts.json';
 
 interface Props {
-  // Where this block sits; sent as `placement` on affiliate events (see docs/analytics-events.md)
+  // Where this block sits: sets the Amazon tracking ID and the `placement` on affiliate events
   placement: string;
   style?: string;
   limit?: number;
   showTitle?: boolean;
   featured?: boolean;
 }
+
+/**
+ * Pizza-only Amazon tracking IDs, introduced 2026-09-17. The double hyphen is part of each ID.
+ * These are never used on another site. Adding a block anywhere means adding its placement here and
+ * a row in docs/analytics-events.md.
+ */
+const TRACKING_IDS: Record<string, string> = {
+  'style-guide': 'pizzaguide--20',
+  'calculator-results': 'pizzacalc--20',
+  'homepage-equipment': 'pizzahome--20'
+};
 
 const {
   placement,
@@ -25,6 +36,14 @@ const {
   showTitle = true,
   featured = false
 } = Astro.props;
+
+const trackingId = TRACKING_IDS[placement];
+if (!trackingId) {
+  throw new Error(
+    `ProductRecommendations: no Amazon tracking ID for placement "${placement}". ` +
+    `Add it to TRACKING_IDS and docs/analytics-events.md. Known placements: ${Object.keys(TRACKING_IDS).join(', ')}.`
+  );
+}
 
 // Filter products by style
 let products = affiliateData.products.filter(product => {
@@ -36,48 +55,39 @@ let products = affiliateData.products.filter(product => {
 // Limit results
 products = products.slice(0, limit);
 
-const hasRealLinks = products.some(p => p.affiliateUrl && p.affiliateUrl !== '#');
+/** The product link with this placement's tracking ID. */
+function affiliateLink(url: string): string {
+  const link = new URL(url);
+  link.searchParams.set('tag', trackingId);
+  return link.toString();
+}
 
-// Generate Product schema for SEO
-const productSchemas = products.map(product => ({
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": product.name,
-  "description": product.description,
-  "category": affiliateData.categories[product.category]?.name || product.category,
-  "offers": {
-    "@type": "AggregateOffer",
-    "priceCurrency": "USD",
-    "lowPrice": product.priceRange.replace(/[^0-9-]/g, '').split('-')[0],
-    "highPrice": product.priceRange.replace(/[^0-9-]/g, '').split('-')[1] || product.priceRange.replace(/[^0-9-]/g, '').split('-')[0],
-    "offerCount": "10+",
-    "availability": "https://schema.org/InStock"
-  }
-}));
+// No Product schema: without a price it is not eligible for product rich results, and Amazon
+// Associates does not permit prices that are not pulled live from their API (ADR 0001, step 5).
 ---
 
 {products.length > 0 && (
   <div class="product-recommendations" data-placement={placement} data-style={style === 'all' ? 'none' : style}>
-    {/* Product Schema for SEO */}
-    {productSchemas.map(schema => (
-      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
-    ))}
-
     {showTitle && (
       <div class="mb-4">
         <h3 class="font-heading text-lg font-semibold text-text">
           Recommended Equipment
         </h3>
         <p class="text-sm text-text-muted">
-          Tools that help you make better pizza
+          Chosen from published specifications for the job described on this page
         </p>
       </div>
     )}
 
+    {/* Affiliate disclosure, directly above the recommendations */}
+    <p class="text-xs text-text-muted mb-3">
+      {affiliateData._meta.affiliateDisclaimer}
+    </p>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {products.map((product) => (
         <a
-          href={product.affiliateUrl}
+          href={affiliateLink(product.affiliateUrl)}
           target="_blank"
           rel="noopener sponsored"
           class="product-card group flex items-start gap-4 p-4 bg-surface border border-border rounded-lg transition-all hover:border-primary hover:shadow-md"
@@ -91,22 +101,14 @@ const productSchemas = products.map(product => ({
               {product.description}
             </p>
           </div>
-          <div class="flex-shrink-0 text-right">
-            <p class="text-sm font-semibold text-primary">
-              {product.priceRange}
-            </p>
-            <p class="text-xs text-text-muted mt-1">
+          <div class="flex-shrink-0 self-center text-right">
+            <p class="text-xs text-text-muted">
               View on Amazon →
             </p>
           </div>
         </a>
       ))}
     </div>
-
-    {/* Affiliate disclosure */}
-    <p class="text-xs text-text-muted/60 mt-3 italic">
-      {affiliateData._meta.affiliateDisclaimer}
-    </p>
   </div>
 )}
 

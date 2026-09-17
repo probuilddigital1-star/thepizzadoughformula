@@ -8,6 +8,7 @@ import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 import Breadcrumbs from '../components/global/Breadcrumbs.astro';
 import faqData from '../data/faq.json';
+import { datesForPath, formatDate } from '../../scripts/page-dates.mjs';
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -51,6 +52,10 @@ const topics = [
     indices: [4, 6, 7, 12, 19, 20, 21, 25, 26]
   }
 ];
+
+// Dates come from this file's git history (see scripts/page-dates.mjs)
+const pageDates = datesForPath(Astro.url.pathname);
+const lastUpdated = formatDate(pageDates?.modified);
 ---
 
 <BaseLayout
@@ -58,8 +63,6 @@ const topics = [
   description="Answers to the most common pizza dough questions — hydration, flour types, cold fermentation, yeast, troubleshooting sticky dough, and more."
   type="article"
   schemaType="Article"
-  datePublished="2025-01-01"
-  dateModified="2026-02-01"
 >
   <Header />
 
@@ -74,7 +77,7 @@ const topics = [
           Pizza Dough FAQ
         </h1>
         <p class="text-sm text-text-muted mb-4">
-          Last updated: February 1, 2026 · {faqData.faqs.length} questions answered
+          Last updated: {lastUpdated} · {faqData.faqs.length} questions answered
         </p>
         <p class="text-xl text-text-muted max-w-2xl">
           Everything you need to know about making pizza dough at home, from hydration and flour to fermentation and troubleshooting.

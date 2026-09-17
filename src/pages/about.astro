@@ -7,11 +7,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+import { datesForPath, formatDate } from '../../scripts/page-dates.mjs';
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'About' }
 ];
+
+// Dates come from this file's git history (see scripts/page-dates.mjs)
+const pageDates = datesForPath(Astro.url.pathname);
+const lastUpdated = formatDate(pageDates?.modified);
 ---
 
 <BaseLayout
@@ -19,8 +24,6 @@ const breadcrumbs = [
   description="The story behind The Pizza Dough Formula and Zack Pearson, the home baker who built it."
   type="article"
   schemaType="Article"
-  datePublished="2025-01-01"
-  dateModified="2026-05-04"
   author={{ name: 'Zack Pearson', url: 'https://thedoughformula.com' }}
 >
   <Header />
@@ -34,7 +37,7 @@ const breadcrumbs = [
           About The Pizza Dough Formula
         </h1>
         <p class="text-sm text-text-muted">
-          By Zack Pearson · Last updated May 4, 2026
+          By Zack Pearson · Last updated {lastUpdated}
         </p>
       </header>
 
@@ -98,10 +101,12 @@ const breadcrumbs = [
 
         <h2 class="font-heading text-2xl font-semibold text-text mt-8 mb-4">How the site stays free</h2>
         <p>
-          The site is supported by a few small things: affiliate commissions when readers buy
-          recommended equipment through Amazon and other retailers. None
-          of these influence what gets recommended in the guides or the calculator defaults. If a
-          product shows up in the equipment list, it's because I either own it or have used one.
+          The site is supported by one thing: affiliate commissions when readers buy recommended
+          equipment through Amazon. That does not influence what gets recommended in the guides or
+          the calculator defaults. Equipment is chosen by researching published specifications and
+          matching them to the job, such as a scale that reads to 0.1 g for small yeast amounts.
+          These are not personal test results, and a recommendation is not a claim that I own the
+          product.
           Full details are on the
           <a href="/affiliate-disclosure" class="text-primary hover:text-primary-hover underline">Affiliate Disclosure</a>
           page.

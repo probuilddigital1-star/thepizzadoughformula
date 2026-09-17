@@ -57,7 +57,9 @@ The owner's intent is to count visitors without the former GA4 consent gate. Thi
 
 Use production-scoped Cloudflare data for separate traffic/performance context. Its Web Analytics beacon does not support custom events and cannot supply the planned funnel. See the [Cloudflare Web Analytics FAQ](https://developers.cloudflare.com/web-analytics/faq/).
 
-The owner confirms that the existing n8n webhook appends signups to an Excel spreadsheet. There is no confirmation email, sending provider, or unsubscribe path. This is the known baseline and requires no investigation in step 1. In step 4, a confirmed signup means a row appended to that spreadsheet, verified with a test submission; it does not mean email verification or delivery. Step 7's email deliverable is deferred until a sending tool exists. Choosing that tool is a separate owner decision.
+The owner confirms that the existing n8n webhook appends signups to a spreadsheet. This was the baseline for steps 1 and 4, where a confirmed signup means a row appended to that spreadsheet, verified with a test submission; it does not mean email verification or delivery.
+
+Amended 2026-09-16: the workflow was repaired and now writes to a Google Sheet, not Excel, and subscribes the address to **Kit**, which is the sending provider for the newsletter. The sheet is the owner's backup copy of the list; Kit is the system of record for sending and for unsubscribes, and every Kit email carries an unsubscribe link. The webhook responds only after the sheet row is written. `docs/newsletter-workflow.md` records the workflow, its nodes and the repairs.
 
 ## Ordered implementation steps
 
@@ -77,7 +79,7 @@ Completion check: a reproducible baseline identifies the deployed source, confir
 
 ### 2. Repair calculator correctness and recipe state
 
-#### 2a. Restore the guide-to-calculator handoff first
+#### 2a. Restore the guide-to-calculator handoff first (done 2026-09-13)
 
 - Make this the first isolated code change once the deployed revision and handoff behavior are checked. It need not wait for the remaining analytics and SEO baseline work.
 - Initialize the validated selected style's defaults, apply supported URL overrides, synchronize controls, and calculate after the necessary UI references and listeners exist. Keep the style radio, quantities, preferment mode, and output in agreement.
@@ -86,7 +88,7 @@ Completion check: a reproducible baseline identifies the deployed source, confir
 
 Completion check: guide links load the intended preset and a usable initial recipe without introducing a regression in supported shared settings. This change may ship independently after its focused checks; the remaining output and serialization defects stay open under step 2b. Handle any verified hostname redirect as a separate routing change, with paths and recipe query parameters preserved.
 
-#### 2b. Complete numerical and output consistency fixes
+#### 2b. Complete numerical and output consistency fixes (done 2026-09-17)
 
 - Preserve useful precision for subgram yeast in grams and ounces. Values such as 0.3 g must not appear as zero.
 - Validate preferment constraints before presenting a recipe. For example, 45% total hydration with 50% of the flour in a 100%-hydration poolish requires more preferment water than the total recipe allows. Explain the conflict and prevent a negative-water recipe from being copied or shared.
@@ -108,13 +110,13 @@ Completion check: representative single-stage and preferment presets, custom inp
 
 Completion check: before/after traces demonstrate the targeted improvement without regressions in calculator behavior. Track field p75 goals of CLS at or below 0.1, INP at or below 200 ms, and LCP at or below 2.5 seconds when suitable production data is available. Allow field data to accumulate while independent work continues; local results alone do not prove a field pass.
 
-### 4. Establish reliable funnel and revenue measurement
+### 4. Establish reliable funnel and revenue measurement (done 2026-09-14)
 
 - Replace the GA4 loader in `src/layouts/BaseLayout.astro` with the selected PostHog configuration and remove the `gtag` calls in `src/pages/index.astro`. Route the existing affiliate click instrumentation in `src/components/monetization/ProductRecommendations.astro` to PostHog as well, so the unchanged event set has one destination.
 - Define and implement events for guide-to-calculator navigation, meaningful valid-recipe use, copy, print, share, affiliate exposure/clicks, email-form exposure, and confirmed signup.
 - Count meaningful calculator use separately from its automatic initial render. Specify each event's trigger and avoid duplicate firing.
 - Every event carries page, style, and placement identifiers, using explicit not-applicable values when a context has no style or placement; include product identifiers for product events. Verify `$host` is present and reports filter to `thepizzadoughformula.com`. Exclude email addresses and other personal identifiers from analytics events.
-- Establish pizza-only Amazon tracking from the start, using a small set of separate tracking IDs for meaningful placements such as guide recommendations and calculator results where available. Maintain a placement-to-ID mapping and introduction dates; never reuse these IDs on other sites. Use event placement IDs for exposure/click analysis, and Amazon IDs for reported commission attribution. Keep earlier shared-ID revenue separate.
+- Establish pizza-only Amazon tracking from the start, using a small set of separate tracking IDs for meaningful placements such as guide recommendations and calculator results where available. Maintain a placement-to-ID mapping and introduction dates; never reuse these IDs on other sites. Created 2026-09-17 and in use from step 5: `pizzaguide--20` (pizza-styles recommendation blocks), `pizzacalc--20` (the block under the calculator results), and `pizzahome--20` (other homepage placements). The mapping lives in `docs/analytics-events.md`; the shared `probuild20-20` is no longer used on this site. Use event placement IDs for exposure/click analysis, and Amazon IDs for reported commission attribution. Keep earlier shared-ID revenue separate.
 - Verify a confirmed signup with a test submission that appends one row to the Excel spreadsheet through the existing n8n webhook. The success event must represent a completed append; a client event or an HTTP response sent before the append completes is insufficient evidence. No confirmation email or delivery check is required.
 
 Completion check: controlled actions appear once in PostHog with page, style, placement, and the correct host. The GA4 loader and calls are removed, PostHog loads deferred with the selected configuration independently of the former GA4 consent gate, and browser checks confirm no analytics cookies, exactly one localStorage identifier, no autocapture, and no change to the shared PostHog project's settings. A test signup produces one spreadsheet row and one corresponding confirmed-signup event. Each funnel numerator and denominator uses the same observed PostHog population and host filter, and future pizza affiliate results can be identified separately. Report spreadsheet signup totals and Amazon commissions separately from PostHog conversion rates; do not calculate sitewide revenue per visitor from mismatched sources.
@@ -148,10 +150,10 @@ Completion check: each revised page answers its target questions, supplies trace
 - Place a small number of relevant recommendations on the entry pages and calculator paths where the equipment helps with the recipe.
 - Base recommendations on documented specifications and suitability. For example, a scale presented for measuring subgram yeast must have appropriate precision.
 - Explain the selection basis and distinguish researched recommendations from actual personal use. Avoid interrupting recipe access.
-- Defer the email deliverable until a sending tool exists. Choosing that tool is a separate owner decision; the current spreadsheet capture does not provide email delivery.
+- The email deliverable is no longer blocked: Kit is the sending provider as of 2026-09-16, and new signups reach it through the repaired n8n workflow. What to send, and when, is still an open content decision.
 - Evaluate performance using dedicated tracking and the events from step 4.
 
-Completion check: recommendations match the page/style, disclosures are visible, and links and attribution work. The deferred email deliverable does not block this step. Revenue improvement is an outcome to observe, not a release claim.
+Completion check: recommendations match the page/style, disclosures are visible, and links and attribution work. The email deliverable no longer blocks this step. Revenue improvement is an outcome to observe, not a release claim.
 
 ### 8. Expand when measured demand supports it
 
@@ -167,7 +169,7 @@ Completion check for each expansion: record the supporting evidence, intended us
 
 Step 1 establishes which source findings apply to production. Step 2a can proceed as soon as its deployed baseline and reproduction are established, while unrelated baseline checks continue. Independent calculator, performance, and measurement work may then proceed in parallel. Use isolated branches or worktrees for implementation, assign ownership of shared files such as `src/pages/index.astro`, and integrate changes sequentially.
 
-Step 2a may restore existing guide links independently; step 2b must pass before expanding promotion of shared recipes or exports. Step 4 implements the owner's PostHog and spreadsheet-signup decisions above and must pass before attributing revenue changes to this site or evaluating funnel improvements. Step 5 may overlap independent foundation work; its cookie-banner and privacy/newsletter copy must accompany the step 4 release so published descriptions match actual behavior. Content preparation for step 6 and the Spanish-demand assessment in step 8 can proceed while coding continues, provided their factual claims have sources. Step 7 depends on accurate content, a reliable calculator, and verified attribution; its email deliverable remains deferred pending the separate sending-tool decision.
+Step 2a may restore existing guide links independently; step 2b must pass before expanding promotion of shared recipes or exports. Step 4 implements the owner's PostHog and spreadsheet-signup decisions above and must pass before attributing revenue changes to this site or evaluating funnel improvements. Step 5 may overlap independent foundation work; its cookie-banner and privacy/newsletter copy must accompany the step 4 release so published descriptions match actual behavior. Content preparation for step 6 and the Spanish-demand assessment in step 8 can proceed while coding continues, provided their factual claims have sources. Step 7 depends on accurate content, a reliable calculator, and verified attribution; its email deliverable is unblocked now that Kit sends the newsletter.
 
 For each implementation change, record the defect or intended behavior, the verification performed, and any remaining limitation. Calculator changes need focused numerical and browser regressions. Visual/CSS changes need development and production-build checks under the repository's workflow. Check live behavior after an authorized release and keep releases reversible. Creating this ADR does not itself implement or deploy these changes.
 

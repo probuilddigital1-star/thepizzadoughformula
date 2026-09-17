@@ -7,6 +7,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 import Breadcrumbs from '../components/global/Breadcrumbs.astro';
+import { datesForPath, formatDate } from '../../scripts/page-dates.mjs';
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -58,6 +59,10 @@ const howToSchema = {
     }
   ]
 };
+
+// Dates come from this file's git history (see scripts/page-dates.mjs)
+const pageDates = datesForPath(Astro.url.pathname);
+const lastUpdated = formatDate(pageDates?.modified);
 ---
 
 <BaseLayout
@@ -65,8 +70,6 @@ const howToSchema = {
   description="Learn how baker's percentages work and why they're essential for consistent pizza dough. Master the formula that professional bakers use."
   type="article"
   schemaType="Article"
-  datePublished="2025-01-01"
-  dateModified="2025-12-28"
 >
   <Header />
 
@@ -82,7 +85,7 @@ const howToSchema = {
           Baker's Percentages Explained
         </h1>
         <p class="text-sm text-text-muted">
-          Last updated: December 28, 2025 · 5 min read
+          Last updated: {lastUpdated} · 5 min read
         </p>
       </header>
 

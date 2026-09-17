@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { datesForPath } from './scripts/page-dates.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,9 +11,14 @@ export default defineConfig({
     sitemap({
       changefreq: 'weekly',
       priority: 0.7,
-      lastmod: new Date(),
       // Customize priority for specific pages
       serialize(item) {
+        // lastmod comes from the page's last commit date, not from the time of this build.
+        // Pages whose history cannot be determined go out without a lastmod.
+        const dates = datesForPath(new URL(item.url).pathname);
+        if (dates?.modified) item.lastmod = new Date(`${dates.modified}T00:00:00Z`).toISOString();
+        else delete item.lastmod;
+
         if (item.url === 'https://thepizzadoughformula.com/') {
           item.priority = 1.0;
           item.changefreq = 'daily';

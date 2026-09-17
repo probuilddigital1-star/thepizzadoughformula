@@ -1,0 +1,65 @@
+{
+  "generated": "2026-09-17",
+  "pages": {
+    "src/pages/about.astro": {
+      "published": "2025-12-29",
+      "modified": "2026-09-14"
+    },
+    "src/pages/affiliate-disclosure.astro": {
+      "published": "2025-12-29",
+      "modified": "2025-12-29"
+    },
+    "src/pages/bakers-percentages.astro": {
+      "published": "2025-12-29",
+      "modified": "2026-02-23"
+    },
+    "src/pages/contact.astro": {
+      "published": "2026-05-04",
+      "modified": "2026-05-04"
+    },
+    "src/pages/faqs.astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/guides/cold-fermentation.astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/guides/flour-types.astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/guides/hydration.astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/guides/index.astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/guides/troubleshooting.astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/index.astro": {
+      "published": "2025-12-29",
+      "modified": "2026-09-17"
+    },
+    "src/pages/pizza-styles/[style].astro": {
+      "published": "2026-02-23",
+      "modified": "2026-02-23"
+    },
+    "src/pages/pizza-styles.astro": {
+      "published": "2025-12-29",
+      "modified": "2026-02-23"
+    },
+    "src/pages/privacy.astro": {
+      "published": "2025-12-29",
+      "modified": "2026-09-14"
+    },
+    "src/pages/terms.astro": {
+      "published": "2026-05-04",
+      "modified": "2026-09-14"
+    }
+  }
+}

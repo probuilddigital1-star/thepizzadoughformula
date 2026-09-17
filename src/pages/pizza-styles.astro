@@ -9,6 +9,7 @@ import Footer from '../components/global/Footer.astro';
 import Breadcrumbs from '../components/global/Breadcrumbs.astro';
 import PizzaStyleIcon from '../components/icons/PizzaStyleIcon.astro';
 import { PIZZA_STYLES, getAllStyles } from '../scripts/calculator/presets.js';
+import { datesForPath, formatDate } from '../../scripts/page-dates.mjs';
 
 const styles = getAllStyles().filter(s => s.id !== 'custom');
 
@@ -16,6 +17,10 @@ const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Pizza Styles Guide' }
 ];
+
+// Dates come from this file's git history (see scripts/page-dates.mjs)
+const pageDates = datesForPath(Astro.url.pathname);
+const lastUpdated = formatDate(pageDates?.modified);
 ---
 
 <BaseLayout
@@ -23,8 +28,6 @@ const breadcrumbs = [
   description="Learn about different pizza styles - Neapolitan, New York, Detroit, Thin & Crispy, and more. Discover the history, techniques, and perfect dough formulas for each style."
   type="article"
   schemaType="Article"
-  datePublished="2025-01-01"
-  dateModified="2025-12-28"
 >
   <Header />
 
@@ -37,7 +40,7 @@ const breadcrumbs = [
           Pizza Styles Guide
         </h1>
         <p class="text-sm text-text-muted text-center mb-4">
-          Last updated: December 28, 2025 · 8 min read
+          Last updated: {lastUpdated} · 8 min read
         </p>
         <p class="text-xl text-text-muted text-center max-w-2xl mx-auto">
           Every pizza style has its own character, history, and technique. Learn what makes each one unique.

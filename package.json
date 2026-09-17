@@ -5,7 +5,9 @@
   "description": "Pizza dough calculator with baker's percentages for Neapolitan, NY, Detroit, and more styles",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npm run check:schema",
+    "check:schema": "node scripts/check-schema.mjs",
+    "update:page-dates": "node scripts/page-dates.mjs --write",
     "preview": "astro preview",
     "astro": "astro",
     "test:analytics": "playwright test --config playwright.analytics.config.ts"

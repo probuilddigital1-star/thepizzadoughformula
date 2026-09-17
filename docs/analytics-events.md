@@ -119,8 +119,8 @@ also uses two `sessionStorage` keys (`ph_<token>_posthog` and `ph_<token>_primar
 - **Trigger:** a click or middle-click on a product link in a `ProductRecommendations` block.
 - **Frequency:** every click.
 - **Properties:** `page`, `placement`, `style`, `product_id`, `tracking_id` (the link's Amazon `tag`
-  parameter, or `none`). The current links all use `probuild20-20`, which ADR 0001 notes is shared
-  with other sites.
+  parameter, or `none`). The tag comes from the block's placement, so `tracking_id` shows which
+  pizza-only ID the click was credited to. See the tracking ID table below.
 - **Source:** script in `src/components/monetization/ProductRecommendations.astro`.
 
 ### `newsletter_form_viewed`
@@ -155,6 +155,28 @@ also uses two `sessionStorage` keys (`ph_<token>_posthog` and `ph_<token>_primar
 
 `ProductRecommendations` requires a `placement` prop. When adding the component or a new form
 elsewhere, choose a new placement value and add a row here.
+
+## Amazon tracking IDs
+
+Introduced 2026-09-17, these are used only on thepizzadoughformula.com. The double hyphen is part of
+each ID. The tag comes from the block's placement, set in `TRACKING_IDS` in
+`src/components/monetization/ProductRecommendations.astro`, not from the product data, so a
+commission can be traced to the page that earned it. The build fails if a block uses a placement that
+has no ID.
+
+| Placement | Amazon tracking ID | Where |
+| --- | --- | --- |
+| `style-guide` | `pizzaguide--20` | Recommendation blocks on the pizza-styles pages |
+| `calculator-results` | `pizzacalc--20` | The block under the calculator results on the homepage |
+| `homepage-equipment` | `pizzahome--20` | Any other homepage placement, currently the Essential Pizza Equipment section |
+
+`probuild20-20`, which was shared with other sites, is no longer used here. Earnings reported against
+it cannot be attributed to this site, so keep them separate from anything reported against the IDs
+above. `affiliate_click` reads `tracking_id` from the link it was rendered with, so events and Amazon
+reports can be compared.
+
+The `style-guide` and `calculator-results` placements have IDs but no blocks on the site yet; those
+are step 7 of the ADR.
 
 ## Automatic PostHog events
 

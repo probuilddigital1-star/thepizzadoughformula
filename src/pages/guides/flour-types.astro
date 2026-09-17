@@ -7,12 +7,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/global/Header.astro';
 import Footer from '../../components/global/Footer.astro';
 import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
+import { datesForPath, formatDate } from '../../../scripts/page-dates.mjs';
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Guides', href: '/guides' },
   { label: 'Flour Types' }
 ];
+
+// Dates come from this file's git history (see scripts/page-dates.mjs)
+const pageDates = datesForPath(Astro.url.pathname);
+const lastUpdated = formatDate(pageDates?.modified);
 ---
 
 <BaseLayout
@@ -20,8 +25,6 @@ const breadcrumbs = [
   description="Compare 00 flour, bread flour, and all-purpose flour for pizza. Learn which flour to use for Neapolitan, New York, Detroit, and other pizza styles."
   type="article"
   schemaType="Article"
-  datePublished="2025-01-01"
-  dateModified="2026-02-01"
 >
   <Header />
 
@@ -34,7 +37,7 @@ const breadcrumbs = [
           Pizza Flour Guide: 00 vs Bread Flour vs All-Purpose
         </h1>
         <p class="text-sm text-text-muted">
-          Last updated: February 1, 2026 · 5 min read
+          Last updated: {lastUpdated} · 5 min read
         </p>
       </header>
 

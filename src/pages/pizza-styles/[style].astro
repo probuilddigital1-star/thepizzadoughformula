@@ -9,6 +9,8 @@ import Footer from '../../components/global/Footer.astro';
 import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
 import PizzaStyleIcon from '../../components/icons/PizzaStyleIcon.astro';
 import { PIZZA_STYLES } from '../../scripts/calculator/presets.js';
+import { DoughCalculator } from '../../scripts/calculator/engine.js';
+import { datesForPath, formatDate } from '../../../scripts/page-dates.mjs';
 
 export function getStaticPaths() {
   return [
@@ -34,6 +36,9 @@ const styleContent: Record<string, {
   technique: string[];
   techniqueTitle: string;
   commonMistakes: string[];
+  // Low end of every fermentation range this page states, in minutes. Used for the Recipe totalTime,
+  // so the schema is never shorter than the schedule in the visible instructions.
+  minimumFermentationMinutes: number;
   relatedStyles: string[];
 }> = {
   neapolitan: {
@@ -63,6 +68,8 @@ const styleContent: Record<string, {
       'Over-topping — Neapolitan pizza is minimalist. Too many toppings make the thin center soggy.',
       'Not preheating enough — your pizza stone or steel needs at least 45 minutes at max temperature.'
     ],
+    // Minimums from the stated ranges: 1 h bulk + 24 h cold ferment + 2 h out of the fridge + 2 h proof
+    minimumFermentationMinutes: 60 + 24 * 60 + 120 + 120,
     relatedStyles: ['newYork', 'poolishBiga']
   },
   newYork: {
@@ -92,6 +99,8 @@ const styleContent: Record<string, {
       'Making the crust too thick — NY slices should be thin enough to fold without cracking.',
       'Over-saucing — a thin, even layer of sauce prevents a soggy center.'
     ],
+    // Minimums from the stated ranges: 1 h bulk + 24 h cold ferment + 2 h out of the fridge + 2 h proof
+    minimumFermentationMinutes: 60 + 24 * 60 + 120 + 120,
     relatedStyles: ['neapolitan', 'thinCrispy']
   },
   detroit: {
@@ -121,6 +130,8 @@ const styleContent: Record<string, {
       'Putting sauce under the cheese — Detroit style has sauce on top in racing stripes.',
       'Wrong pan — flimsy aluminum won\'t work. You need a heavy steel pan for proper heat transfer and frico.'
     ],
+    // Minimums from the stated ranges: 3 h room temperature rise + 30 min rest in the pan
+    minimumFermentationMinutes: 180 + 30,
     relatedStyles: ['newYork', 'emergency']
   },
   thinCrispy: {
@@ -151,6 +162,8 @@ const styleContent: Record<string, {
       'Overloading toppings — thin crust can\'t support heavy toppings. Keep it light.',
       'Cutting into triangles — tavern-style is always party cut (squares).'
     ],
+    // Minimum from the stated range: 1 h rest. The overnight cold ferment the page mentions is optional.
+    minimumFermentationMinutes: 60,
     relatedStyles: ['neapolitan', 'emergency']
   },
   poolishBiga: {
@@ -180,6 +193,8 @@ const styleContent: Record<string, {
       'Skipping the pre-ferment rest — if it\'s not bubbly and active, the final dough won\'t benefit.',
       'Rushing the final proof — pre-fermented dough still needs 2-4 hours after balling.'
     ],
+    // Minimums from the stated ranges: 12 h pre-ferment + 2 h bulk + 2 h proof
+    minimumFermentationMinutes: 12 * 60 + 120 + 120,
     relatedStyles: ['neapolitan', 'newYork']
   },
   emergency: {
@@ -209,6 +224,8 @@ const styleContent: Record<string, {
       'Overworking the dough — 8-10 minutes of kneading is sufficient. Over-kneading makes it tough.',
       'Forgetting the rest after balling — even 15 minutes makes a huge difference in stretchability.'
     ],
+    // The page states a single rise, not a range: 2 h at room temperature
+    minimumFermentationMinutes: 120,
     relatedStyles: ['thinCrispy', 'detroit']
   }
 };
@@ -239,6 +256,43 @@ const breadcrumbs = [
   { label: `${preset.name} Pizza` }
 ];
 
+// Dates come from this file's git history (see scripts/page-dates.mjs)
+const pageDates = datesForPath(Astro.url.pathname);
+const lastUpdated = formatDate(pageDates?.modified);
+
+// Quantities for the style's default recipe: 4 dough balls at the style's default ball weight
+const defaultRecipe = new DoughCalculator({ ...preset.defaults, numBalls: 4 }).calculate();
+const gramsText = (grams: number) => (grams < 10 ? `${Math.round(grams * 10) / 10} g` : `${Math.round(grams)} g`);
+// "00 flour" from "00 Flour (Caputo Pizzeria, Antimo Caputo)"
+const flourName = preset.flourRecommendation.replace(/\s*\([^)]*\)\s*$/, '').toLowerCase();
+const recipeIngredients = defaultRecipe.valid
+  ? [
+      `${gramsText(defaultRecipe.ingredients.flour)} ${flourName}`,
+      `${gramsText(defaultRecipe.ingredients.water)} water`,
+      `${gramsText(defaultRecipe.ingredients.salt)} fine sea salt`,
+      `${gramsText(defaultRecipe.ingredients.yeast)} instant yeast`,
+      ...(defaultRecipe.ingredients.oil > 0 ? [`${gramsText(defaultRecipe.ingredients.oil)} olive oil`] : []),
+      ...(defaultRecipe.ingredients.sugar > 0 ? [`${gramsText(defaultRecipe.ingredients.sugar)} sugar`] : [])
+    ]
+  : [];
+
+// Mixing, kneading and shaping before fermentation starts
+const PREP_MINUTES = 30;
+// Never claim a shorter bake than the page's stated range allows
+const bakeRange = preset.bakeTime.match(/(\d+)\s*-\s*(\d+)/);
+const statedBakeMinutes = preset.bakeTime.includes('second')
+  ? Math.ceil(Number(bakeRange?.[2] ?? 90) / 60)
+  : Number(bakeRange?.[2] ?? 12);
+const cookMinutes = Math.min(preset.bakeTime.includes('second') ? 2 : 12, statedBakeMinutes);
+// totalTime uses the low end of every fermentation range the page states, so it is never shorter
+// than the schedule in the instructions.
+const totalMinutes = PREP_MINUTES + content.minimumFermentationMinutes + cookMinutes;
+const isoDuration = (minutes: number) => {
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return 'PT' + (hours > 0 ? hours + 'H' : '') + (rest > 0 ? rest + 'M' : '');
+};
+
 // Recipe schema for this style
 const recipeSchema = {
   "@context": "https://schema.org",
@@ -249,17 +303,11 @@ const recipeSchema = {
   "recipeCuisine": presetId === 'neapolitan' ? 'Italian' : presetId === 'newYork' ? 'American' : presetId === 'detroit' ? 'American' : 'International',
   "keywords": `${preset.name} pizza dough, ${preset.name} pizza recipe, pizza dough calculator`,
   "recipeYield": "4 dough balls",
-  "prepTime": "PT30M",
-  "cookTime": preset.bakeTime.includes('60-90 sec') ? "PT2M" : "PT12M",
-  "totalTime": presetId === 'emergency' ? "PT3H" : "PT26H",
-  "recipeIngredient": [
-    `${preset.flourRecommendation} (100%)`,
-    `Water (${Math.round(preset.defaults.hydration * 100)}%)`,
-    `Salt (${preset.defaults.salt * 100}%)`,
-    `Yeast (${preset.defaults.yeast * 100}%)`,
-    ...(preset.defaults.oil > 0 ? [`Olive oil (${preset.defaults.oil * 100}%)`] : []),
-    ...(preset.defaults.sugar > 0 ? [`Sugar (${preset.defaults.sugar * 100}%)`] : [])
-  ],
+  "prepTime": isoDuration(PREP_MINUTES),
+  "cookTime": isoDuration(cookMinutes),
+  "totalTime": isoDuration(totalMinutes),
+  "image": [new URL('/images/hero-optimized.jpg', Astro.site ?? 'https://thepizzadoughformula.com').href],
+  "recipeIngredient": recipeIngredients,
   "recipeInstructions": content.technique.map((step, i) => ({
     "@type": "HowToStep",
     "position": i + 1,
@@ -270,6 +318,11 @@ const recipeSchema = {
     "servingSize": "1 dough ball"
   },
   "author": {
+    "@type": "Person",
+    "name": "Zack Pearson",
+    "url": "https://thepizzadoughformula.com/about"
+  },
+  "publisher": {
     "@type": "Organization",
     "name": "The Pizza Dough Formula",
     "url": "https://thepizzadoughformula.com"
@@ -282,8 +335,6 @@ const recipeSchema = {
   description={content.metaDescription}
   type="article"
   schemaType="Article"
-  datePublished="2025-01-01"
-  dateModified="2026-02-01"
 >
   <Header />
 
@@ -306,7 +357,7 @@ const recipeSchema = {
           </div>
         </div>
         <p class="text-sm text-text-muted">
-          Last updated: February 1, 2026 · 6 min read
+          {lastUpdated && <>Last updated: {lastUpdated} · </>}6 min read
         </p>
       </header>
 

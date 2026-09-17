@@ -56,16 +56,15 @@ const lastUpdated = 'September 2026';
         <h3 class="font-heading text-xl font-semibold text-text mt-6 mb-3">Email Newsletter</h3>
         <p>
           If you sign up for the newsletter, your email address and the time you agreed to
-          receive emails are sent through n8n, an automation service, and added to a
-          spreadsheet kept by the site owner. The sign-up form below the calculator also
-          sends the name of the pizza style you had selected. We use your address only for
-          pizza tips and site updates.
+          receive emails are sent through n8n, an automation service. n8n adds them to a Google
+          Sheet the site owner keeps, and to Kit, the email service used to send the newsletter.
+          The sign-up form below the calculator also sends the name of the pizza style you had
+          selected. We use your address only for pizza tips and site updates.
         </p>
         <p class="mt-2">
-          No confirmation email is sent after you sign up, and there is no automated
-          unsubscribe link. To have your address removed, email
+          Every newsletter email includes an unsubscribe link. You can also email
           <a href="mailto:admin@thedoughformula.com" class="text-primary hover:underline">admin@thedoughformula.com</a>
-          and it will be deleted from the spreadsheet.
+          to be removed from both the mailing list and the spreadsheet.
         </p>
         <p class="mt-2">
           <strong>Data retention:</strong> Email addresses are kept until you ask for them
@@ -144,8 +143,16 @@ const lastUpdated = 'September 2026';
             (<a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
           </li>
           <li>
-            <strong>n8n</strong> - Sends newsletter sign-ups to the site owner's spreadsheet
+            <strong>n8n</strong> - Sends newsletter sign-ups to the spreadsheet and to Kit
             (<a href="https://n8n.io/legal/privacy/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
+          </li>
+          <li>
+            <strong>Kit</strong> - Stores newsletter subscribers and sends the newsletter
+            (<a href="https://kit.com/privacy" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
+          </li>
+          <li>
+            <strong>Google</strong> - Google Sheets holds the site owner's copy of the sign-up list
+            (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Privacy Policy</a>)
           </li>
           <li>
             <strong>Cloudflare</strong> - Website hosting and CDN
