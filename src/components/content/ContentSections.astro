@@ -1,0 +1,57 @@
+---
+/**
+ * Renders the long-form sections on a style page: paragraphs, labeled paragraphs and tables.
+ * Used for both section slots in src/pages/pizza-styles/[style].astro.
+ *
+ * A table whose first column header is empty is a row-header table (the comparison table), so the
+ * first cell of each row is a <th scope="row"> rather than a data cell.
+ */
+type Block =
+  | { kind: 'p'; text: string }
+  | { kind: 'note'; term: string; text: string }
+  | { kind: 'table'; columns: string[]; rows: string[][] };
+
+interface Props {
+  sections: { title: string; blocks: Block[] }[];
+}
+
+const { sections } = Astro.props;
+---
+
+{sections.map((section) => (
+  <section>
+    <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{section.title}</h2>
+    {section.blocks.map((block) => (
+      block.kind === 'p' ? (
+        <p>{block.text}</p>
+      ) : block.kind === 'note' ? (
+        <p><strong class="text-text font-semibold">{block.term}</strong> {block.text}</p>
+      ) : (
+        <div class="overflow-x-auto my-6">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-border">
+                {block.columns.map((column) => (
+                  <th scope="col" class="text-left font-semibold text-text py-2 pr-4 align-bottom">{column}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {block.rows.map((row) => (
+                <tr class="border-b border-border/60 align-top">
+                  {row.map((cell, index) => (
+                    index === 0 && block.columns[0] === '' ? (
+                      <th scope="row" class="text-left font-semibold text-text py-2 pr-4">{cell}</th>
+                    ) : (
+                      <td class="py-2 pr-4">{cell}</td>
+                    )
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    ))}
+  </section>
+))}

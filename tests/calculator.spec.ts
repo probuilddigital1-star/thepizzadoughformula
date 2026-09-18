@@ -459,7 +459,8 @@ test.describe('Guide-to-calculator handoff', () => {
     await page.goto('/?s=newYork');
     await page.locator('#quantity-presets').getByText('6 pizzas').click();
     await expect(page.locator('#numBalls')).toHaveValue('6');
-    await expect(page.locator('#ballWeight')).toHaveValue('300');
+    // New York's default 14" size is 280 g, matching defaults.ballWeight (ADR step 6, item 2)
+    await expect(page.locator('#ballWeight')).toHaveValue('280');
 
     await page.locator('#size-options label', { hasText: '18"' }).click();
     await expect(page.locator('#ballWeight')).toHaveValue('450');
@@ -610,6 +611,43 @@ test.describe('Impossible pre-ferment', () => {
     await expect(page.locator('#recipe-issue')).toBeVisible();
     await expect(page.locator('#recipe-issue-text')).toContainText('50%');
     for (const selector of recipeActions) await expect(page.locator(selector), selector).toBeDisabled();
+  });
+});
+
+test.describe('Style page links open the intended recipe', () => {
+  /**
+   * The "Open in Calculator" links on the style pages are /?s=<preset>. These check that the two
+   * pages revised in ADR step 6 land on the recipe their worked examples describe.
+   */
+  test('the Poolish/Biga link opens a poolish with 0.2 g of yeast in the pre-ferment', async ({ page }) => {
+    await page.goto('/?s=poolishBiga');
+
+    await expect(page.locator('input[value="poolishBiga"]')).toBeChecked();
+    await expect(page.locator('#usePreFerment')).toBeChecked();
+    await expect(page.locator('input[name="preFermentType"][value="poolish"]')).toBeChecked();
+    await expect(page.locator('#preFermentPercent')).toHaveValue('25');
+    await expect(page.locator('#numBalls')).toHaveValue('4');
+    await expect(page.locator('#ballWeight')).toHaveValue('260');
+
+    // Stage 1 takes 0.1% of the pre-ferment flour and the final dough gets the rest
+    await expect(page.locator('#twoStageRecipe')).toBeVisible();
+    await expect(page.locator('[data-pf-ingredient="flour"]')).toHaveText('155g');
+    await expect(page.locator('[data-pf-ingredient="water"]')).toHaveText('155g');
+    await expect(page.locator('[data-pf-ingredient="yeast"]')).toHaveText('0.2g');
+    await expect(page.locator('#finalYeastRow')).toBeVisible();
+    await expect(page.locator('[data-final-ingredient="yeast"]')).toHaveText('1.1g');
+    await expect(page.locator('[data-final-ingredient="flour"]')).toHaveText('465g');
+    await expect(page.locator('[data-final-ingredient="water"]')).toHaveText('248g');
+  });
+
+  test('the New York link opens at the 280 g default the page states', async ({ page }) => {
+    await page.goto('/?s=newYork');
+
+    await expect(page.locator('#recipeStyleName')).toHaveText('New York Pizza Dough');
+    await expect(page.locator('#ballWeight')).toHaveValue('280');
+    await expect(page.locator('#hydration')).toHaveValue('65');
+    await expect(page.locator('[data-ingredient="flour"]')).toHaveText('650g');
+    await expect(page.locator('[data-ingredient="water"]')).toHaveText('422g');
   });
 });
 

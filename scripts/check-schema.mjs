@@ -71,7 +71,15 @@ function checkRecipe(recipe, page) {
   for (const [index, step] of instructions.entries()) {
     const text = isFilled(step) ? step : step?.text;
     if (!isFilled(text)) fail(`has an empty instruction at position ${index + 1}`);
+    // Every step carries a short name and a link to itself on the page
+    if (!isFilled(step?.name)) fail(`has no name on the instruction at position ${index + 1}`);
+    if (!isFilled(step?.url)) fail(`has no url on the instruction at position ${index + 1}`);
   }
+
+  // Calories per serving, estimated from the flour, oil and sugar (see [style].astro)
+  const calories = recipe.nutrition?.calories;
+  if (!isFilled(calories)) fail('has no nutrition.calories');
+  else if (!/^\d+ calories$/.test(calories)) fail(`has nutrition.calories "${calories}", expected the form "640 calories"`);
 }
 
 function checkNoProduct(product, page) {

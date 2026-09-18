@@ -8,6 +8,7 @@ import Header from '../../components/global/Header.astro';
 import Footer from '../../components/global/Footer.astro';
 import Breadcrumbs from '../../components/global/Breadcrumbs.astro';
 import PizzaStyleIcon from '../../components/icons/PizzaStyleIcon.astro';
+import ContentSections from '../../components/content/ContentSections.astro';
 import { PIZZA_STYLES } from '../../scripts/calculator/presets.js';
 import { DoughCalculator } from '../../scripts/calculator/engine.js';
 import { datesForPath, formatDate } from '../../../scripts/page-dates.mjs';
@@ -23,6 +24,20 @@ export function getStaticPaths() {
   ];
 }
 
+/**
+ * A block inside a content section. `note` is a labeled paragraph, used for the schedule days and
+ * the ingredient roles, where each paragraph opens with a short lead-in.
+ */
+type Block =
+  | { kind: 'p'; text: string }
+  | { kind: 'note'; term: string; text: string }
+  | { kind: 'table'; columns: string[]; rows: string[][] };
+
+type Section = { title: string; blocks: Block[] };
+
+/** A step in the on-page instructions. A plain string gets a generated name (see stepName). */
+type Step = string | { name: string; text: string };
+
 // Content for each style page - SEO-optimized long-form content
 const styleContent: Record<string, {
   slug: string;
@@ -31,11 +46,18 @@ const styleContent: Record<string, {
   intro: string;
   history: string;
   historyTitle: string;
-  doughScience: string;
-  doughScienceTitle: string;
-  technique: string[];
+  // Optional: a style whose sections cover the same ground in more detail omits these
+  doughScience?: string;
+  doughScienceTitle?: string;
+  // Sections between the intro and the history
+  leadSections?: Section[];
+  // Sections between the dough science and the instructions
+  sections?: Section[];
+  technique: Step[];
   techniqueTitle: string;
   commonMistakes: string[];
+  // Works cited on the page, shown as a Sources list at the end of the article
+  sources?: { label: string; url: string }[];
   // Low end of every fermentation range this page states, in minutes. Used for the Recipe totalTime,
   // so the schema is never shorter than the schedule in the visible instructions.
   minimumFermentationMinutes: number;
@@ -74,33 +96,87 @@ const styleContent: Record<string, {
   },
   newYork: {
     slug: 'new-york',
-    metaTitle: 'New York Style Pizza Dough Recipe & Calculator',
-    metaDescription: 'Perfect New York pizza dough with 65% hydration, high-gluten bread flour, and oil for foldable slices. Free calculator with exact measurements.',
-    intro: 'New York-style pizza is all about the fold. A wide, thin slice with a crispy-yet-pliable crust that you can fold in half and eat while walking down the street. The dough uses high-gluten bread flour, a touch of oil and sugar for browning, and cold fermentation for flavor. It\'s baked at lower temperatures than Neapolitan, producing a golden-brown crust with satisfying chew.',
+    metaTitle: 'New York Pizza Dough Recipe and Calculator: Foldable Slices at Home',
+    metaDescription: 'A New York style pizza dough recipe with gram amounts, a cold-ferment schedule, and a calculator that scales it to any number of pies. High-gluten flour, a little oil and sugar, 24 to 72 hours in the fridge.',
+    intro: 'New York pizza is the wide, thin slice you can fold in half. The crust is crisp on the bottom, chewy in the rim, and pliable enough to bend without cracking. Three things make the dough behave that way. High-protein flour builds enough gluten to hold a big thin slice. A little oil and sugar help the crust brown and stay tender at home-oven temperatures, which are far below a pizzeria deck. And a day or more in the fridge develops flavor and makes the dough easy to stretch. The calculator on this page scales the recipe to however many pies you want.',
+    leadSections: [
+      {
+        title: 'The recipe in grams',
+        blocks: [
+          { kind: 'p', text: 'Four 14-inch pizzas, 280 g dough balls, 65% hydration. These are the calculator’s default numbers for this style.' },
+          {
+            kind: 'table',
+            columns: ['Ingredient', 'Amount', "Baker's %"],
+            rows: [
+              ['High-gluten bread flour', '650 g', '100%'],
+              ['Water, cold', '422 g', '65%'],
+              ['Fine sea salt', '13 g', '2%'],
+              ['Instant yeast', '2.6 g', '0.4%'],
+              ['Olive oil', '19 g', '3%'],
+              ['Sugar', '13 g', '2%']
+            ]
+          },
+          { kind: 'p', text: 'Total dough 1120 g. For different sizes, the calculator uses about 220 g for a 10-inch pie, 280 g for 14 inches and 450 g for 18 inches. Change the count or size and every line updates.' }
+        ]
+      }
+    ],
     historyTitle: 'How New York Pizza Became Iconic',
     history: 'Italian immigrants brought pizza to New York in the early 1900s. Gennaro Lombardi opened the first documented American pizzeria in 1905 on Spring Street in Manhattan. New York water — with its unique mineral content — is often credited for the distinctive crust, though this is debated. What\'s not debated: the style evolved to be larger, crispier, and more substantial than its Neapolitan ancestor, designed for New York\'s grab-and-go food culture.',
-    doughScienceTitle: 'The Science of NY Dough',
-    doughScience: 'New York dough uses high-gluten bread flour (13-14% protein) for maximum chew and structure. The higher protein creates stronger gluten networks that can support large, thin slices without flopping. Oil (2-3%) tenderizes the crumb and aids browning at the lower baking temperatures. Sugar (1-2%) accelerates Maillard browning, giving the crust its golden color. At 65% hydration, the dough is workable but moist enough for an open crumb.',
+    sections: [
+      {
+        title: 'What each ingredient is doing',
+        blocks: [
+          { kind: 'note', term: 'Flour.', text: 'High-gluten bread flour at 13 to 14% protein is the traditional choice, and it is what gives the slice its chew and lets it stay flat when you pick it up. King Arthur’s Sir Lancelot and General Mills All Trumps are the pizzeria standards at about 14% protein. Ordinary bread flour at 12 to 13% works well and is what most home recipes call for; the crust will be a little less chewy. Italian 00 flour is the wrong tool here. It is milled for very hot ovens and short bakes, and at 500°F it stays pale and soft.' },
+          { kind: 'note', term: 'Water, at 65%.', text: 'This is on the moist side for a New York dough, which makes a more open crumb and an easier stretch. If you find the dough hard to handle, drop to 60 to 62% in the calculator; the slice will be a little denser and crisper.' },
+          { kind: 'note', term: 'Oil, at 3%.', text: 'Oil coats the gluten strands, which tenderizes the crumb and keeps a thin crust from turning into a cracker. It also helps the bottom brown on a home oven’s stone or steel.' },
+          { kind: 'note', term: 'Sugar, at 2%.', text: 'Sugar feeds browning. Pizzeria ovens run at 550°F and above and brown a crust in minutes; a home oven at 500°F needs the help. It does not make the crust taste sweet at this level.' },
+          { kind: 'note', term: 'Salt, at 2%.', text: 'Flavor, and it tightens the gluten slightly.' },
+          { kind: 'note', term: 'Yeast, at 0.4%.', text: 'Enough for a slow rise in the fridge without over-proofing over two or three days. If you use active dry instead of instant, switch the yeast type in the calculator; it adjusts the amount.' }
+        ]
+      },
+      {
+        title: 'Cold fermentation: why and how long',
+        blocks: [
+          { kind: 'p', text: 'Once the dough is balled it goes into the fridge, where the yeast slows down and enzymes keep working on the flour. That does two things you can taste and feel. The flavor deepens, and the gluten relaxes so the dough stretches wide without springing back. Twenty-four hours is the minimum to get the benefit. Forty-eight to seventy-two hours is where most people settle. Past three days the dough starts to lose strength and the balls slacken.' },
+          { kind: 'p', text: 'Put each ball in its own lidded container or on an oiled tray under plastic wrap, so they do not grow into each other. Take them out one to two hours before you bake; cold dough tears and shrinks back when stretched.' }
+        ]
+      },
+      {
+        title: 'A schedule',
+        blocks: [
+          { kind: 'p', text: 'This is an estimate for a kitchen around 68 to 72°F and a normal fridge. Times shift with temperature, so treat the readiness signs as the real guide.' },
+          { kind: 'note', term: 'Day 1, evening.', text: 'Mix the dough with cold water. Knead 10 to 15 minutes by hand until smooth and only slightly tacky. Rest it, covered, 1 to 2 hours at room temperature until it looks a little puffed, not doubled. Divide into 280 g balls, shape each into a tight round, and put them in the fridge in separate containers.' },
+          { kind: 'note', term: 'Day 2 or 3.', text: 'Take the balls out one to two hours before baking. Put the steel or stone in the oven and run it at 500 to 550°F for at least 45 minutes to an hour; a steel needs the full hour to hold enough heat. Stretch each ball from the center out, leaving a slightly thicker rim, to about 14 inches. Top lightly. Bake 8 to 12 minutes until the rim is golden and spotted and the bottom is crisp.' },
+          { kind: 'p', text: 'If day 2 turns into day 4, the dough will still work; expect a slacker ball that needs gentler handling and a more pronounced flavor.' }
+        ]
+      }
+    ],
     techniqueTitle: 'How to Make New York Pizza Dough',
     technique: [
-      'Combine high-gluten bread flour with cold water (55-60°F). Add salt, sugar, oil, and yeast.',
-      'Knead for 10-15 minutes until smooth and elastic. The dough should be slightly tacky but not sticky.',
-      'Bulk ferment at room temperature for 1-2 hours until slightly puffed.',
-      'Divide into 280-300g balls for 14" pizzas (or 450g for 18" pies).',
-      'Cold ferment for 24-48 hours. This develops flavor and makes the dough easier to stretch.',
-      'Remove from fridge 2 hours before use. Cold dough will shrink back when stretched.',
-      'Hand-stretch or use a gentle toss, working from the center outward. Aim for even thickness with a slight edge.',
-      'Bake on a preheated pizza steel or stone at 260-290°C (500-550°F) for 8-12 minutes until golden and spotted.'
+      { name: 'Mix', text: 'Combine the flour, cold water, salt, sugar, oil and yeast until no dry flour remains.' },
+      { name: 'Knead', text: '10 to 15 minutes by hand until smooth and elastic. Slightly tacky is right; sticky means it needs another minute.' },
+      { name: 'Rest', text: '1 to 2 hours at room temperature, covered, until slightly puffed.' },
+      { name: 'Divide and ball', text: 'Portion into 280 g balls for 14-inch pizzas. Shape each into a tight round.' },
+      { name: 'Cold ferment', text: 'Refrigerate the balls in separate containers for 24 to 72 hours.' },
+      { name: 'Warm up', text: 'Take the balls out 1 to 2 hours before baking.' },
+      { name: 'Preheat', text: 'Steel or stone at 500 to 550°F for at least 45 minutes to an hour.' },
+      { name: 'Stretch and bake', text: 'Stretch to 14 inches with a slight rim, top lightly, bake 8 to 12 minutes until golden and spotted.' }
     ],
     commonMistakes: [
-      'Using 00 flour — it\'s too soft for NY-style. You need high-gluten bread flour for proper chew and structure.',
-      'Skipping oil and sugar — these are essential for browning at home oven temperatures.',
-      'Not preheating long enough — give your pizza steel at least 45-60 minutes at maximum temperature.',
-      'Making the crust too thick — NY slices should be thin enough to fold without cracking.',
-      'Over-saucing — a thin, even layer of sauce prevents a soggy center.'
+      'Using 00 flour. It is made for ovens twice as hot as yours and will not brown at 500°F. Use bread flour or high-gluten flour.',
+      'Leaving out the oil and sugar. They are what make browning possible at home temperatures. This is the difference between a golden crust and a pale one.',
+      'A short preheat. A stone or steel that has only had 20 minutes is still cold in the middle. Give it 45 minutes to an hour.',
+      'Stretching cold dough. Straight from the fridge it shrinks back and tears. Let the balls sit out 1 to 2 hours.',
+      'Too much sauce or cheese. A thin slice cannot carry a heavy load; the center goes soggy and the fold collapses.'
     ],
-    // Minimums from the stated ranges: 1 h bulk + 24 h cold ferment + 2 h out of the fridge + 2 h proof
-    minimumFermentationMinutes: 60 + 24 * 60 + 120 + 120,
+    sources: [
+      { label: 'King Arthur Baking, New York-Style Pizza recipe (bread flour, oil and sugar in the dough, 300 g balls for 13-inch pies, refrigerate up to 3 days, rest at least an hour after the fridge, 500°F preheat for at least an hour)', url: 'https://www.kingarthurbaking.com/recipes/new-york-style-pizza-recipe' },
+      { label: 'King Arthur Sir Lancelot high-gluten flour, 14% protein (product listing)', url: 'https://www.kingarthurbaking.com/pro/products' },
+      { label: 'USDA FoodData Central, for the calorie figures', url: 'https://fdc.nal.usda.gov/' }
+    ],
+    // Minimums from the stated ranges: 1 h rest + 24 h cold ferment + 1 h out of the fridge. The
+    // 45 minute preheat runs while the balls warm up, so it is not added on top.
+    minimumFermentationMinutes: 60 + 24 * 60 + 60,
     relatedStyles: ['neapolitan', 'thinCrispy']
   },
   detroit: {
@@ -168,30 +244,123 @@ const styleContent: Record<string, {
   },
   poolishBiga: {
     slug: 'poolish-biga',
-    metaTitle: 'Poolish & Biga Pizza Dough Recipe & Calculator',
-    metaDescription: 'Elevate your pizza with poolish or biga pre-ferments. Rich, complex flavor from 12-16 hour fermentation. Free calculator with exact ratios.',
-    intro: 'Pre-fermented doughs use a portion of flour and water that ferments separately before being incorporated into the final dough. This extra step — taking 12-16 hours — develops rich, complex flavors that straight doughs can\'t achieve. Poolish (liquid, 100% hydration) produces an open crumb with mild tang. Biga (stiff, 50-60% hydration) creates deeper wheaty flavors with a tighter structure.',
+    metaTitle: 'Poolish vs Biga for Pizza: Which to Use, Plus a Calculator',
+    metaDescription: 'Poolish or biga for pizza dough? A plain comparison, a worked recipe with gram amounts, a two-day schedule, and a calculator that does the pre-ferment math for you.',
+    intro: "A pre-ferment is a small batch of flour, water and a little yeast that you mix the day before and let ferment on its own. The next day it goes into the final dough. That overnight head start gives the crust more flavor and better browning than a dough mixed all at once, and it makes the dough easier to stretch. Poolish and biga are the two common kinds. Poolish is wet, equal weights of flour and water. Biga is stiff, roughly half as much water as flour. The calculator on this page handles the split for you, so the water and yeast in the pre-ferment always count toward the totals.",
+    leadSections: [
+      {
+        title: 'Poolish or biga: which should you use?',
+        blocks: [
+          { kind: 'p', text: 'Short answer. If this is your first pre-ferment, use poolish. It is easier to mix, easier to judge, and it fits a normal room-temperature kitchen and a 12 to 16 hour overnight window. Choose biga if you want a chewier crust with bigger, more irregular holes, if you are working at high hydration (70% and up), or if you want a pre-ferment that stays usable for longer once it is ready.' },
+          {
+            kind: 'table',
+            columns: ['', 'Poolish', 'Biga'],
+            rows: [
+              ['Hydration of the pre-ferment', '100% (equal flour and water)', 'Stiff, about 45 to 60%. The calculator uses 55%'],
+              ['Texture when ready', 'A loose, bubbly batter with a domed top', 'A shaggy, firm dough that has roughly doubled'],
+              ['Flavor', 'Milder and slightly tangy, closer to yogurt', 'Sharper and more pronounced, closer to vinegar'],
+              ['Crumb', 'Softer, with smaller and more even holes', 'Chewier, with larger and fewer holes'],
+              ['Mixing it in', 'Easy, it dissolves into the final dough', 'Takes more work, tear it into pieces first'],
+              ['Usable window once ready', 'Shorter, use it when it peaks', 'Longer, more forgiving if you are late'],
+              ['Typical fermentation', '6 to 16 hours at room temperature', '12 to 24 hours, often somewhere cool (60 to 64°F)'],
+              ['Suits', 'Hand kneading, Neapolitan and New York styles at 60 to 68% hydration', 'High hydration doughs, pan pizza, anyone who wants more chew']
+            ]
+          },
+          { kind: 'p', text: 'The differences in the finished pizza are real but not dramatic. Most people would notice the chew and the hole structure before they noticed the flavor. If you make both from the same recipe you will have a better sense of which you prefer than any table can give you.' }
+        ]
+      }
+    ],
     historyTitle: 'The Art of Pre-Fermentation',
     history: 'Pre-ferments have been used in bread baking for centuries. Poolish (named for Polish bakers who popularized it in France) became a staple of French bread-making. Biga is the Italian counterpart, used in ciabatta and many traditional Italian breads. Both techniques were adopted by artisan pizza makers seeking more flavor complexity than straight dough methods could provide. Today, many award-winning pizzerias use some form of pre-ferment.',
     doughScienceTitle: 'How Pre-Ferments Improve Dough',
-    doughScience: 'During the 12-16 hour pre-ferment, yeast produces CO2, alcohol, and organic acids that contribute to flavor. Enzymes (amylase, protease) break down starches and proteins, improving dough extensibility and browning. The acids also strengthen the gluten network. By pre-fermenting 20-40% of the total flour, you get these benefits without over-fermenting the final dough. Poolish\'s high hydration promotes more enzymatic activity, while biga\'s lower hydration concentrates flavors differently.',
+    doughScience: 'During the 12-16 hour pre-ferment, yeast produces CO2, alcohol, and organic acids that contribute to flavor. Enzymes (amylase, protease) break down starches and proteins, improving dough extensibility and browning. The acids also strengthen the gluten network. By pre-fermenting 20 to 30% of the total flour, you get these benefits without over-fermenting the final dough. Poolish\'s high hydration promotes more enzymatic activity, while biga\'s lower hydration concentrates flavors differently.',
+    sections: [
+      {
+        title: 'How much of the flour to pre-ferment',
+        blocks: [
+          { kind: 'p', text: 'The calculator lets you pre-ferment 15 to 50% of the total flour. Around 20 to 30% is the usual range for pizza and is the default here (25%). More pre-fermented flour means more flavor and a chewier, more open crumb, but the effect levels off around half the flour, and a dough with a very large pre-ferment is harder to time because so much of it is already fermented when you mix it. Start at 25% and move up once you have a feel for it.' }
+        ]
+      },
+      {
+        title: 'A worked example',
+        blocks: [
+          { kind: 'p', text: 'Four 12-inch pizzas, 260 g dough balls, 65% hydration, 2.5% salt, 0.2% instant yeast, 25% of the flour in the pre-ferment. These are the numbers the calculator produces for the default settings on this page.' },
+          { kind: 'p', text: 'Totals for the whole recipe: 620 g flour, 403 g water, 16 g salt, 1.2 g instant yeast.' },
+          { kind: 'p', text: 'With a poolish:' },
+          {
+            kind: 'table',
+            columns: ['Stage', 'Flour', 'Water', 'Salt', 'Instant yeast'],
+            rows: [
+              ['Poolish (day 1)', '155 g', '155 g', 'none', '0.2 g'],
+              ['Final dough (day 2)', '465 g', '248 g', '16 g', '1.1 g']
+            ]
+          },
+          { kind: 'p', text: 'With a biga at 55% hydration:' },
+          {
+            kind: 'table',
+            columns: ['Stage', 'Flour', 'Water', 'Salt', 'Instant yeast'],
+            rows: [
+              ['Biga (day 1)', '155 g', '85 g', 'none', '0.2 g'],
+              ['Final dough (day 2)', '465 g', '318 g', '16 g', '1.1 g']
+            ]
+          },
+          { kind: 'p', text: 'Note the water. The biga holds back 70 g of water that then goes into the final dough instead. That is the whole difference between the two on paper. The pre-ferment’s flour and water are part of the recipe, not extra, which is the mistake most people make when they first try one.' },
+          { kind: 'p', text: 'Change the number of pizzas, ball size or hydration in the calculator and it recalculates both stages. Amounts under 10 g are shown to a tenth of a gram, so you will want a scale that reads to 0.1 g for the yeast.' }
+        ]
+      },
+      {
+        title: 'Yeast in the pre-ferment',
+        blocks: [
+          { kind: 'p', text: 'The pre-ferment needs very little yeast, because it has all night to work. The usual guidance for instant dry yeast, as a percentage of the flour in the pre-ferment, in a kitchen around 68 to 72°F:' },
+          {
+            kind: 'table',
+            columns: ['Pre-ferment ready in', 'Instant yeast'],
+            rows: [
+              ['About 8 hours', '0.2 to 0.3%'],
+              ['About 12 hours', '0.1 to 0.2%'],
+              ['About 16 hours', '0.03 to 0.1%']
+            ]
+          },
+          { kind: 'p', text: 'The calculator uses 0.1% of the pre-ferment flour, which suits the 12 to 16 hour overnight window most people use. The rest of the recipe’s yeast goes into the final dough. In a warm kitchen, use the low end of each range. If you use active dry yeast, switch the yeast type in the calculator and it adjusts the amounts.' }
+        ]
+      },
+      {
+        title: 'A two-day schedule',
+        blocks: [
+          { kind: 'p', text: 'This is an estimate for a kitchen at 68 to 72°F. Warmer rooms run faster, cooler rooms slower, and the readiness signs matter more than the clock.' },
+          { kind: 'note', term: 'Day 1, evening (around 8 pm).', text: 'Mix the pre-ferment. Stir the flour, water and yeast together until there is no dry flour, cover the container, and leave it on the counter.' },
+          { kind: 'note', term: 'Day 2, morning (8 to 10 am).', text: 'Check the pre-ferment. A poolish is ready when it has roughly doubled, the top is domed and covered in small bubbles, and it smells mildly tangy. A biga is ready when it has doubled and smells yeasty and pleasant. If a poolish has sunk in the middle and left a high-tide mark on the container, or either one smells sharply of alcohol, it has gone too far. It will still make dough, but the flavor will be harsher and the dough weaker.' },
+          { kind: 'note', term: 'Day 2, late morning.', text: 'Mix the final dough. Combine the pre-ferment with the remaining flour, water, salt and yeast. Knead 10 to 15 minutes by hand until smooth. Pre-fermented dough is noticeably more extensible than a straight dough, so it will feel softer than you expect.' },
+          { kind: 'note', term: 'Day 2, midday.', text: 'Bulk ferment 2 to 3 hours at room temperature until roughly doubled.' },
+          { kind: 'note', term: 'Day 2, early afternoon.', text: 'Divide into 260 g balls and shape them with a tight surface. Proof the balls, covered, for 2 to 4 hours at room temperature.' },
+          { kind: 'note', term: 'Day 2, evening (5 to 7 pm).', text: 'Stretch and bake at 500 to 575°F for 5 to 8 minutes. Pre-fermented doughs brown faster because the long ferment frees up more sugars, so watch the first pizza.' },
+          { kind: 'p', text: 'If you want to bake the following day instead, put the balls in the fridge after shaping and take them out 1 to 2 hours before you bake. Up to 24 hours in the fridge is fine for a pre-fermented dough. Beyond that it starts to lose strength.' }
+        ]
+      }
+    ],
     techniqueTitle: 'How to Make Pre-Fermented Pizza Dough',
     technique: [
-      'Day 1 — Make the pre-ferment: Mix 25% of total flour with equal water (for poolish) or 50-60% water (for biga), plus a tiny amount of yeast (0.1%).',
-      'Cover and ferment at room temperature (65-75°F) for 12-16 hours. Poolish is ready when bubbly and slightly domed. Biga should be doubled and have a pleasant yeasty smell.',
-      'Day 2 — Mix final dough: Combine the pre-ferment with remaining flour, water, and salt. Add remaining yeast.',
-      'Knead for 10-15 minutes until smooth. The pre-ferment makes the dough more extensible.',
-      'Bulk ferment for 2-3 hours at room temperature until doubled.',
-      'Divide into balls (260g for 12" pizzas). Shape with surface tension.',
-      'Proof balls for 2-4 hours at room temperature before stretching.',
-      'Bake at 260-300°C (500-575°F) for 5-8 minutes. Pre-fermented doughs brown faster due to enzymatic activity.'
+      { name: 'Mix the pre-ferment', text: 'Day 1: stir the pre-ferment flour, water and yeast together until no dry flour remains. Cover.' },
+      { name: 'Ferment overnight', text: 'Leave at room temperature 12 to 16 hours. Poolish should be bubbly and domed; biga should have doubled.' },
+      { name: 'Mix the final dough', text: 'Day 2: combine the pre-ferment with the remaining flour, water, salt and yeast. Tear a biga into pieces first so it mixes in evenly.' },
+      { name: 'Knead', text: '10 to 15 minutes by hand until smooth and elastic.' },
+      { name: 'Bulk ferment', text: '2 to 3 hours at room temperature until roughly doubled.' },
+      { name: 'Divide and ball', text: 'Portion into 260 g balls for 12-inch pizzas and shape with surface tension.' },
+      { name: 'Proof', text: '2 to 4 hours at room temperature, covered, or refrigerate up to 24 hours and warm up 1 to 2 hours before baking.' },
+      { name: 'Bake', text: '500 to 575°F for 5 to 8 minutes. Pre-fermented dough browns faster, so check early.' }
     ],
     commonMistakes: [
-      'Over-fermenting the pre-ferment — if it collapses or smells like alcohol, it\'s gone too far. It should be bubbly and domed.',
-      'Using too much yeast in the pre-ferment — you need very little (0.1%). Too much and it will over-ferment.',
-      'Not adjusting hydration — the water in the pre-ferment counts toward total hydration. Calculate accordingly.',
-      'Skipping the pre-ferment rest — if it\'s not bubbly and active, the final dough won\'t benefit.',
-      'Rushing the final proof — pre-fermented dough still needs 2-4 hours after balling.'
+      'Forgetting that the pre-ferment’s flour and water are part of the recipe. They are not extra. The calculator subtracts them from the totals for you; if you are working from a recipe elsewhere, do the same.',
+      'Too much yeast in the pre-ferment. 0.1% of the pre-ferment flour is enough for an overnight ferment. More than that and it peaks at 3 am and collapses by breakfast.',
+      'Using the pre-ferment too late. A collapsed poolish or a biga that smells of alcohol has spent its strength. It still makes dough, but a weaker, sourer one.',
+      'Using it too early. If it is not bubbly and risen, most of the benefit has not happened yet. Give it another hour or two.',
+      'Rushing the second day. The pre-ferment does not shorten the final dough’s timeline. It still needs a bulk ferment and a proof after balling.'
+    ],
+    sources: [
+      { label: 'Pizzablab, Poolish preferment guide (hydration, 0.1% instant yeast for an 8 to 16 hour ferment at about 68°F, readiness and over-fermentation signs)', url: 'https://www.pizzablab.com/the-encyclopizza/poolish-preferment/' },
+      { label: 'Pizzablab, Poolish vs biga (flavor, crumb, handling and usability window, biga at 12 to 24 hours at 60 to 64°F)', url: 'https://www.pizzablab.com/learning-and-resources/general-articles/biga-vs-poolish/' },
+      { label: 'Weekend Bakery, Poolish and biga tips (yeast by fermentation time, pre-fermented flour share leveling off around 50%)', url: 'https://www.weekendbakery.com/posts/more-artisan-bread-baking-tips-poolish-biga/' },
+      { label: 'USDA FoodData Central, for the calorie figures', url: 'https://fdc.nal.usda.gov/' }
     ],
     // Minimums from the stated ranges: 12 h pre-ferment + 2 h bulk + 2 h proof
     minimumFermentationMinutes: 12 * 60 + 120 + 120,
@@ -276,6 +445,53 @@ const recipeIngredients = defaultRecipe.valid
     ]
   : [];
 
+/**
+ * Calories per 100 g, from USDA FoodData Central. Only the flour, oil and sugar in a dough ball carry
+ * any: water, salt and yeast add nothing meaningful at these weights. https://fdc.nal.usda.gov/
+ */
+const CALORIES_PER_100G = { flour: 361, oil: 884, sugar: 387 };
+
+/** Per dough ball, rounded to the nearest 10 because it is an estimate, not a measurement. */
+const caloriesPerBall = defaultRecipe.valid
+  ? Math.round(
+      ((defaultRecipe.ingredients.flour * CALORIES_PER_100G.flour +
+        defaultRecipe.ingredients.oil * CALORIES_PER_100G.oil +
+        defaultRecipe.ingredients.sugar * CALORIES_PER_100G.sugar) /
+        100 /
+        4) / 10
+    ) * 10
+  : 0;
+
+/** Words too weak to end a generated step name. */
+const TRAILING_STOP_WORDS = [
+  'for', 'by', 'with', 'until', 'and', 'or', 'to', 'at', 'in', 'on', 'from',
+  'then', 'before', 'after', 'a', 'the', 'of'
+];
+
+/** A short name for a step written as a plain sentence: its first few words, up to the first break. */
+function stepName(text: string): string {
+  const words = text.split(/[—–.:,(]/)[0].trim().split(/\s+/).slice(0, 6);
+  while (words.length > 2 && TRAILING_STOP_WORDS.includes(words[words.length - 1].toLowerCase())) words.pop();
+  return words.join(' ');
+}
+
+/**
+ * Every step as { name, text, anchor }, so the page and the recipe markup use the same names.
+ * A step written with its own name shows it as a lead-in; a generated name would only repeat the
+ * first words of the step, so it goes to the recipe markup and not to the page.
+ */
+const steps = content.technique.map((step, i) => {
+  const text = typeof step === 'string' ? step : step.text;
+  return {
+    name: typeof step === 'string' ? stepName(text) : step.name,
+    named: typeof step !== 'string',
+    text,
+    anchor: `step-${i + 1}`,
+  };
+});
+
+const pageUrl = new URL(`/pizza-styles/${content.slug}/`, Astro.site ?? 'https://thepizzadoughformula.com').href;
+
 // Mixing, kneading and shaping before fermentation starts
 const PREP_MINUTES = 30;
 // Never claim a shorter bake than the page's stated range allows
@@ -308,14 +524,17 @@ const recipeSchema = {
   "totalTime": isoDuration(totalMinutes),
   "image": [new URL('/images/hero-optimized.jpg', Astro.site ?? 'https://thepizzadoughformula.com').href],
   "recipeIngredient": recipeIngredients,
-  "recipeInstructions": content.technique.map((step, i) => ({
+  "recipeInstructions": steps.map((step, i) => ({
     "@type": "HowToStep",
     "position": i + 1,
-    "text": step
+    "name": step.name,
+    "text": step.text,
+    "url": `${pageUrl}#${step.anchor}`
   })),
   "nutrition": {
     "@type": "NutritionInformation",
-    "servingSize": "1 dough ball"
+    "servingSize": "1 dough ball",
+    "calories": `${caloriesPerBall} calories`
   },
   "author": {
     "@type": "Person",
@@ -390,6 +609,12 @@ const recipeSchema = {
             <dd class="font-semibold text-text">{preset.equipment}</dd>
           </div>
         </div>
+        {caloriesPerBall > 0 && (
+          <p class="mt-4 text-sm text-text-muted">
+            Each {preset.defaults.ballWeight} g dough ball is roughly {caloriesPerBall} calories. That is an
+            estimate worked out from the flour, oil and sugar in the recipe, using USDA FoodData Central figures.
+          </p>
+        )}
         <div class="mt-4 pt-4 border-t border-border">
           <a
             href={`/?s=${preset.id}`}
@@ -407,16 +632,27 @@ const recipeSchema = {
       <div class="prose prose-lg text-text-muted space-y-6">
         <p class="text-xl leading-relaxed">{content.intro}</p>
 
+        {content.leadSections && <ContentSections sections={content.leadSections} />}
+
         <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.historyTitle}</h2>
         <p>{content.history}</p>
 
-        <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.doughScienceTitle}</h2>
-        <p>{content.doughScience}</p>
+        {content.doughScienceTitle && content.doughScience && (
+          <>
+            <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.doughScienceTitle}</h2>
+            <p>{content.doughScience}</p>
+          </>
+        )}
+
+        {content.sections && <ContentSections sections={content.sections} />}
 
         <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">{content.techniqueTitle}</h2>
         <ol class="space-y-3 list-decimal list-outside pl-5">
-          {content.technique.map(step => (
-            <li class="text-text-muted">{step}</li>
+          {steps.map(step => (
+            <li id={step.anchor} class="text-text-muted scroll-mt-24">
+              {step.named && <strong class="text-text font-semibold">{step.name}.</strong>}
+              {step.named ? ' ' : ''}{step.text}
+            </li>
           ))}
         </ol>
 
@@ -451,6 +687,21 @@ const recipeSchema = {
             </li>
           ))}
         </ul>
+
+        {content.sources && (
+          <>
+            <h2 class="font-heading text-2xl font-semibold text-text mt-10 mb-4">Sources</h2>
+            <ul class="space-y-2 text-sm list-disc list-outside pl-5">
+              {content.sources.map(source => (
+                <li class="text-text-muted">
+                  <a href={source.url} target="_blank" rel="noopener" class="text-primary hover:text-primary-hover underline">
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
 
       {/* CTA */}

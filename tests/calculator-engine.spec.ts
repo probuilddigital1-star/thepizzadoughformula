@@ -4,7 +4,9 @@ import {
   BIGA_HYDRATION,
   DEFAULT_RECIPE_STATE,
   DoughCalculator,
+  PREFERMENT_YEAST_PERCENT,
 } from '../src/scripts/calculator/engine.js';
+import { PIZZA_STYLES, getWeightForSize } from '../src/scripts/calculator/presets.js';
 import { formatWeight } from '../src/scripts/calculator/units.js';
 import { buildRecipeView, decodeRecipe, encodeRecipe, generateRecipeText } from '../src/scripts/features/shareRecipe.js';
 
@@ -57,17 +59,53 @@ test.describe('Engine: ingredient arithmetic', () => {
     expect(result.ingredients.flour).toBeCloseTo(1000 / 1.62, 9);
   });
 
-  test('a poolish takes its share of the flour and an equal weight of water, and all the yeast', () => {
+  test('a poolish takes its share of the flour and an equal weight of water', () => {
     const state = { ...neapolitan, hydration: 0.65, usePreFerment: true, preFermentType: 'poolish', preFermentFlourPercent: 0.25 };
     const result = new DoughCalculator(state).calculate();
-    const { flour, water, yeast } = result.ingredients;
+    const { flour, water } = result.ingredients;
 
     expect(result.stage).toBe('two-stage');
     expect(result.preFerment.ingredients.flour).toBeCloseTo(flour * 0.25, 9);
     expect(result.preFerment.ingredients.water).toBeCloseTo(flour * 0.25, 9);
-    expect(result.preFerment.ingredients.yeast).toBeCloseTo(yeast, 9);
     expect(result.finalDough.ingredients.flour + result.preFerment.ingredients.flour).toBeCloseTo(flour, 9);
     expect(result.finalDough.ingredients.water + result.preFerment.ingredients.water).toBeCloseTo(water, 9);
+  });
+
+  test('the pre-ferment gets 0.1% of its own flour in yeast and the final dough gets the rest', () => {
+    const state = { ...neapolitan, hydration: 0.65, usePreFerment: true, preFermentType: 'poolish', preFermentFlourPercent: 0.25 };
+    const result = new DoughCalculator(state).calculate();
+    const { yeast } = result.ingredients;
+    const preFermentFlour = result.preFerment.ingredients.flour;
+
+    expect(PREFERMENT_YEAST_PERCENT).toBe(0.001);
+    expect(result.preFerment.ingredients.yeast).toBeCloseTo(preFermentFlour * PREFERMENT_YEAST_PERCENT, 9);
+    expect(result.finalDough.ingredients.yeast).toBeCloseTo(yeast - preFermentFlour * PREFERMENT_YEAST_PERCENT, 9);
+    expect(result.finalDough.ingredients.yeast).toBeGreaterThan(0);
+    // The two stages together still hold exactly the recipe's yeast
+    expect(result.preFerment.ingredients.yeast + result.finalDough.ingredients.yeast).toBeCloseTo(yeast, 9);
+  });
+
+  test('the pre-ferment yeast is converted for active dry along with the rest', () => {
+    const state = { ...neapolitan, yeastType: 'activeDry', usePreFerment: true, preFermentType: 'poolish', preFermentFlourPercent: 0.25 };
+    const result = new DoughCalculator(state).calculate();
+    const preFermentFlour = result.preFerment.ingredients.flour;
+
+    expect(result.preFerment.ingredients.yeast).toBeCloseTo(preFermentFlour * PREFERMENT_YEAST_PERCENT * ACTIVE_DRY_FACTOR, 9);
+    expect(result.preFerment.ingredients.yeast + result.finalDough.ingredients.yeast).toBeCloseTo(result.ingredients.yeast, 9);
+  });
+
+  test('a recipe with less yeast than the pre-ferment wants leaves the final dough none, never a negative', () => {
+    const state = { ...neapolitan, yeast: 0.0001, usePreFerment: true, preFermentFlourPercent: 0.5 };
+    const result = new DoughCalculator(state).calculate();
+
+    expect(result.preFerment.ingredients.yeast).toBeCloseTo(result.ingredients.yeast, 9);
+    expect(result.finalDough.ingredients.yeast).toBe(0);
+  });
+
+  test('a recipe with no yeast puts none in either stage', () => {
+    const result = new DoughCalculator({ ...neapolitan, yeast: 0, usePreFerment: true }).calculate();
+
+    expect(result.preFerment.ingredients.yeast).toBe(0);
     expect(result.finalDough.ingredients.yeast).toBe(0);
   });
 
@@ -324,5 +362,63 @@ test.describe('Share URLs', () => {
 
       expect(encodeRecipe(state)).toBe(`${origin}/?v=2&s=newYork&n=3&w=275&h=70&sa=2.8&y=0.4&yt=instant&o=3&su=2&pf=0&ha=0`);
     });
+  });
+});
+
+test.describe('Presets', () => {
+  /**
+   * The calculator opens at the default size's weight (step 2a), so a preset whose defaults.ballWeight
+   * disagrees with that weight shows one number on screen and another in the page's recipe markup.
+   */
+  for (const [id, preset] of Object.entries(PIZZA_STYLES)) {
+    test(`${id}: the default ball weight matches the default size`, () => {
+      const defaultSize = preset.sizes.options.find((size: { id: string }) => size.id === preset.sizes.defaultSize);
+
+      expect(defaultSize, `${id} has no option matching defaultSize "${preset.sizes.defaultSize}"`).toBeDefined();
+      expect(defaultSize!.weight).toBe(preset.defaults.ballWeight);
+      expect(getWeightForSize(id, preset.sizes.defaultSize)).toBe(preset.defaults.ballWeight);
+    });
+  }
+});
+
+test.describe('Worked example on the Poolish/Biga page', () => {
+  /**
+   * The figures printed in the page's worked example (docs/content/poolish-biga-page-draft.md) are the
+   * calculator's own output for this style's defaults at 4 balls. If either moves, they disagree.
+   */
+  const defaults = { ...DEFAULT_RECIPE_STATE, ...PIZZA_STYLES.poolishBiga.defaults, numBalls: 4, usePreFerment: true, preFermentFlourPercent: 0.25 };
+  const shown = (grams: number) => formatWeight(grams, 'grams');
+
+  test('the preset still has the defaults the worked example was written for', () => {
+    expect(defaults).toMatchObject({ ballWeight: 260, hydration: 0.65, salt: 0.025, yeast: 0.002 });
+  });
+
+  test('the totals match the figures on the page', () => {
+    const result = new DoughCalculator(defaults).calculate();
+
+    expect([
+      shown(result.ingredients.flour),
+      shown(result.ingredients.water),
+      shown(result.ingredients.salt),
+      shown(result.ingredients.yeast),
+    ]).toEqual(['620g', '403g', '16g', '1.2g']);
+  });
+
+  test('the poolish stages match the figures on the page', () => {
+    const result = new DoughCalculator({ ...defaults, preFermentType: 'poolish' }).calculate();
+    const pre = result.preFerment.ingredients;
+    const final = result.finalDough.ingredients;
+
+    expect([shown(pre.flour), shown(pre.water), shown(pre.yeast)]).toEqual(['155g', '155g', '0.2g']);
+    expect([shown(final.flour), shown(final.water), shown(final.salt), shown(final.yeast)]).toEqual(['465g', '248g', '16g', '1.1g']);
+  });
+
+  test('the biga stages match the figures on the page', () => {
+    const result = new DoughCalculator({ ...defaults, preFermentType: 'biga' }).calculate();
+    const pre = result.preFerment.ingredients;
+    const final = result.finalDough.ingredients;
+
+    expect([shown(pre.flour), shown(pre.water), shown(pre.yeast)]).toEqual(['155g', '85g', '0.2g']);
+    expect([shown(final.flour), shown(final.water), shown(final.salt), shown(final.yeast)]).toEqual(['465g', '318g', '16g', '1.1g']);
   });
 });

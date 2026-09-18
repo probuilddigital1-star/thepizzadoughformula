@@ -31,6 +31,17 @@ export const POOLISH_HYDRATION = 1;
  */
 export const BIGA_HYDRATION = 0.55;
 
+/**
+ * Instant yeast in the pre-ferment, as a fraction of the pre-ferment's own flour. A pre-ferment has
+ * all night to work, so it needs very little: the guidance for a 12 to 16 hour ferment at about
+ * 68°F is 0.1% of the pre-ferment flour, and more than that peaks and collapses before morning.
+ * The rest of the recipe's yeast goes into the final dough.
+ * Sources: Pizzablab, Poolish preferment guide (https://www.pizzablab.com/the-encyclopizza/poolish-preferment/)
+ * and Weekend Bakery, poolish and biga tips
+ * (https://www.weekendbakery.com/posts/more-artisan-bread-baking-tips-poolish-biga/).
+ */
+export const PREFERMENT_YEAST_PERCENT = 0.001;
+
 /** The humidity adjustment lowers hydration by 2.5 percentage points. */
 export const HUMIDITY_REDUCTION = 0.025;
 
@@ -248,9 +259,12 @@ export class DoughCalculator {
       return { ...base, valid: true, ingredients, percentages };
     }
 
-    // Traditional method: all of the yeast goes into the pre-ferment and none into the final dough.
+    // The pre-ferment gets PREFERMENT_YEAST_PERCENT of its own flour and the final dough gets the
+    // rest of the recipe's yeast. A recipe with less total yeast than that puts all of it in the
+    // pre-ferment rather than leaving the final dough a negative amount.
     const preFermentFlour = flour * this.preFermentFlourPercent;
     const preFermentWater = preFermentFlour * this.preFermentHydration;
+    const preFermentYeast = Math.min(preFermentFlour * PREFERMENT_YEAST_PERCENT * this.yeastFactor, ingredients.yeast);
 
     return {
       ...base,
@@ -264,7 +278,7 @@ export class DoughCalculator {
         ingredients: {
           flour: preFermentFlour,
           water: preFermentWater,
-          yeast: ingredients.yeast,
+          yeast: preFermentYeast,
         },
       },
       finalDough: {
@@ -272,7 +286,7 @@ export class DoughCalculator {
           flour: cleanZero(flour - preFermentFlour),
           water: cleanZero(ingredients.water - preFermentWater),
           salt: ingredients.salt,
-          yeast: 0,
+          yeast: cleanZero(ingredients.yeast - preFermentYeast),
           oil: ingredients.oil,
           sugar: ingredients.sugar,
         },

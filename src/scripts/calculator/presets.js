@@ -76,7 +76,9 @@ export const PIZZA_STYLES = {
       type: 'round',
       options: [
         { id: 'personal', label: '10"', weight: 220 },
-        { id: 'classic', label: '14"', weight: 300 },
+        // Matches defaults.ballWeight: the calculator opens at the default size's weight, so the two
+        // must agree or the page and the recipe markup disagree (tests/calculator-engine.spec.ts).
+        { id: 'classic', label: '14"', weight: 280 },
         { id: 'large', label: '18"', weight: 450 }
       ],
       defaultSize: 'classic'
