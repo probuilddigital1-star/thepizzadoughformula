@@ -9,6 +9,7 @@
  *    and Amazon Associates does not permit prices that are not pulled live from their API
  *    (ADR 0001, step 5)
  *  - no product card shows a dollar amount
+ *  - no em dash appears in any page's visible text
  *  - the retired shared Amazon tracking ID appears nowhere in the built output
  */
 import { readdirSync, readFileSync } from 'node:fs';
@@ -19,6 +20,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
 const RETIRED_TRACKING_ID = 'probuild20-20';
 const PRICE_PATTERN = /[$£€]\s?\d/;
+const EM_DASH = '—';
 
 const problems = [];
 let pagesChecked = 0;
@@ -87,6 +89,24 @@ function checkNoProduct(product, page) {
   problems.push(`${page}: Product schema for "${product.name ?? '(unnamed)'}" should not be published at all`);
 }
 
+/**
+ * No em dash in visible copy. The site's prose uses periods, commas or parentheses instead, so one
+ * appearing in a built page means new copy slipped past the style rule. Script and style tags are
+ * excluded, which also covers the JSON-LD blocks, and the entity spellings are folded in first.
+ */
+function checkNoEmDash(html, page) {
+  const visible = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&mdash;|&#8212;|&#x2014;/gi, EM_DASH);
+
+  for (let at = visible.indexOf(EM_DASH); at !== -1; at = visible.indexOf(EM_DASH, at + 1)) {
+    const excerpt = visible.slice(Math.max(0, at - 30), at + 30).replace(/\s+/g, ' ').trim();
+    problems.push(`${page}: visible text contains an em dash (…${excerpt}…)`);
+  }
+}
+
 /** Product cards must show no price: Amazon permits only prices pulled live from their API. */
 function checkProductCards(html, page) {
   for (const [card] of html.matchAll(/<a[^>]*class="[^"]*product-card[\s\S]*?<\/a>/g)) {
@@ -114,6 +134,7 @@ for (const file of files) {
     problems.push(`${page}: contains the retired Amazon tracking ID ${RETIRED_TRACKING_ID}`);
   }
   checkProductCards(html, page);
+  checkNoEmDash(html, page);
 
   for (const [, block] of html.matchAll(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
     let parsed;
